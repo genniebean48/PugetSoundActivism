@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<!--testing manya comment-->
-<!--testing Emma comment-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <link href="navBar.less" type="text/css" rel="stylesheet/less"/>
-    <link href="clubPage.less" type="text/css" rel="stylesheet/less"/>
+    <link href="login.less" type="text/css" rel="stylesheet/less"/>
     <script src="less.js" type="text/javascript"></script>
     <title>Title</title>
 </head>
@@ -28,14 +26,27 @@
         <a id="login" , href="../LogIn/login.html"> Login </a>
     </div>
 </div>
+<div class="login-panel">
+    <h3>Login</h3>
+    <form>
+        <label for="Email">Email:</label><br>
+        <input type="text" id="Email" name="Email"><br>
+        <label for="Password">Password:</label><br>
+        <input type="text" id="Password" name="Password"><br>
+        <button type="button" onclick="alert('Clicked Create')">Create An Account</button>
+        <button type="button" onclick="alert('Submit Account Info')">Submit</button>
+    </form>
 
-<div class = "club-panel">
-    <div class = "events-panel">
-        <h3>Events</h3>
-    </div>
-    <div class = "club-profile-panel">
-        <h3>Club Name</h3>
-    </div>
+    <h3>Create an Account</h3>
+    <form>
+        <label for="CEmail">Email:</label><br>
+        <input type="text" id="CEmail" name="Email"><br>
+        <label for="CPassword">Password:</label><br>
+        <input type="text" id="CPassword" name="Password"><br>
+        <label for="CCPassword">Confirm Password:</label><br>
+        <input type="text" id="CCPassword" name="CCPassword"><br>
+        <button type="button" onclick="alert('Creating an Account')">Create</button>
+    </form>
 </div>
 <body>
 
