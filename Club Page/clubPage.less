@@ -1,33 +1,107 @@
+.fa-facebook-official{
+  color: black;
+  font-size: 10em;
+  &:hover{
+    color: white;
+  }
+}
+.fa-external-link{
+  color: black;
+  &:hover{
+    color: white;
+  }
+}
+.fa-instagram{
+  color: black;
+  &:hover{
+    color: white;
+  }
+}
+.fa-twitter-square{
+  color: black;
+  &:hover{
+    color: white;
+  }
+}
 .club-panel{
   display: inline-flex;
   justify-content: center;
   margin: 0px;
   width: 100%;
+  height: 100vh;
+  background: white;
   .events-panel{
-    //display: flex;
+    display: flex;
     justify-content: center;
-    background: grey;
-    width: 25%;
+    background: rgb(102, 0, 0, 0.3);
+    width: 35%;
     height: 100%;
+    .h3{
+      opacity: 100%;
+    }
   }
-  .club-profile-panel{
+  .club-panel-info{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    margin: 0px;
     width: 100%;
-    height: 400px;
-    background-image: url("R4be5eac82e75597f2eac7015060f6e0e.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 75%;
-    h3{
+    .club-profile-panel{
       display: flex;
       justify-content: center;
-      margin: 10px;
+      align-items: center;
+      text-align: center;
+      background-image: url("adv_img.jpg");
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 100%;
+      height: 371px;
+      h3{
+        display: flex;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        background: white;
+        font-size: 70px;
+        font-weight: 700;
+      }
+    }
+    .club-profile-info{
+      display: flex;
+      width: 100%;
       background: white;
-      font-size: 70px;
-      font-weight: 700;
+      h4{
+        margin: 0px;
+        padding: 15px 0px;
+        font-size: 30px;
+      }
+      .about{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: grey;
+        width: 70%;
+        padding: 0px;
+        margin: 0px;
+      }
+      .specifics{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: darkgrey;
+        width: 30%;
+        padding: 0px;
+        margin: 0px;
+        ul{
+          padding: 0px;
+          list-style: none;
+        }
+        ul.social-media{
+          display: inline-block;
+          font-size: 40px;
+          padding: 0px;
+        }
+      }
     }
   }
 }
