@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block css_file %}
+    <link href="{{ url_for('static', filename='homePage.less') }}" type="text/css" rel="stylesheet/less"/>
+{% endblock %}
+
+{% block title %}
+    <title>Title</title>
+{% endblock %}
+
+{% block panel %}
+    <div class="homepage">
+        <div class="txt-homepage">
+            <h3>Our Mission</h3>
+            <p>This is our mission statement.
+                This is our mission statement.
+                This is our mission statement.
+                This is our mission statement.
+                This is our mission statement.
+                This is our mission statement.
+                This is our mission statement.
+                This is our mission statement.</p>
+        </div>
+    </div>
+    <div class="upcoming-events">
+        <h3>Upcoming Events</h3>
+    </div>
+    <body>
+
+    </body>
+{% endblock %}
