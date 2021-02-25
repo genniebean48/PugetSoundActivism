@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block css_file %}
+<link href="{{ url_for('static', filename='editClub.less') }}" type="text/css" rel="stylesheet/less"/>
+{% endblock %}
+
+{% block title %}
+<title>Title</title>
+{% endblock %}
+
+{% block panel %}
+<div class="login-panel">
+    <h3>Edit Club Profile</h3>
+    <form>
+        <label for="ClubName">Club Name:</label>
+        <input type="text"
+               id="ClubName"><br>
+        <label for="AboutInfo">About Info:</label>
+        <input type="text"
+               id="AboutInfo"><br>
+        <label for="MeetingDays">Club Name:</label>
+        <input type="text"
+               id="MeetingDays"><br>
+        <label for="MeetingTimes">Club Name:</label>
+        <input type="text"
+               id="MeetingTimes"><br>
+        <label for="MeetingPlace">Club Name:</label>
+        <input type="text"
+               id="MeetingPlace"><br>
+        <label for="SocialMedia">SocialMedia:</label>
+        <input type="text"
+               id="SocialMedia"><br>
+        <button type="button" id = "save-account" onclick=alert(save)>Save</button>
+    </form>
+</div>
+<body>
+
+</body>
+{% endblock %}
