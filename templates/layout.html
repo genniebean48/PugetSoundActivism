@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename='navBar.less') }}" />
+    {% block css_file %} {% endblock %}
+    <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.min.css') }}"/>
+    <script src="{{ url_for('static', filename='less.js') }}"></script>
+    {% block title %} {% endblock %}
+</head>
+
+<div class="navBar">
+    <img src="{{ url_for('static', filename='images/0OdLUp3z.jpg') }}"/>
+    <li id="title"> ACTivism Hub</li>
+    <div class="links">
+        <a href="/"> Home </a>
+        <div class="dropdown">
+            <a id="clubs"> Clubs </a>
+            <div class="dropdown-content">
+                <a href="/clubPage?club=mibu">MIBU</a>
+                <a href="/clubPage?club=bsu">BSU</a>
+                <a href="/clubPage?club=adv">Advocates for Detained Voices</a>
+                <a href="/clubPage?club=lahso">LAHSO</a>
+                <a href="/clubPage?club=combs">COMBS</a>
+            </div>
+        </div>
+        <!--        <li><a> Resources </a></li>-->
+        <a id="login" , href="/login"> Login </a>
+    </div>
+</div>
+{% block panel %} {% endblock %}
+
+</html>

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block css_file %}
+    <link href="{{ url_for('static', filename='clubPage.less') }}" type="text/css" rel="stylesheet/less"/>
+{% endblock %}
+
+{% block title %}
+    <title>Title</title>
+{% endblock %}
+
+{% block panel %}
+    <div class="club-panel">
+        <div class="events-panel">
+            <h3>Events</h3>
+        </div>
+        <div class="club-panel-info">
+            <div class="club-profile-panel">
+                <h3>{{info['club_name']}}</h3>
+            </div>
+            <div class="club-profile-info">
+                <div class="about">
+                    <h4>Who are we?</h4>
+                    <p> {{info['about_info']}} </p>
+                </div>
+                <div class="specifics">
+                    <h4>Join Us!</h4>
+                    <ul>
+                        <li>Meeting Days</li>
+                        <li>Meeting Times</li>
+                        <li>Meeting Place</li>
+                    </ul>
+                    <ul class="social-media"><a href={{info['facebook_link']}}><i class="fa fa-facebook-official"
+                                                                       aria-hidden="true"></i></a>
+                        <a href="instagram.com"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                        <a href="twitter.com"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+                        <a href="google.com"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

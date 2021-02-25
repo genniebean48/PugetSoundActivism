@@ -1,0 +1,68 @@
+Instructions for writing and running the app with flask:
+2/18/21
+
+
+To run:
+If you haven't already installed it, you need to have flask installed.
+You should only need to do this once.
+    On the command line run:
+        pip install Flask
+Then you need to tell Flask which file to run as the application.
+On my system, I have to do this each time I restart my command line interface.
+    On the command line, run:
+        export FLASK_APP=application.py
+To run, make sure you are in the directory with application.py in it.
+    On the command line, run:
+        flask run
+
+
+General structure:
+|-Project folder/
+| |--application.py
+| |--Instructions.txt
+| |--README
+| |--templates/
+| |  |--all html files
+| |--static/
+| |  |--all less files
+| |  |--all css files
+| |  |--all js files
+| |  |--images/
+| |  |  |--all images
+| |  |--Gennie's fonts folder/
+| |  |  |--whatever goes in that (I think she downloaded it?)
+
+So generally, the html files go in templates, the less and js file
+go in static, and the images go in static/images.
+
+
+To link to other pages:
+Right now, the home page is on route "/", the club pages are
+on route "/clubPage", and the login page is on route "/login".
+
+If you want to add a page, we need to add a route in application.py.
+For example, to add a route called createAccount to run an html file called
+createAccount.html, in application.py, add:
+    @app.route("/createAccount")
+    def createAccount():
+        return render_template("createAccount.html")
+
+To go to other pages (with href or src or whatever else), use the routes above.
+So if you want to link to the home page, use "/", to the login use "/login",
+etc.
+
+
+To link other files (in html files):
+
+To link a less/css/js file (called, for example, style.less), in your href or src
+or whatever, use the syntax:
+{{ url_for('static', filename='style.less') }}
+
+If that file is in a subdirectory inside static, put the subdirectory names
+right before the file name. For example, if you want an image called ups.jpg in
+static/images, use:
+{{ url_for('static', filename='images/ups.jpg') }}
+
+NOTE- this syntax only works inside html files, not less or js files
+
+
