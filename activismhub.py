@@ -72,3 +72,8 @@ def club_page():
 @app.route("/login")
 def login_page():
     return render_template("login.html")
+
+@app.route("/createAccount")
+def create_account():
+    return render_template("create-account.html")
+
