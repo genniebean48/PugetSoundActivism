@@ -1,31 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="navBar.less" type="text/css" rel="stylesheet/less"/>
-    <link href="../static/create-account.less" type="text/css" rel="stylesheet/less"/>
-    <script src="less.js" type="text/javascript"></script>
-    <title>Title</title>
-</head>
-<div class="navBar">
-    <img src="0OdLUp3z.jpg"/>
-    <li id="title"> ACTivism Hub</li>
-    <div class="links">
-        <a href="homePage.html"> Home </a>
-        <div class="dropdown">
-            <a id="clubs"> Clubs </a>
-            <div class="dropdown-content">
-                <a href="clubPage.html">MIBU</a>
-                <a href="clubPage.html">BSU</a>
-                <a href="clubPage.html">Advocates for Detained Voices</a>
-                <a href="clubPage.html">LAHSO</a>
-                <a href="clubPage.html">COMBS</a>
-            </div>
-        </div>
-        <!--        <li><a> Resources </a></li>-->
-        <a id="login" , href="login.html"> Login </a>
-    </div>
-</div>
+{% extends "layout.html" %}
+
+{% block css_file %}
+<link href="{{ url_for('static', filename='create-account.less') }}" type="text/css" rel="stylesheet/less"/>
+{% endblock %}
+
+{% block title %}
+<title>Title</title>
+{% endblock %}
+
+{% block panel %}
 <div class="login-panel">
     <h3>Create an Account</h3>
     <form>
@@ -65,4 +48,4 @@
 <body>
 
 </body>
-</html>
+{% endblock %}
