@@ -29,18 +29,23 @@
 <div class="login-panel">
     <h3>Edit Club Page</h3>
     <form>
+        //Club Name - limit of 255 characters
         <label for="club-name">Club Name:</label><br>
         <input type="text"
                id="club-name"
-               placeholder="club name"><br>
+               placeholder="club name"
+               maxlength="255"><br>
+        //Profile Image - limit of file size and kinds of files accepted
         <label for="profile-image">Profile Image:</label><br>
-        <input type="text"
+        <input type="image"
                id="profile-image"
                placeholder="profile image"><br>
+        //Club Description - limit of _____ characters
         <label for="club-description">Club Description:</label><br>
         <input type="text"
                id="club-description"
                placeholder="Club Description - what is your club's mission?"><br>
+        //Meeting Days - calendar view?
         <label for="meeting-days">Meeting Day:</label><br>
         <input type="text"
                id="meeting-days"
@@ -49,10 +54,12 @@
         <input type="text"
                id="meeting-times"
                placeholder="meeting-times"><br>
+        //Meeting Place - text input
         <label for="meeting-place">Meeting Place:</label><br>
         <input type="text"
                id="meeting-place"
                placeholder="meeting-place"><br>
+        //Social Media - text input, any verification? provide the URL?
         <label for="sm-facebook">Facebook:</label><br>
         <input type="text"
                id="sm-facebook"
@@ -70,6 +77,26 @@
                id="sm-website"
                placeholder="website url"><br>
 
+        <!--        //to do: where do we want the code to go after the user creates an account-->
+        <button type="button" onclick="alert('Saving Club Information')">Save</button>
+    </form>
+    <h3>Edit Account Info</h3>
+    <form>
+        // Club email: - end with pugetsound.edu
+        <label for="club-email">Club Email:</label><br>
+        <input type="email"
+               id="club-email"
+               placeholder="Enter your Club's Puget Sound Email"><br>
+        // Admin Name (full) - none
+        <label for="admin-name">Admin Name:</label><br>
+        <input type="text"
+               id="admin-name"
+               placeholder="Admin Name"><br>
+        // Admin Email (must be different from club email) - must be puget sound
+        <label for="admin-email">Admin Name:</label><br>
+        <input type="email"
+               id="admin-email"
+               placeholder="Enter a valid Puget Sound Email"><br>
         <!--        //to do: where do we want the code to go after the user creates an account-->
         <button type="button" onclick="alert('Saving Account Information')">Save</button>
     </form>
