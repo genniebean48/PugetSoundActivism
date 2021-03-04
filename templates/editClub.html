@@ -10,27 +10,78 @@
 
 {% block panel %}
 <div class="login-panel">
-    <h3>Edit Club Profile</h3>
+    <h3>Edit Club Page</h3>
     <form>
-        <label for="ClubName">Club Name:</label>
+        //Club Name - limit of 255 characters
+        <label for="club-name">Club Name:</label><br>
         <input type="text"
-               id="ClubName"><br>
-        <label for="AboutInfo">About Info:</label>
+               id="club-name"
+               placeholder="club name"
+               maxlength="255"><br>
+        //Profile Image - limit of file size and kinds of files accepted
+        <label for="profile-image">Profile Image:</label><br>
+        <input type="image"
+               id="profile-image"
+               placeholder="profile image"><br>
+        //Club Description - limit of _____ characters
+        <label for="club-description">Club Description:</label><br>
         <input type="text"
-               id="AboutInfo"><br>
-        <label for="MeetingDays">Club Name:</label>
+               id="club-description"
+               placeholder="Club Description - what is your club's mission?"><br>
+        //Meeting Days - calendar view?
+        <label for="meeting-days">Meeting Day:</label><br>
         <input type="text"
-               id="MeetingDays"><br>
-        <label for="MeetingTimes">Club Name:</label>
+               id="meeting-days"
+               placeholder="meeting-days"><br>
+        <label for="meeting-times">Meeting Time:</label><br>
         <input type="text"
-               id="MeetingTimes"><br>
-        <label for="MeetingPlace">Club Name:</label>
+               id="meeting-times"
+               placeholder="meeting-times"><br>
+        //Meeting Place - text input
+        <label for="meeting-place">Meeting Place:</label><br>
         <input type="text"
-               id="MeetingPlace"><br>
-        <label for="SocialMedia">SocialMedia:</label>
+               id="meeting-place"
+               placeholder="meeting-place"><br>
+        //Social Media - text input, any verification? provide the URL?
+        <label for="sm-facebook">Facebook:</label><br>
         <input type="text"
-               id="SocialMedia"><br>
-        <button type="button" id = "save-account" onclick=alert(save)>Save</button>
+               id="sm-facebook"
+               placeholder="facebook url"><br>
+        <label for="sm-instagram">Instagram:</label><br>
+        <input type="text"
+               id="sm-instagram"
+               placeholder="instagram url"><br>
+        <label for="sm-twitter">Twitter:</label><br>
+        <input type="text"
+               id="sm-twitter"
+               placeholder="twitter url"><br>
+        <label for="sm-website">Website:</label><br>
+        <input type="text"
+               id="sm-website"
+               placeholder="website url"><br>
+
+        <!--        //to do: where do we want the code to go after the user creates an account-->
+        <button type="button" onclick="alert('Saving Club Information')">Save</button>
+    </form>
+    <h3>Edit Account Info</h3>
+    <form>
+        // Club email: - end with pugetsound.edu
+        <label for="club-email">Club Email:</label><br>
+        <input type="email"
+               id="club-email"
+               placeholder="Enter your Club's Puget Sound Email"><br>
+        // Admin Name (full) - none
+        <label for="admin-name">Admin Name:</label><br>
+        <input type="text"
+               id="admin-name"
+               placeholder="Admin Name"><br>
+        // Admin Email (must be different from club email) - must be puget sound
+        <label for="admin-email">Admin Name:</label><br>
+        <input type="email"
+               id="admin-email"
+               placeholder="Enter a valid Puget Sound Email"><br>
+        <!--        //to do: where do we want the code to go after the user creates an account-->
+        <button type="button" onclick="alert('Saving Account Information')">Save</button>
     </form>
 </div>
 <body>
