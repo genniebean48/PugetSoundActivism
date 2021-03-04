@@ -10,7 +10,7 @@ from flask import Flask, request, render_template, session
 
 #INSTANTIATE
 app = Flask(__name__) #what does the parameter here mean? look up
-#app.secret_key = b'1234567'
+app.secret_key = b'1234567'
 
 #Configure MySQL
 #Not sure if we need to include one's where default is fine -- there are more in docs
@@ -37,8 +37,20 @@ def index():
         #Pass to html file as a list of dicts
             #return render_template("homePage.html",events=results)
 
-
-    return render_template("homePage.html")
+    #sample list of event dicts
+    event1 = {'event_name': "Event 1",'event_date':"January 12, 2021",
+                'event_time':"1:00 PM", 'event_type':"Protest",
+                'event_description':"Description for event 1"}
+    event2 = {'event_name': "Event 2",'event_date':"February 3, 2021",
+                    'event_time':"6:00 PM", 'event_type':"City Council Meeting",
+                    'event_description':"Description for event 2"}
+    event3 = {'event_name': "Event 3",'event_date':"June 27, 2021",
+                    'event_time':"9:00 AM", 'event_type':"Sit In",
+                    'event_description':"Description for event 3"}
+    events = [event1, event2, event3]
+    #sample list of dicts of clubs
+    clubs = [{'club_name':'Advocates for Detained Voices', 'club_id':"1"},{'club_name':'BSU', 'club_id':"2"},{'club_name':'MIBU', 'club_id':"3"}]
+    return render_template("homePage.html",events=events,clubs=clubs)
 
 
 
@@ -58,7 +70,7 @@ def club_page():
     #try getting get data
     club_name = request.args.get("club")
 
-    #hardcode a dict as if it came from a SQL query, pass info to html
+    #sample dict of club info
     info = {'club_name' : "Advocates for Detained Voices",
             'about_info' : '''Our purpose is to donate our time toward empowering detainees and their families and
                 raise awareness about families struggling with undocumented status. Advocates for Detained Voices (ADV)
@@ -66,9 +78,47 @@ def club_page():
                 Advocacy. This group works throughout Washington State providing workshops and counseling for families
                 that are undocumented.''',
             'facebook_link' : "https://www.facebook.com/ADVUnivofPugetSound"}
-
-    return render_template("clubPage.html",info=info)
+    #sample list of event dicts
+    event1 = {'event_name': "Event 1",'event_date':"January 12, 2021",
+                'event_time':"1:00 PM", 'event_type':"Protest",
+                'event_description':"Description for event 1"}
+    event2 = {'event_name': "Event 2",'event_date':"February 3, 2021",
+                    'event_time':"6:00 PM", 'event_type':"City Council Meeting",
+                    'event_description':"Description for event 2"}
+    event3 = {'event_name': "Event 3",'event_date':"June 27, 2021",
+                    'event_time':"9:00 AM", 'event_type':"Sit In",
+                    'event_description':"Description for event 3"}
+    events = [event1, event2, event3]
+    #sample list of dicts of clubs
+    clubs = [{'club_name':'Advocates for Detained Voices', 'club_id':"1"},{'club_name':'BSU', 'club_id':"2"},{'club_name':'MIBU', 'club_id':"3"}]
+    return render_template("clubPage.html",info=info,events=events,clubs=clubs)
 
 @app.route("/login")
 def login_page():
-    return render_template("login.html")
+    #sample list of dicts of clubs
+    clubs = [{'club_name':'Advocates for Detained Voices', 'club_id':"1"},{'club_name':'BSU', 'club_id':"2"},{'club_name':'MIBU', 'club_id':"3"}]
+    return render_template("login.html",clubs=clubs)
+
+@app.route("/createAccount")
+def create_account():
+    #sample list of dicts of clubs
+    clubs = [{'club_name':'Advocates for Detained Voices', 'club_id':"1"},{'club_name':'BSU', 'club_id':"2"},{'club_name':'MIBU', 'club_id':"3"}]
+    return render_template("create-account.html",clubs=clubs)
+
+@app.route("/doLogin",methods=["POST"])
+def do_login():
+    logins = {'admin_email':'email1@gmail.com','password':'password1','club_id':'1'}
+    user = request.form['Email']
+    password = request.form['Password']
+    if password == logins['password']:
+        session['club_id']=logins['club_id']
+        return index()
+    else:
+        return login()
+
+@app.route("/logout")
+def logout():
+    session.pop('club_id',None)
+    return index()
+
+
