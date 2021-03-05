@@ -11,6 +11,7 @@
 {% block panel %}
 <div class="club-panel">
     <div class="upcoming-events">
+<!-- TODO: QUERY ALL OF THE UPCOMING EVENTS FROM THIS CLUB AND PUT IT IN ORDER OF NEXT UPCOMING-->
         <h3>Upcoming Events</h3>
         {% for event in events %}
         <div class="events">
@@ -28,14 +29,17 @@
     </div>
     <div class="club-panel-info">
         <div class="club-profile-panel">
+            <!-- TODO: QUERY CLUB NAME -->
             <h3>{{info['club_name']}}</h3>
         </div>
         <div class="club-profile-info">
+            <!-- TODO: QUERY PROFILE INFO -->
             <div class="about">
                 <h4>Who are we?</h4>
                 <p> {{info['about_info']}} </p>
             </div>
             <div class="specifics">
+                <!-- TODO: QUERY MEETING DAYS, TIMES AND PLACES -->
                 <h4>Join Us!</h4>
                 <ul>
                     <li>Meeting Days</li>
@@ -44,6 +48,7 @@
                 </ul>
                 <ul class="social-media"><a href={{info['facebook_link']}}><i class="fa fa-facebook-official"
                                                                               aria-hidden="true"></i></a>
+                    <!-- TODO: QUERY SOCIAL MEDIA LINKS -->
                     <a href="instagram.com"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                     <a href="twitter.com"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
                     <a href="google.com"><i class="fa fa-external-link" aria-hidden="true"></i></a>

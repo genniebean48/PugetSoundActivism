@@ -121,4 +121,7 @@ def logout():
     session.pop('club_id',None)
     return index()
 
+@app.route("/editClub")
+def editClub():
+    return render_template("editClub.html")
 
