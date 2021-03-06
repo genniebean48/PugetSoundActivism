@@ -11,38 +11,43 @@
 {% block panel %}
 <div class="login-panel">
     <h3>Create an Account</h3>
-    <form>
+    <form action="/enterAccount" method="post">
         <label for="clubEmail">Club Email:</label><br>
         <input type="text"
                id="clubEmail"
+               name="clubEmail"
                placeholder="club email"><br>
         <label for="password">Password:</label><br>
         <input type="text"
                id="password"
+               name="password"
                placeholder="password"><br>
         <label for="cpassword">Confirm Password:</label><br>
         <input type="text"
                id="cpassword"
+               name="cpassword"
                placeholder="confirm password"><br>
         <label for="club-name">Club Name:</label><br>
         <input type="text"
                id="club-name"
+               name="club-name"
                placeholder="Club Name"><br>
         <label for="admin-name">Admin Name:</label><br>
         <input type="text"
                id="admin-name"
+               name="admin-name"
                placeholder="Your Name"><br>
         <label for="admin-email">Admin Email:</label><br>
         <input type="text"
                id="admin-email"
+               name="admin-email"
                placeholder="Your Email"><br>
         <label for="club-description">Club Description:</label><br>
         <input type="text"
                id="club-description"
+               name="club-description"
                placeholder="Club Description - what is your club's mission?"><br>
-
-<!--        //to do: where do we want the code to go after the user creates an account-->
-        <button type="button" onclick="alert('Creating an Account')">Create</button>
+        <button type="submit">Submit</button>
     </form>
 </div>
 <body>
