@@ -12,7 +12,6 @@
 <div class="homepage">
     <div class="txt-homepage">
         <h3>Our Mission</h3>
-<!-- TODO: FINALIZE THE TEXT FOR THE HOMEPAGE WITH OUR MISSION AND FINALIZE BACKGROUND -->
         <p>This website aims to provide Puget Sound activism oriented clubs with a cohesive platform to share their
             events
             such as protests, sit ins and club meetings. Through event postings, and club profiles students will have
@@ -22,20 +21,17 @@
 </div>
 <div class="upcoming-events">
     <h3>Upcoming Events</h3>
-    {% for event in events %}
-    <!-- TODO: QUERY THE UPCOMING EVENTS FROM THE DATABASE AND DISPLAY THEM IN UPCOMING ORDER  -->
     <div class="events">
         <div class="img"> </div>
         <div class="profile-info">
-            <h4>{{event['event_name']}}</h4>
-            <h5>Date: {{event['event_date']}}</h5>
-            <h5>Time: {{event['event_time']}}</h5>
-            <h5>Location: {{event['event_location']}}</h5>
-            <h5>Type: {{event['event_type']}}</h5>
-            <p>{{event['event_description']}}</p>
+            <h4>Event Name</h4>
+            <h5>Date:</h5>
+            <h5>Time:</h5>
+            <h5>Location:</h5>
+            <h5>Type:</h5>
+            <p>this will be the about information for the event where they can add information</p>
         </div>
     </div>
-    {% endfor %}
 </div>
 <body>
 
