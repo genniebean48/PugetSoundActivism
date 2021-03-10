@@ -18,7 +18,7 @@
             <a id="clubs"> Clubs </a>
             <div class="dropdown-content">
                 {% for club in clubs %}
-                <a href="/clubPage?club={{club['club_id']}}">{{club['club_name']}}</a>
+                <a href="/clubPage?q={{club['clubID']}}">{{club['club_name']}}</a>
                 {% endfor %}
             </div>
         </div>
