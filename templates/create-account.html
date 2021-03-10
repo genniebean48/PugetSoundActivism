@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block css_file %}
+<link href="{{ url_for('static', filename='create-account.less') }}" type="text/css" rel="stylesheet/less"/>
+{% endblock %}
+
+{% block title %}
+<title>Title</title>
+{% endblock %}
+
+{% block panel %}
+<div class="login-panel">
+    <h3>Create an Account</h3>
+    <form>
+        <label for="clubEmail">Club Email:</label><br>
+        <input type="text"
+               id="clubEmail"
+               placeholder="club email"><br>
+        <label for="password">Password:</label><br>
+        <input type="text"
+               id="password"
+               placeholder="password"><br>
+        <label for="cpassword">Confirm Password:</label><br>
+        <input type="text"
+               id="cpassword"
+               placeholder="confirm password"><br>
+        <label for="club-name">Club Name:</label><br>
+        <input type="text"
+               id="club-name"
+               placeholder="club name"><br>
+        <label for="admin-name">Admin Name:</label><br>
+        <input type="text"
+               id="admin-name"
+               placeholder="your name"><br>
+        <label for="admin-email">Admin Email:</label><br>
+        <input type="text"
+               id="admin-email"
+               placeholder="your email"><br>
+        <label for="club-description">Club Description:</label><br>
+        <input type="text"
+               id="club-description"
+               placeholder="what is your club's mission?"><br>
+
+<!-- TODO: once the user creates an account where do we want them to go?  -->
+        <button type="button" onclick=alert("Create")>Create</button>
+    </form>
+</div>
+<body>
+
+</body>
+{% endblock %}
