@@ -11,76 +11,87 @@
 {% block panel %}
 <div class="login-panel">
     <h3>Edit Club Page</h3>
-    <form>
-        //Club Name - limit of 255 characters
+    <form action="/createAccount" method="post">
         <label for="club-name">Club Name:</label><br>
+<!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE
+            THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
         <input type="text"
                id="club-name"
                placeholder="club name"
                maxlength="255"><br>
-        //Profile Image - limit of file size and kinds of files accepted
         <label for="profile-image">Profile Image:</label><br>
-        <input type="image"
+<!--        HERE-->
+        <input type="file"
                id="profile-image"
-               placeholder="profile image"><br>
-        //Club Description - limit of _____ characters
+               placeholder="profile image"
+               size="5"><br>
         <label for="club-description">Club Description:</label><br>
+        <!--        HERE-->
         <input type="text"
                id="club-description"
-               placeholder="Club Description - what is your club's mission?"><br>
-        //Meeting Days - calendar view?
+               placeholder="what is your club's mission?"
+               maxLength="1000"><br>
         <label for="meeting-days">Meeting Day:</label><br>
+        <!--        HERE-->
         <input type="text"
                id="meeting-days"
-               placeholder="meeting-days"><br>
+               placeholder="what days does your club meet?"><br>
         <label for="meeting-times">Meeting Time:</label><br>
+        <!--        HERE-->
         <input type="text"
                id="meeting-times"
-               placeholder="meeting-times"><br>
-        //Meeting Place - text input
+               placeholder="what time does your club meet?"><br>
         <label for="meeting-place">Meeting Place:</label><br>
+        <!--        HERE-->
         <input type="text"
                id="meeting-place"
-               placeholder="meeting-place"><br>
-        //Social Media - text input, any verification? provide the URL?
+               placeholder="where does your club meet?"><br>
         <label for="sm-facebook">Facebook:</label><br>
-        <input type="text"
+        <!--        HERE-->
+        <input type="url"
                id="sm-facebook"
                placeholder="facebook url"><br>
         <label for="sm-instagram">Instagram:</label><br>
-        <input type="text"
+        <!--        HERE-->
+        <input type="url"
                id="sm-instagram"
                placeholder="instagram url"><br>
         <label for="sm-twitter">Twitter:</label><br>
-        <input type="text"
+        <!--        HERE-->
+        <input type="url"
                id="sm-twitter"
                placeholder="twitter url"><br>
         <label for="sm-website">Website:</label><br>
-        <input type="text"
+        <!--        HERE-->
+        <input type="url"
                id="sm-website"
                placeholder="website url"><br>
-
-        <!--        //to do: where do we want the code to go after the user creates an account-->
+        <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
         <button type="button" onclick="alert('Saving Club Information')">Save</button>
+
     </form>
     <h3>Edit Account Info</h3>
     <form>
-        // Club email: - end with pugetsound.edu
+        <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
         <label for="club-email">Club Email:</label><br>
+        <!--        HERE-->
         <input type="email"
                id="club-email"
-               placeholder="Enter your Club's Puget Sound Email"><br>
-        // Admin Name (full) - none
+               placeholder="enter your club's puget sound email"
+               pattern=".+@pugetsound.edu" required><br>
         <label for="admin-name">Admin Name:</label><br>
+        <!--        HERE-->
         <input type="text"
                id="admin-name"
                placeholder="Admin Name"><br>
-        // Admin Email (must be different from club email) - must be puget sound
         <label for="admin-email">Admin Name:</label><br>
+        <!--        HERE-->
         <input type="email"
                id="admin-email"
-               placeholder="Enter a valid Puget Sound Email"><br>
-        <!--        //to do: where do we want the code to go after the user creates an account-->
+               placeholder="enter a valid puget sound email"
+               pattern=".+@pugetsound.edu" required><br>
+        <!--       IF THEY PRESS THIS BUTTON THEN WE WANT TO SAVE THE ACCOUNT INFORMATION -->
+        <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE -->
         <button type="button" onclick="alert('Saving Account Information')">Save</button>
     </form>
 </div>

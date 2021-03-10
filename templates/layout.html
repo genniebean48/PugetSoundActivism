@@ -17,15 +17,17 @@
         <div class="dropdown">
             <a id="clubs"> Clubs </a>
             <div class="dropdown-content">
-                <a href="/clubPage?club=mibu">MIBU</a>
-                <a href="/clubPage?club=bsu">BSU</a>
-                <a href="/clubPage?club=adv">Advocates for Detained Voices</a>
-                <a href="/clubPage?club=lahso">LAHSO</a>
-                <a href="/clubPage?club=combs">COMBS</a>
+                {% for club in clubs %}
+                <a href="/clubPage?q={{club['clubID']}}">{{club['club_name']}}</a>
+                {% endfor %}
             </div>
         </div>
         <!--        <li><a> Resources </a></li>-->
-        <a id="login" , href="/login"> Login </a>
+        {% if 'club_id' in session %}
+            <a id="logout" , href="/logout"> Logout </a>
+        {% else %}
+            <a id="login" , href="/login"> Login </a>
+        {% endif %}
     </div>
 </div>
 {% block panel %} {% endblock %}

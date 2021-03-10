@@ -1,5 +1,12 @@
 Instructions for writing and running the app with flask:
-2/18/21
+Updated: 3/5/21
+
+NEW THINGS WITH DATABASE:
+You need to have flask-mysqldb installed
+    On the command line run:
+            pip install flask-mysqldb
+
+You need to be connected to the VPN to run this now since it accesses the database
 
 
 To run:
