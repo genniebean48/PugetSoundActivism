@@ -1,3 +1,6 @@
+body{
+  background: #225560;
+}
 .homepage{
   display: flex;
   flex-direction: row;
@@ -32,23 +35,33 @@
   }
 }
 .upcoming-events{
+  background: #225560;
+  margin-bottom: 20px;
   h3{
-    padding: 5px 0px 5px 10px;
+    margin-left: 30px;
+    font-size: 27px;
+    //padding: 5px 0px 5px 10px;
   }
   .events{
       display: inline-flex;
       //position: relative;
-      margin-left: 30px;
+    margin: 0px 0px 20px 30px;
       background-color: white;
-      height: 100%;
+    border-radius: 6px;
       //padding: 20px;
-      width: 90%;
-      .img{
+    height: 120px;
+    width: 90%;
+    overflow: scroll;
+    &::-webkit-scrollbar {
+      width: 0;  /* Remove scrollbar space */
+      background: transparent;  /* Optional: just make scrollbar invisible */
+    }
+      img{
         display: flex;
         //position: absolute;
-        height: 50px;
-        width: 50px;
-        background: grey;
+        background: darkgrey;
+        height: 75px;
+        width: 75px;
         padding: 0px 10px;
         margin: 10px 10px;
       }
@@ -65,19 +78,19 @@
       }
       h4{
         display: flex;
-        margin: 0px;
-        padding: 17px 0px
-        //display: inline-flex;
-        //position: absolute;
+        padding: 10px 0px 10px 0px;
+        margin: 0px 0px 10px 0px;
+        border-bottom: solid black 1px;
       }
       h5{
         display: flex;
-        margin: 0px;
+        margin: 0px 20px 10px 0px;
         //position: absolute;
       }
       p{
         display: flex;
-        margin: 0px;
+        font-size: 14px;
+        margin: 0px 0px 10px 0px;
         //position: absolute;
       }
   }
