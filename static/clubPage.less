@@ -23,6 +23,9 @@
     color: white;
   }
 }
+body{
+  background: #003249;
+}
 .club-panel{
   display: inline-flex;
   justify-content: center;
@@ -160,17 +163,18 @@
   .club-panel-info{
     display: flex;
     flex-direction: column;
+    height: 100vh;
     width: 100%;
     .club-profile-panel{
       display: flex;
       justify-content: center;
-      align-items: center;
-      text-align: center;
       background-image: url("images/adv_img.jpg");
       background-size: cover;
       background-repeat: no-repeat;
       width: 100%;
+      height: 100%;
       height: 371px;
+      border-radius: 6px;
       button{
         position: absolute;
         top: 87px;
@@ -191,7 +195,7 @@
         display: flex;
         align-items: center;
         text-align: center;
-        width: 100%;
+        width: 80%;
         background: white;
         font-size: 70px;
         font-weight: 700;
@@ -200,11 +204,9 @@
     .club-profile-info{
       display: flex;
       width: 100%;
-      background: white;
+      background: grey;
       h4{
         display: flex;
-        align-items: center;
-        text-align: center;
         margin: 0px;
         padding: 15px 0px;
         font-size: 30px;
@@ -212,21 +214,19 @@
       .about{
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: grey;
         width: 70%;
-        padding: 0px;
-        margin: 0px;
+        padding: 0px 15px 0px 15px;
+        border-right: 10px solid white;
+        height: 380px;
+        p{
+          margin: 0px;
+        }
       }
       .specifics{
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: darkgrey;
         width: 30%;
-        padding: 0px;
+        padding: 0px 15px 0px 15px;
         margin: 0px;
         ul{
           padding: 0px;
@@ -236,6 +236,7 @@
           display: inline-block;
           font-size: 40px;
           padding: 0px;
+          margin: 0px;
         }
       }
     }
