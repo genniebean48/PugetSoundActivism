@@ -116,6 +116,10 @@ def do_login():
     else:
         return login()
 
+@app.route("/editClub")
+def editClub():
+    return render_template('editClub.html')
+
 @app.route("/logout")
 def logout():
     session.pop('club_id',None)

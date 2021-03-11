@@ -31,25 +31,74 @@
   height: 100vh;
   background: white;
   .upcoming-events{
-    background: #225560;
+    background: #003249;
     margin-bottom: 20px;
     width: 70%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    /* width */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 6px;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: darkgrey;
+      height: 20px;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
     h3{
-      margin-left: 30px;
+      margin-left: 15px;
       font-size: 27px;
+      color: white;
     }
     .events{
       display: inline-flex;
-      margin: 0px 0px 20px 30px;
+      margin: 0px 0px 20px 15px;
       background-color: white;
-      height: 120px;
-      width: 85%;
-      overflow: scroll;
       border-radius: 6px;
+      height: 105px;
+      width: 90%;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      color: #003249;
+      //&::-webkit-scrollbar {
+      //  width: 0;  /* Remove scrollbar space */
+      //  background: transparent;  /* Optional: just make scrollbar invisible */
+      //}
+      /* width */
       &::-webkit-scrollbar {
-        width: 0;  /* Remove scrollbar space */
-        background: transparent;  /* Optional: just make scrollbar invisible */
+        width: 6px;
       }
+
+      /* Track */
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: darkgrey;
+        height: 20px;
+      }
+
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
       img{
         display: flex;
         background: darkgrey;
@@ -72,65 +121,22 @@
         display: flex;
         padding: 10px 0px 10px 0px;
         margin: 0px 0px 10px 0px;
-        border-bottom: solid black 1px;
+        border-bottom: solid #498C8A 3px;
+        color: #003249;
       }
       h5{
         display: flex;
         margin: 0px 20px 10px 0px;
+        color: #003249;
       }
       p{
         display: flex;
         font-size: 14px;
         margin: 0px 0px 10px 0px;
+        color: #003249;
       }
     }
   }
-  //.upcoming-events{
-  //  h3{
-  //    padding: 5px 0px 5px 10px;
-  //  }
-  //  .events{
-  //    display: inline-flex;
-  //    //position: relative;
-  //    margin-left: 30px;
-  //    background-color: white;
-  //    height: 100%;
-  //    //padding: 20px;
-  //    width: 75%;
-  //    .img{
-  //      display: flex;
-  //      //position: absolute;
-  //      height: 50px;
-  //      width: 50px;
-  //      background: grey;
-  //      padding: 0px 10px;
-  //      margin: 10px 10px;
-  //    }
-  //    .profile-info{
-  //      display: flex;
-  //      flex-direction: column;
-  //      background: white;
-  //      justify-content: left;
-  //      //align-items: ;
-  //    }
-  //    h4{
-  //      display: flex;
-  //      margin: 0px;
-  //      //display: inline-flex;
-  //      //position: absolute;
-  //    }
-  //    h5{
-  //      display: flex;
-  //      margin: 0px;
-  //      //position: absolute;
-  //    }
-  //    p{
-  //      display: flex;
-  //      margin: 0px;
-  //      //position: absolute;
-  //    }
-  //  }
-  //}
   .club-panel-info{
     display: flex;
     flex-direction: column;
