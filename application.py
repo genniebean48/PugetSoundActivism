@@ -118,6 +118,7 @@ def do_login():
 
 @app.route("/editClub")
 def editClub():
+    alert("got here")
     return render_template('editClub.html')
 
 @app.route("/logout")
