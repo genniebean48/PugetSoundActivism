@@ -14,6 +14,7 @@ times and places, and then finally the social media links with the icons. This p
         console.log("button clicked");
         let title = document.getElementById("club-profile-info");
         let events = document.getElementById("club-profile-panel");
+        let editP = document.getElementById("edit-panel");
         let edit = document.getElementsByClassName("edit-btn");
         if(title.style.display === "none"){
             title.style.display = "flex";
@@ -25,13 +26,24 @@ times and places, and then finally the social media links with the icons. This p
         }else{
             events.style.display = "none";
         }
+
+        if(window.getComputedStyle(editP).display === "none"){
+            console.log("show buttons");
+            editP.style.display = "flex";
+        }else{
+            editP.style.display = "none";
+        }
+
         for (let i= 0; i < edit.length; i++){
-            if(edit[i].style.display === "none"){
+            if(window.getComputedStyle(edit[i]).display === "none"){
                 console.log("show buttons");
                 edit[i].style.display = "flex";
             }else{
                 edit[i].style.display = "none";
             }
+            // }else{
+            //     edit[i].style.display = "none";
+            // }
         }
     }
 </script>
