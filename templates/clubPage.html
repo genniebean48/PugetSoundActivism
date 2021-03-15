@@ -10,6 +10,16 @@ times and places, and then finally the social media links with the icons. This p
     function editClub(){
         location.href = "/editClub"
     }
+    function editEvents(){
+        console.log("called function");
+        let title = document.getElementById("club-profile-info");
+        console.log(title);
+        title.style.display = "none";
+        let events = document.getElementById("club-profile-panel");
+        events.style.display = "none";
+        let edit = document.getElementById("edit-panel");
+        edit.style.display = "flex";
+    }
 </script>
 {% endblock %}
 
@@ -21,16 +31,14 @@ times and places, and then finally the social media links with the icons. This p
 <div class="club-panel">
     <div class="upcoming-events">
         <div class="header">
-            <!--  TODO: here is where we need to query the club's name for the title -->
             <h3>Club's Events</h3>
-            <button onclick = "">Add Event</button>
+            <button onclick = editEvents()>Add and Edit Events</button>
         </div>
         {% for event in events %}
         <div class="events">
             <img />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
-                <!--  TODO: we need to query the clubs name here too  -->
                 <h5>Club Name</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
@@ -44,13 +52,13 @@ times and places, and then finally the social media links with the icons. This p
         {% endfor %}
     </div>
     <div class="club-panel-info">
-        <div class="club-profile-panel">
+        <div id="club-profile-panel">
             <!-- TODO: REDIRECT TO EDIT CLUB PAGE -->
             <button onclick = editClub()>Edit Profile</button>
             <!-- TODO: QUERY CLUB NAME -->
             <h3>{{info['club_name']}}</h3>
         </div>
-        <div class="club-profile-info">
+        <div id="club-profile-info">
             <!-- TODO: QUERY PROFILE INFO -->
             <div class="about">
                 <h4>Who Are We?</h4>
@@ -71,6 +79,48 @@ times and places, and then finally the social media links with the icons. This p
                     <a href="twitter.com"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
                     <a href="google.com"><i class="fa fa-external-link" aria-hidden="true"></i></a>
                 </ul>
+            </div>
+        </div>
+        <div id="edit-panel">
+            <div class="edit-event-add">
+                <h3>Add Event</h3>
+                <label for="event_name">Event Name:</label>
+                <input type="text"
+                       id="event_name"
+                       placeholder="event name"
+                       maxlength="255"><br>
+                <label for="event-img">Event Image:</label>
+                <input type="image"
+                       id="event-img"><br>
+                <label for="event-type">Event Type:</label>
+                <input type="text"
+                       id="event-type"
+                       placeholder="event type"
+                       maxlength="255"><br>
+                <label for="event_date">Event Date:</label>
+                <input type="text"
+                       id="event_date"
+                       placeholder="event date"
+                       maxlength="255"><br>
+                <label for="event_time">Event Time:</label>
+                <input type="text"
+                       id="event_time"
+                       placeholder="event time"
+                       maxlength="255"><br>
+                <label for="event_location">Event Location:</label>
+                <input type="text"
+                       id="event_location"
+                       placeholder="event location"
+                       maxlength="255"><br>
+                <label for="event-description">Event Description:</label>
+                <input type="text"
+                       id="event-description"
+                       placeholder="what is your club's mission?"
+                       maxLength="1000"><br>
+                <button type="button" onclick="alert('Saving Account Information')">Add Event</button>
+            </div>
+            <div id="edit-event-edit">
+
             </div>
         </div>
     </div>
