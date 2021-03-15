@@ -10,42 +10,77 @@ times and places, and then finally the social media links with the icons. This p
     function editClub(){
         location.href = "/editClub"
     }
-    function editEvents(){
-        console.log("button clicked");
+    function addEvents(){
+        //reverse club panel
+        //hide edit panel
+        //reverse add panel
         let title = document.getElementById("club-profile-info");
         let events = document.getElementById("club-profile-panel");
+        let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
-        let edit = document.getElementsByClassName("edit-btn");
-        if(title.style.display === "none"){
-            title.style.display = "flex";
-        }else{
+        // if(title.style.display === "none"){
+        //     title.style.display = "flex";
+        // }else{
+        //     title.style.display = "none";
+        // }
+        // if(events.style.display === "none"){
+        //     events.style.display = "flex";
+        // }else{
+        //     events.style.display = "none";
+        // }
+
+        if(window.getComputedStyle(addP).display === "none"){
+            // console.log("show buttons");
             title.style.display = "none";
-        }
-        if(events.style.display === "none"){
-            events.style.display = "flex";
-        }else{
             events.style.display = "none";
+            addP.style.display = "flex";
+        }else{
+            title.style.display = "flex";
+            events.style.display = "flex";
+            addP.style.display = "none";
         }
 
+        if(window.getComputedStyle(editP).display === "flex"){
+            console.log("hide edit panel");
+            editP.style.display = "none";
+        }
+    }
+    function editEvent(){
+        //hide add panel
+        //reverse club panel
+        //reverse edit panel
+        let title = document.getElementById("club-profile-info");
+        let events = document.getElementById("club-profile-panel");
+        let addP = document.getElementById("add-panel");
+        let editP = document.getElementById("edit-panel");
+        // if(title.style.display === "none"){
+        //     title.style.display = "flex";
+        // }else{
+        //     title.style.display = "none";
+        // }
+        // if(events.style.display === "none"){
+        //     events.style.display = "flex";
+        // }else{
+        //     events.style.display = "none";
+        // }
+
         if(window.getComputedStyle(editP).display === "none"){
-            console.log("show buttons");
+            // console.log("show buttons");
+            title.style.display = "none";
+            events.style.display = "none";
             editP.style.display = "flex";
         }else{
+            title.style.display = "flex";
+            events.style.display = "flex";
             editP.style.display = "none";
         }
 
-        for (let i= 0; i < edit.length; i++){
-            if(window.getComputedStyle(edit[i]).display === "none"){
-                console.log("show buttons");
-                edit[i].style.display = "flex";
-            }else{
-                edit[i].style.display = "none";
-            }
-            // }else{
-            //     edit[i].style.display = "none";
-            // }
+        if(window.getComputedStyle(addP).display === "flex"){
+            console.log("hide edit panel");
+            addP.style.display = "none";
         }
     }
+
 </script>
 {% endblock %}
 
@@ -58,14 +93,14 @@ times and places, and then finally the social media links with the icons. This p
     <div class="upcoming-events">
         <div class="header">
             <h3>Club's Events</h3>
-            <button onclick = editEvents()>Add and Edit Events</button>
+            <button onclick = addEvents()>Add Event</button>
         </div>
         {% for event in events %}
         <div class="events">
             <img />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
-                <button class = "edit-btn">Edit</button>
+                <button class = "edit-btn" onclick=editEvent()>Edit</button>
                 <h5>Club Name</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
@@ -108,9 +143,9 @@ times and places, and then finally the social media links with the icons. This p
                 </ul>
             </div>
         </div>
-        <div id="edit-panel">
+        <div id="add-panel">
             <div class="edit-event-add">
-                <h3>Add Event</h3>
+                <h3 id = "add-title">Add Event</h3>
                 <label for="event_name">Event Name:</label>
                 <input type="text"
                        id="event_name"
@@ -148,6 +183,45 @@ times and places, and then finally the social media links with the icons. This p
             </div>
             <div id="edit-event-edit">
 
+            </div>
+        </div>
+        <div id="edit-panel">
+            <div class="edit-event-edit">
+                <h3 id = "edit-title">Edit Event</h3>
+                <label for="event_name">Event Name:</label>
+                <input type="text"
+                       id="edit-event_name"
+                       placeholder="event name"
+                       maxlength="255"><br>
+                <label for="event-img">Event Image:</label>
+                <input type="image"
+                       id="edit-event-img"><br>
+                <label for="event-type">Event Type:</label>
+                <input type="text"
+                       id="edit-event-type"
+                       placeholder="event type"
+                       maxlength="255"><br>
+                <label for="edit-event_date">Event Date:</label>
+                <input type="text"
+                       id="edit-event_date"
+                       placeholder="event date"
+                       maxlength="255"><br>
+                <label for="event_time">Event Time:</label>
+                <input type="text"
+                       id="edit-event_time"
+                       placeholder="event time"
+                       maxlength="255"><br>
+                <label for="edit-event_location">Event Location:</label>
+                <input type="text"
+                       id="edit-event_location"
+                       placeholder="event location"
+                       maxlength="255"><br>
+                <label for="edit-event-description">Event Description:</label>
+                <input type="text"
+                       id="edit-event-description"
+                       placeholder="what is your club's mission?"
+                       maxLength="1000"><br>
+                <button type="button" onclick="alert('Saving Account Information')">Edit Event</button>
             </div>
         </div>
     </div>

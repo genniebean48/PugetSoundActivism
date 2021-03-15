@@ -58,6 +58,7 @@ body {
       background: #003249;
 
       button {
+        display: flex;
         position: absolute;
         left: 26%;
         height: 20px;
@@ -120,7 +121,7 @@ body {
       overflow-y: scroll;
       color: #003249;
       button{
-        display: none;
+        display: flex;
         position: absolute;
         margin-top: 5px;
         margin-left: 20%;
@@ -212,7 +213,7 @@ body {
     height: 100vh;
     width: 100%;
     background: #99adb6;
-    #edit-panel{
+    #add-panel{
       display: none;
       .edit-event-add {
         h3 {
@@ -241,7 +242,35 @@ body {
         }
       }
     }
-
+    #edit-panel{
+      display: none;
+      .edit-event-edit {
+        h3 {
+          margin-left: 20px;
+        }
+        label {
+          margin-top: 5px;
+          padding-top: 5px;
+          margin-left: 20px;
+        }
+        input {
+          border-radius: 6px;
+          padding: 8px;
+          width: 100%;
+          margin-left: 20px;
+          margin-bottom: 20px;
+        }
+        button {
+          margin-left: 20px;
+          border-radius: 6px;
+          font-family: "Liberation sans";
+          height: 30px;
+          &:hover {
+            background: slategrey;
+          }
+        }
+      }
+    }
     #club-profile-panel {
       display: flex;
       justify-content: center;
@@ -281,7 +310,6 @@ body {
         font-weight: 700;
       }
     }
-
     #club-profile-info {
       display: flex;
       width: 100%;
@@ -328,5 +356,4 @@ body {
       }
     }
   }
-
 }
