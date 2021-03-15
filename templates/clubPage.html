@@ -14,21 +14,24 @@ times and places, and then finally the social media links with the icons. This p
         console.log("button clicked");
         let title = document.getElementById("club-profile-info");
         let events = document.getElementById("club-profile-panel");
-        let edit = document.getElementById("edit-panel");
+        let edit = document.getElementsByClassName("edit-btn");
         if(title.style.display === "none"){
-            console.log("title flex");
             title.style.display = "flex";
         }else{
-            console.log("title none");
             title.style.display = "none";
         }
-
         if(events.style.display === "none"){
-            console.log("events flex");
             events.style.display = "flex";
         }else{
-            console.log("events none");
             events.style.display = "none";
+        }
+        for (let i= 0; i < edit.length; i++){
+            if(edit[i].style.display === "none"){
+                console.log("show buttons");
+                edit[i].style.display = "flex";
+            }else{
+                edit[i].style.display = "none";
+            }
         }
     }
 </script>
@@ -50,6 +53,7 @@ times and places, and then finally the social media links with the icons. This p
             <img />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
+                <button class = "edit-btn">Edit</button>
                 <h5>Club Name</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
