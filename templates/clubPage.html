@@ -11,25 +11,24 @@ times and places, and then finally the social media links with the icons. This p
         location.href = "/editClub"
     }
     function editEvents(){
+        console.log("button clicked");
         let title = document.getElementById("club-profile-info");
         let events = document.getElementById("club-profile-panel");
         let edit = document.getElementById("edit-panel");
         if(title.style.display === "none"){
+            console.log("title flex");
             title.style.display = "flex";
         }else{
+            console.log("title none");
             title.style.display = "none";
         }
 
         if(events.style.display === "none"){
+            console.log("events flex");
             events.style.display = "flex";
         }else{
+            console.log("events none");
             events.style.display = "none";
-        }
-
-        if(edit.style.display === "none"){
-            edit.style.display = "flex";
-        }else{
-            edit.style.display = "none";
         }
     }
 </script>
