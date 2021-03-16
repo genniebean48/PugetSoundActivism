@@ -8,7 +8,7 @@ times and places, and then finally the social media links with the icons. This p
 <link href="{{ url_for('static', filename='clubPage.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
     function editClub(){
-        location.href = "/editClub"
+        location.href = "/editClub?q={{info['clubID']}}"
     }
 </script>
 {% endblock %}
@@ -21,8 +21,7 @@ times and places, and then finally the social media links with the icons. This p
 <div class="club-panel">
     <div class="upcoming-events">
         <div class="header">
-            <!--  TODO: here is where we need to query the club's name for the title -->
-            <h3>Club's Events</h3>
+            <h3>{{info['club_name']}}'s Events</h3>
             <button onclick = "">Add Event</button>
         </div>
         {% for event in events %}
@@ -30,8 +29,7 @@ times and places, and then finally the social media links with the icons. This p
             <img />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
-                <!--  TODO: we need to query the clubs name here too  -->
-                <h5>Club Name</h5>
+                <h5>{{event['club_name']}}</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
                     <h5>{{event['event_time']}}</h5>
@@ -47,11 +45,9 @@ times and places, and then finally the social media links with the icons. This p
         <div class="club-profile-panel">
             <!-- TODO: REDIRECT TO EDIT CLUB PAGE -->
             <button onclick = editClub()>Edit Profile</button>
-            <!-- TODO: QUERY CLUB NAME -->
             <h3>{{info['club_name']}}</h3>
         </div>
         <div class="club-profile-info">
-            <!-- TODO: QUERY PROFILE INFO -->
             <div class="about">
                 <h4>Who Are We?</h4>
                 <p> {{info['about_info']}} </p>

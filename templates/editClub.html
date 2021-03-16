@@ -15,13 +15,14 @@ because it extends the layout.html file. -->
 {% block panel %}
 <div class="login-panel">
     <h3>Edit Club Page</h3>
-    <form action="/createAccount" method="post">
+    <form action="/updateClub" method="post">
         <label for="club-name">Club Name:</label><br>
 <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE
             THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
         <input type="text"
                id="club-name"
-               placeholder="club name"
+               name="club-name"
+               value="{{info['club_name']}}"
                maxlength="255"><br>
         <label for="profile-image">Profile Image:</label><br>
 <!--        HERE-->
@@ -33,7 +34,8 @@ because it extends the layout.html file. -->
         <!--        HERE-->
         <input type="text"
                id="club-description"
-               placeholder="what is your club's mission?"
+               name="club-description"
+               value="{{info['about_info']}}"
                maxLength="1000"><br>
         <label for="meeting-days">Meeting Day:</label><br>
         <!--        HERE-->
@@ -71,7 +73,7 @@ because it extends the layout.html file. -->
                id="sm-website"
                placeholder="website url"><br>
         <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
-        <button type="button" onclick="alert('Saving Club Information')">Save</button>
+        <button type="submit">Save</button>
 
     </form>
     <h3>Edit Account Info</h3>
