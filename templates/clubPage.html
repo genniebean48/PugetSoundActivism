@@ -19,7 +19,6 @@ times and places, and then finally the social media links with the icons. This p
         let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
         if(window.getComputedStyle(addP).display === "none"){
-            // console.log("show buttons");
             title.style.display = "none";
             events.style.display = "none";
             addP.style.display = "flex";
@@ -30,7 +29,6 @@ times and places, and then finally the social media links with the icons. This p
         }
 
         if(window.getComputedStyle(editP).display === "flex"){
-            console.log("hide edit panel");
             editP.style.display = "none";
         }
     }
@@ -43,7 +41,6 @@ times and places, and then finally the social media links with the icons. This p
         let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
         if(window.getComputedStyle(editP).display === "none"){
-            // console.log("show buttons");
             title.style.display = "none";
             events.style.display = "none";
             editP.style.display = "flex";
@@ -54,7 +51,6 @@ times and places, and then finally the social media links with the icons. This p
         }
 
         if(window.getComputedStyle(addP).display === "flex"){
-            console.log("hide edit panel");
             addP.style.display = "none";
         }
     }
