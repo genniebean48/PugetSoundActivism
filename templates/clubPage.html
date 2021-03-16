@@ -18,17 +18,6 @@ times and places, and then finally the social media links with the icons. This p
         let events = document.getElementById("club-profile-panel");
         let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
-        // if(title.style.display === "none"){
-        //     title.style.display = "flex";
-        // }else{
-        //     title.style.display = "none";
-        // }
-        // if(events.style.display === "none"){
-        //     events.style.display = "flex";
-        // }else{
-        //     events.style.display = "none";
-        // }
-
         if(window.getComputedStyle(addP).display === "none"){
             // console.log("show buttons");
             title.style.display = "none";
@@ -53,17 +42,6 @@ times and places, and then finally the social media links with the icons. This p
         let events = document.getElementById("club-profile-panel");
         let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
-        // if(title.style.display === "none"){
-        //     title.style.display = "flex";
-        // }else{
-        //     title.style.display = "none";
-        // }
-        // if(events.style.display === "none"){
-        //     events.style.display = "flex";
-        // }else{
-        //     events.style.display = "none";
-        // }
-
         if(window.getComputedStyle(editP).display === "none"){
             // console.log("show buttons");
             title.style.display = "none";
@@ -80,7 +58,9 @@ times and places, and then finally the social media links with the icons. This p
             addP.style.display = "none";
         }
     }
-
+    function deleteEvent(){
+        console.log("deleting event");
+    }
 </script>
 {% endblock %}
 
@@ -100,7 +80,11 @@ times and places, and then finally the social media links with the icons. This p
             <img />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
-                <button class = "edit-btn" onclick=editEvent()>Edit</button>
+                <button id = "edit-btn"
+                        onclick=editEvent()>Edit</button>
+                <button id = "delete-btn"
+                        onclick=deleteEvent()>
+                    <i class="fa fa-times-circle" aria-hidden="true"></i>Delete</button>
                 <h5>Club Name</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
