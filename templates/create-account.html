@@ -14,38 +14,53 @@ contains all fo the information from the navigation bar because it extends the l
 {% block panel %}
 <div class="login-panel">
     <h3>Create an Account</h3>
-    <form action="/enterAccount" method="post">
+    <p>* indicates required field </p>
+    <form action="/createAccount" method="post">
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="clubEmail">Club Email:</label><br>
+<!--        club email is required-->
         <input type="text"
                id="clubEmail"
                name="clubEmail"
                placeholder="Club Email"><br>
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="password">Password:</label><br>
+<!--        //password is required-->
         <input type="text"
                id="password"
                name="password"
                placeholder="Password"><br>
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="cpassword">Confirm Password:</label><br>
+<!--        //confirm password is required-->
         <input type="text"
                id="cpassword"
                name="cpassword"
                placeholder="Confirm Password"><br>
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="club-name">Club Name:</label><br>
+<!--        //club name is required-->
         <input type="text"
                id="club-name"
                name="club-name"
                placeholder="Club Name"><br>
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="admin-name">Admin Name:</label><br>
+<!--        //admin name is required-->
         <input type="text"
                id="admin-name"
                name="admin-name"
                placeholder="Your Name"><br>
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="admin-email">Admin Email:</label><br>
+<!--        //admin email is required-->
         <input type="text"
                id="admin-email"
                name="admin-email"
                placeholder="Your Email"><br>
+        <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="club-description">Club Description:</label><br>
+<!--        //club description is required-->
         <input type="text"
                id="club-description"
                name="club-description"

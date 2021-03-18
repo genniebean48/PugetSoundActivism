@@ -7,6 +7,10 @@ times and places, and then finally the social media links with the icons. This p
 {% block css_file %}
 <link href="{{ url_for('static', filename='clubPage.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
+    let eventID;
+    function getEventID(){
+        document.getElementById("edit-event_name").value = eventID;
+    }
     function editClub(){
         location.href = "/editClub"
     }
@@ -32,7 +36,7 @@ times and places, and then finally the social media links with the icons. This p
             editP.style.display = "none";
         }
     }
-    function editEvent(){
+    function editEvent(eventID){
         //hide add panel
         //reverse club panel
         //reverse edit panel
@@ -73,7 +77,8 @@ times and places, and then finally the social media links with the icons. This p
         </div>
         {% for event in events %}
         <div class="events">
-            <img />
+<!--            TODO: HERE IS WHERE WE ARE GETTING THE EVENT IMAGE -->
+            <img src = "../static/images/default_image.jpg" />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
                 <button id = "edit-btn"
@@ -100,7 +105,7 @@ times and places, and then finally the social media links with the icons. This p
             <!-- TODO: QUERY CLUB NAME -->
             <h3>{{info['club_name']}}</h3>
         </div>
-        <div id="club-profile-info">
+        <div id="club-profile-info" >
             <!-- TODO: QUERY PROFILE INFO -->
             <div class="about">
                 <h4>Who Are We?</h4>
@@ -126,34 +131,52 @@ times and places, and then finally the social media links with the icons. This p
         <div id="add-panel">
             <div class="edit-event-add">
                 <h3 id = "add-title">Add Event</h3>
+
+                <!--        The event name is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_name">Event Name:</label>
                 <input type="text"
                        id="event_name"
                        placeholder="Event Name"
                        maxlength="255"><br>
+
+
                 <label for="event-img">Event Image:</label>
                 <input type="image"
                        id="event-img"><br>
+
                 <label for="event-type">Event Type:</label>
                 <input type="text"
                        id="event-type"
                        placeholder="Event Type"
                        maxlength="255"><br>
+
+                <!--        The event date is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_date">Event Date:</label>
                 <input type="text"
                        id="event_date"
                        placeholder="Event Date"
                        maxlength="255"><br>
+
+                <!--        The event time is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_time">Event Time:</label>
                 <input type="text"
                        id="event_time"
                        placeholder="Event Time"
                        maxlength="255"><br>
+
+                <!--        The event location is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_location">Event Location:</label>
                 <input type="text"
                        id="event_location"
                        placeholder="Event Location"
                        maxlength="255"><br>
+
+                <!--        The event description is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event-description">Event Description:</label>
                 <input type="text"
                        id="event-description"
@@ -161,42 +184,55 @@ times and places, and then finally the social media links with the icons. This p
                        maxLength="1000"><br>
                 <button type="button" onclick="alert('Saving Account Information')">Add Event</button>
             </div>
-            <div id="edit-event-edit">
-
-            </div>
         </div>
 <!--        TODO: the placeholders for the edit-panel can be what is already in the database so that the user can change it -->
         <div id="edit-panel">
             <div class="edit-event-edit">
                 <h3 id = "edit-title">Edit Event</h3>
+                <!--        The event name is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_name">Event Name:</label>
                 <input type="text"
                        id="edit-event_name"
                        placeholder="Event Name"
                        maxlength="255"><br>
+
                 <label for="event-img">Event Image:</label>
                 <input type="image"
                        id="edit-event-img"><br>
+
                 <label for="event-type">Event Type:</label>
                 <input type="text"
                        id="edit-event-type"
                        placeholder="Event Type"
                        maxlength="255"><br>
+
+                <!--        The event date is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="edit-event_date">Event Date:</label>
                 <input type="text"
                        id="edit-event_date"
                        placeholder="Event Date"
                        maxlength="255"><br>
+
+                <!--        The event time is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_time">Event Time:</label>
                 <input type="text"
                        id="edit-event_time"
                        placeholder="Event Time"
                        maxlength="255"><br>
+
+                <!--        The event location is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="edit-event_location">Event Location:</label>
                 <input type="text"
                        id="edit-event_location"
                        placeholder="Event Location"
                        maxlength="255"><br>
+
+                <!--        The event description is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="edit-event-description">Event Description:</label>
                 <input type="text"
                        id="edit-event-description"
