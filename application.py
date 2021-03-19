@@ -7,6 +7,8 @@
 #request is for get/post data, render_template is to render html pages
 from flask import Flask, request, render_template, session, redirect
 from flask_mysqldb import MySQL
+import os
+from werkzeug.utils import secure_filename
 
 #INSTANTIATE
 app = Flask(__name__) #what does the parameter here mean? look up
@@ -98,9 +100,16 @@ def club_page():
    #Get club info
    cursor.execute('''SELECT * FROM testClub WHERE clubID = %s''',(clubID,))
    info = cursor.fetchall()[0]
+   #print(info)
+   #print(type(info['meet_time']))
+   #print(type(info['meet_day']))
    #Get events
-   cursor.execute('''SELECT * FROM testClub_event ORDER BY event_date ASC''')
+   cursor.execute('''SELECT * FROM testClub_event WHERE clubID=%s ORDER BY event_date ASC''',(clubID,))
    events = cursor.fetchall()
+#    print(events[0]['event_name'])
+#    print(type(events[0]['event_name']))
+#    print("hello")
+#    print(type("hello"))
    #Get list of dicts of clubs
    clubs = getClubs()
    return render_template("clubPage.html",info=info,events=events,clubs=clubs)
@@ -108,10 +117,10 @@ def club_page():
 
 #Route when user clicks login
 @app.route("/login")
-def login_page():
+def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   return render_template("login.html",clubs=clubs)
+   return render_template("login.html",clubs=clubs,message=message)
 
 
 #Route when user clicks create account from login page
@@ -129,20 +138,24 @@ def do_login():
    #get user and password
    user = request.form['Email']
    password = request.form['Password']
-   #get club ID
-   cursor.execute('''SELECT clubID FROM testClub where club_email = %s''',(user,))
-   clubID=cursor.fetchall()[0]['clubID']
-   #get correct password for that ID
-   cursor.execute('''SELECT password FROM testClub_admin where clubID = %s''',(clubID,))
-   correct_password = cursor.fetchall()[0]['password']
-   #simple authentication
-   if password == correct_password:
-       #add clubID to session and reroute to homepage
-       session['club_id']=clubID
-       return index()
+   #check if club email exists
+   cursor.execute('''SELECT EXISTS(SELECT * FROM testClub WHERE club_email = %s) AS club_exists''',(user,))
+   if cursor.fetchall()[0]['club_exists']==1:
+       #get club ID and correct password
+       cursor.execute('''SELECT clubID, password FROM testClub where club_email = %s''',(user,))
+       result=cursor.fetchall()[0]
+       clubID = result['clubID']
+       correct_password = result['password']
+       #simple authentication
+       if password == correct_password:
+           #add clubID to session and reroute to homepage
+           session['club_id']=clubID
+           return index()
+       else:
+           #if password incorrect, reload login page
+           return login("Incorrect password.")
    else:
-       #if password incorrect, reload login page
-       return login()
+       return login("There is no account with that email.")
 
 
 #Route when user clicks logout
@@ -191,8 +204,8 @@ def getClubs():
 @app.route("/editClub")
 def editClub():
     cursor = mysql.connection.cursor()
-    #Get which club
-    clubID = request.args.get("q")
+    #get which club
+    clubID = session['club_id']
     #Get club info
     cursor.execute('''SELECT * FROM testClub WHERE clubID = %s''',(clubID,))
     info = cursor.fetchall()[0]
@@ -207,10 +220,34 @@ def updateClub():
     #instantiate cursor
     cursor = mysql.connection.cursor()
     #get form info
-    clubName = request.form['club-name']
-    description = request.form['club-description']
+    club_name = request.form['club_name']
+    about_info = request.form['about_info']
+    meet_time = request.form['meet_time']
+    meet_day = request.form['meet_day']
+    meet_location = request.form['meet_location']
+    facebook_link = request.form['facebook_link']
+    instagram_link = request.form['instagram_link']
+    twitter_link = request.form['twitter_link']
+    website_link = request.form['website_link']
+    #Get image from form
+    image = request.files['club_image']
+    club_image = "club_image_"+str(clubID)+"_"+secure_filename(image.filename)
+    image.save(os.path.join(os.path.abspath(os.getcwd()),'static','clubImages',club_image))
     #Put new name and description into table
-    cursor.execute('''UPDATE testClub SET club_name = %s, about_info = %s WHERE clubID = %s''',(clubName,description,clubID))
+    if meet_time == '':
+        meet_time = None
+    cursor.execute('''UPDATE testClub SET club_name=%s,about_info=%s,meet_time=%s,meet_day=%s,meet_location=%s,
+                    facebook_link=%s,instagram_link=%s,twitter_link=%s,website_link=%s,club_image=%s WHERE clubID = %s''',(club_name,about_info,
+                    meet_time,meet_day,meet_location,facebook_link,instagram_link,twitter_link,website_link,club_image,clubID))
+#     if meet_time == '':
+#         print("meet time was none")
+#         cursor.execute('''UPDATE testClub SET club_name=%s,about_info=%s,meet_time=NULL,meet_day=%s,meet_location=%s,
+#                 facebook_link=%s,instagram_link=%s,twitter_link=%s,website_link=%s WHERE clubID = %s''',(club_name,about_info,
+#                 meet_day,meet_location,facebook_link,instagram_link,twitter_link,website_link,clubID))
+#     else:
+#         cursor.execute('''UPDATE testClub SET club_name=%s,about_info=%s,meet_time=%s,meet_day=%s,meet_location=%s,
+#                 facebook_link=%s,instagram_link=%s,twitter_link=%s,website_link=%s WHERE clubID = %s''',(club_name,about_info,
+#                 meet_time,meet_day,meet_location,facebook_link,instagram_link,twitter_link,website_link,clubID))
     #Insert new account info into club table
 #     cursor.execute('''INSERT INTO testClub(club_name,admin_name,about_info,club_email)
 #         VALUES(%s,%s,%s,%s)''',(clubName,adminName,description,email))
@@ -223,3 +260,55 @@ def updateClub():
     return redirect(f"/clubPage?q={clubID}")
 
 
+@app.route("/addEvent",methods=["POST"])
+def addEvent():
+    #get which club
+    clubID = session['club_id']
+    #get form info
+    event_name = request.form['event_name']
+#     event_img = request.form['event-img']
+    event_type = request.form['event-type']
+    event_date = request.form['event_date']
+    event_time = request.form['event_time']
+    event_location = request.form['event_location']
+    event_description = request.form['event-description']
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+    #get club name
+    cursor.execute('''SELECT club_name FROM testClub where clubID = %s''',(clubID,))
+    club_name=cursor.fetchall()[0]['club_name']
+    #put new event in table NOTE - does not include image
+    cursor.execute('''INSERT INTO testClub_event(event_name,club_name,clubID,event_date,event_time,event_location,
+            event_description,event_type) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)''',(event_name,club_name,clubID,event_date,
+            event_time,event_location,event_description,event_type))
+    mysql.connection.commit()
+    #get eventID
+    cursor.execute('''SELECT eventID FROM testClub_event WHERE event_name=%s AND clubID=%s AND
+            event_date=%s''',(event_name,clubID,event_date))
+    eventID = cursor.fetchall()[0]['eventID']
+    #Get image from form
+    image = request.files['event_image']
+    #make image name
+    event_image = "event_image_"+str(eventID)+"_"+secure_filename(image.filename)
+    #save image
+    image.save(os.path.join(os.path.abspath(os.getcwd()),'static','eventImages',event_image))
+    #save image name in database
+    cursor.execute('''UPDATE testClub_event SET event_image=%s WHERE eventID=%s''',(event_image,eventID))
+    mysql.connection.commit()
+    #rerender club page
+    return redirect(f"/clubPage?q={clubID}")
+
+
+@app.route("/deleteEvent")
+def deleteEvent():
+    #Get which event
+    eventID = request.args.get("q")
+    #get which club
+    clubID = session['club_id']
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+    #delete from database
+    cursor.execute('''DELETE FROM testClub_event WHERE eventID = %s''',(eventID,))
+    mysql.connection.commit()
+    #rerender club page
+    return redirect(f"/clubPage?q={clubID}")

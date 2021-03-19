@@ -8,7 +8,7 @@ times and places, and then finally the social media links with the icons. This p
 <link href="{{ url_for('static', filename='clubPage.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
     function editClub(){
-        location.href = "/editClub?q={{info['clubID']}}"
+        location.href = "/editClub"
     }
     function addEvents(){
         //reverse club panel
@@ -32,7 +32,8 @@ times and places, and then finally the social media links with the icons. This p
             editP.style.display = "none";
         }
     }
-    function editEvent(){
+    function editEvent(event_id){
+        document.getElementById("edit-event_name").value = event_id;
         //hide add panel
         //reverse club panel
         //reverse edit panel
@@ -69,18 +70,22 @@ times and places, and then finally the social media links with the icons. This p
     <div class="upcoming-events">
         <div class="header">
             <h3>{{info['club_name']}}'s Events</h3>
-            <button onclick = addEvents()>Add Event</button>
+            {% if 'club_id' in session and session['club_id']==info['clubID'] %}
+                <button onclick = addEvents()>Add Event</button>
+            {% endif %}
         </div>
         {% for event in events %}
         <div class="events">
             <img />
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
-                <button id = "edit-btn"
-                        onclick=editEvent()>Edit</button>
-                <button id = "delete-btn"
-                        onclick=deleteEvent()>
-                    <i class="fa fa-times-circle" aria-hidden="true"></i>Delete</button>
+                {% if 'club_id' in session and session['club_id']==info['clubID'] %}
+                    <button id = "edit-btn"
+                            onclick="editEvent('{{event['event_name']}}')">Edit</button>
+                    <button id = "delete-btn"
+                            onclick="location.href='/deleteEvent?q={{event['eventID']}}'">
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>Delete</button>
+                {% endif %}
                 <h5>{{event['club_name']}}</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
@@ -95,71 +100,98 @@ times and places, and then finally the social media links with the icons. This p
     </div>
     <div class="club-panel-info">
         <div id="club-profile-panel">
-            <!-- TODO: REDIRECT TO EDIT CLUB PAGE -->
-            <button onclick = editClub()>Edit Profile</button>
-            <!-- TODO: QUERY CLUB NAME -->
+            {% if 'club_id' in session and session['club_id']==info['clubID'] %}
+                <button onclick = editClub()>Edit Profile</button>
+            {% endif %}
             <h3>{{info['club_name']}}</h3>
         </div>
         <div id="club-profile-info">
-            <!-- TODO: QUERY PROFILE INFO -->
             <div class="about">
                 <h4>Who Are We?</h4>
                 <p> {{info['about_info']}} </p>
             </div>
             <div class="specifics">
-                <!-- TODO: QUERY MEETING DAYS, TIMES AND PLACES -->
                 <h4>Join Us!</h4>
                 <ul>
-                    <li>Meeting Days</li>
-                    <li>Meeting Times</li>
-                    <li>Meeting Place</li>
+                    {% if info['meet_day']!=None %}
+                        <li>Meeting Days:{{info['meet_day']}}</li>
+                    {% else %}
+                        <li>Meeting Days:</li>
+                    {% endif %}
+                    {% if info['meet_time']!=None %}
+                        <li>Meeting Times:{{info['meet_time']}}</li>
+                    {% else %}
+                        <li>Meeting Times:</li>
+                    {% endif %}
+                    {% if info['meet_location']!=None %}
+                        <li>Meeting Place:{{info['meet_location']}}</li>
+                    {% else %}
+                        <li>Meeting Place:</li>
+                    {% endif %}
                 </ul>
-                <ul class="social-media"><a href="facebook.com"><i class="fa fa-facebook-official"
-                                                                              aria-hidden="true"></i></a>
-                    <!-- TODO: QUERY SOCIAL MEDIA LINKS -->
-                    <a href="instagram.com"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                    <a href="twitter.com"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-                    <a href="google.com"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                <ul class="social-media">
+                    {% if info['facebook_link']!=None %}
+                        <a href={{info['facebook_link']}}><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if info['instagram_link']!=None %}
+                        <a href={{info['instagram_link']}}><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if info['twitter_link']!=None %}
+                        <a href={{info['twitter_link']}}><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+                    {% endif %}
+                    {% if info['website_link']!=None %}
+                        <a href={{info['website_link']}}><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                    {% endif %}
                 </ul>
             </div>
         </div>
         <div id="add-panel">
             <div class="edit-event-add">
                 <h3 id = "add-title">Add Event</h3>
-                <label for="event_name">Event Name:</label>
-                <input type="text"
-                       id="event_name"
-                       placeholder="Event Name"
-                       maxlength="255"><br>
-                <label for="event-img">Event Image:</label>
-                <input type="image"
-                       id="event-img"><br>
-                <label for="event-type">Event Type:</label>
-                <input type="text"
-                       id="event-type"
-                       placeholder="Event Type"
-                       maxlength="255"><br>
-                <label for="event_date">Event Date:</label>
-                <input type="text"
-                       id="event_date"
-                       placeholder="Event Date"
-                       maxlength="255"><br>
-                <label for="event_time">Event Time:</label>
-                <input type="text"
-                       id="event_time"
-                       placeholder="Event Time"
-                       maxlength="255"><br>
-                <label for="event_location">Event Location:</label>
-                <input type="text"
-                       id="event_location"
-                       placeholder="Event Location"
-                       maxlength="255"><br>
-                <label for="event-description">Event Description:</label>
-                <input type="text"
-                       id="event-description"
-                       placeholder="Event Description"
-                       maxLength="1000"><br>
-                <button type="button" onclick="alert('Saving Account Information')">Add Event</button>
+                <form action="/addEvent" method="post" enctype=multipart/form-data>
+                    <label for="event_name">Event Name:</label>
+                    <input type="text"
+                           id="event_name"
+                           name="event_name"
+                           placeholder="Event Name"
+                           maxlength="255"><br>
+                    <label for="event-img">Event Image:</label>
+                    <input type="file"
+                           name="event_image"
+                           placeholder="Event Image"
+                           id="event-img"><br>
+                    <label for="event-type">Event Type:</label>
+                    <input type="text"
+                           id="event-type"
+                           name="event-type"
+                           placeholder="Event Type"
+                           maxlength="255"><br>
+                    <label for="event_date">Event Date:</label>
+                    <input type="text"
+                           id="event_date"
+                           name="event_date"
+                           placeholder="Event Date"
+                           maxlength="255"><br>
+                    <label for="event_time">Event Time:</label>
+                    <input type="text"
+                           id="event_time"
+                           name="event_time"
+                           placeholder="Event Time"
+                           maxlength="255"><br>
+                    <label for="event_location">Event Location:</label>
+                    <input type="text"
+                           id="event_location"
+                           name="event_location"
+                           placeholder="Event Location"
+                           maxlength="255"><br>
+                    <label for="event-description">Event Description:</label>
+                    <input type="text"
+                           id="event-description"
+                           name="event-description"
+                           placeholder="Event Description"
+                           maxLength="1000"><br>
+                    <button type="submit">Add Event</button>
+                </form>
             </div>
             <div id="edit-event-edit">
 
@@ -172,7 +204,6 @@ times and places, and then finally the social media links with the icons. This p
                 <label for="event_name">Event Name:</label>
                 <input type="text"
                        id="edit-event_name"
-                       placeholder="Event Name"
                        maxlength="255"><br>
                 <label for="event-img">Event Image:</label>
                 <input type="image"

@@ -15,64 +15,116 @@ because it extends the layout.html file. -->
 {% block panel %}
 <div class="login-panel">
     <h3>Edit Club Page</h3>
-    <form action="/updateClub" method="post">
+    <form action="/updateClub" method="post" enctype=multipart/form-data>
         <label for="club-name">Club Name:</label><br>
-<!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE
-            THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
         <input type="text"
                id="club-name"
-               name="club-name"
+               name="club_name"
                value="{{info['club_name']}}"
                maxlength="255"><br>
         <label for="profile-image">Profile Image:</label><br>
-<!--        HERE-->
         <input type="file"
+               name="club_image"
                id="profile-image"
                placeholder="Profile Image"
                size="5"><br>
         <label for="club-description">Club Description:</label><br>
-        <!--        HERE-->
         <input type="text"
                id="club-description"
-               name="club-description"
+               name="about_info"
                value="{{info['about_info']}}"
                maxLength="1000"><br>
-        <label for="meeting-days">Meeting Day:</label><br>
-        <!--        HERE-->
-        <input type="text"
-               id="meeting-days"
-               placeholder="What days does your Club meet?"><br>
-        <label for="meeting-times">Meeting Time:</label><br>
-        <!--        HERE-->
-        <input type="text"
-               id="meeting-times"
-               placeholder="What time does your Club meet?"><br>
-        <label for="meeting-place">Meeting Place:</label><br>
-        <!--        HERE-->
-        <input type="text"
-               id="meeting-place"
-               placeholder="Where does your Club meet?"><br>
-        <label for="sm-facebook">Facebook:</label><br>
-        <!--        HERE-->
-        <input type="url"
-               id="sm-facebook"
-               placeholder="Facebook URL"><br>
-        <label for="sm-instagram">Instagram:</label><br>
-        <!--        HERE-->
-        <input type="url"
-               id="sm-instagram"
-               placeholder="Instagram URL"><br>
-        <label for="sm-twitter">Twitter:</label><br>
-        <!--        HERE-->
-        <input type="url"
-               id="sm-twitter"
-               placeholder="Twitter URL"><br>
-        <label for="sm-website">Website:</label><br>
-        <!--        HERE-->
-        <input type="url"
-               id="sm-website"
-               placeholder="Website URL"><br>
-        <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
+        {% if info['meet_day'] != None %}
+            <label for="meeting-days">Meeting Day:</label><br>
+            <input type="text"
+                   id="meeting-days"
+                   name="meet_day"
+                   value={{info['meet_day']}}><br>
+        {% else %}
+            <label for="meeting-days2">Meeting Day:</label><br>
+            <input type="text"
+                   id="meeting-days2"
+                   name="meet_day"
+                   placeholder="What days does your Club meet?"><br>
+        {% endif %}
+        {% if info['meet_time'] != None %}
+            <label for="meeting-times">Meeting Time:</label><br>
+            <input type="text"
+                   id="meeting-times"
+                   name="meet_time"
+                   value={{info['meet_time']}}><br>
+        {% else %}
+            <label for="meeting-times2">Meeting Time:</label><br>
+            <input type="text"
+                   id="meeting-times2"
+                   name="meet_time"
+                   placeholder="What time does your Club meet?"><br>
+        {% endif %}
+        {% if info['meet_location'] != None %}
+            <label for="meeting-place">Meeting Place:</label><br>
+            <input type="text"
+                   id="meeting-place"
+                   name="meet_location"
+                   value={{info['meet_location']}}><br>
+        {% else %}
+            <label for="meeting-place2">Meeting Place:</label><br>
+            <input type="text"
+                   id="meeting-place2"
+                   name="meet_location"
+                   placeholder="Where does your Club meet?"><br>
+        {% endif %}
+        {% if info['facebook_link'] != None %}
+            <label for="sm-facebook">Facebook:</label><br>
+            <input type="url"
+                   id="sm-facebook"
+                   name="facebook_link"
+                   value={{info['facebook_link']}}><br>
+        {% else %}
+            <label for="sm-facebook2">Facebook:</label><br>
+            <input type="url"
+                   id="sm-facebook2"
+                   name="facebook_link"
+                   placeholder="Facebook URL"><br>
+        {% endif %}
+        {% if info['instagram_link'] != None %}
+            <label for="sm-instagram">Instagram:</label><br>
+            <input type="url"
+                   id="sm-instagram"
+                   name="instagram_link"
+                   value={{info['instagram_link']}}><br>
+        {% else %}
+            <label for="sm-instagram2">Instagram:</label><br>
+            <input type="url"
+                   id="sm-instagram2"
+                   name="instagram_link"
+                   placeholder="Instagram URL"><br>
+        {% endif %}
+        {% if info['twitter_link'] != None %}
+            <label for="sm-twitter">Twitter:</label><br>
+            <input type="url"
+                   id="sm-twitter"
+                   name="twitter_link"
+                   value={{info['twitter_link']}}><br>
+        {% else %}
+            <label for="sm-twitter2">Twitter:</label><br>
+            <input type="url"
+                   id="sm-twitter2"
+                   name="twitter_link"
+                   placeholder="Twitter URL"><br>
+        {% endif %}
+        {% if info['website_link'] != None %}
+            <label for="sm-website">Website:</label><br>
+            <input type="url"
+                   id="sm-website"
+                   name="website_link"
+                   value={{info['website_link']}}><br>
+        {% else %}
+            <label for="sm-website2">Website:</label><br>
+            <input type="url"
+                   id="sm-website2"
+                   name="website_link"
+                   placeholder="Website URL"><br>
+        {% endif %}
         <button type="submit">Save</button>
 
     </form>
