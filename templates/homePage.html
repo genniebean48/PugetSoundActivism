@@ -38,7 +38,9 @@ events that are coming up in the next week. -->
                 <h5>{{event['event_time']}}</h5>
             </div>
             <h5>{{event['event_location']}}</h5>
-            <h5>{{event['event_type']}}</h5>
+            {% if event['event_type'] != None %}
+                <h5>{{event['event_type']}}</h5>
+            {% endif %}
             <p>{{event['event_description']}}</p>
         </div>
     </div>
