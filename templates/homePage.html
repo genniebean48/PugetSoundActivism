@@ -25,7 +25,11 @@ events that are coming up in the next week. -->
     {% for event in events %}
     <div class="events">
         <!--  TODO: THIS IS WHERE WE ARE GETTING THE EVENT IMAGE  -->
-        <img src = "../static/images/default_image.jpg" />
+        {% if event['event_image']==None %}
+            <img src = "../static/images/default_image.jpg" />
+        {% else %}
+            <img src = "../static/eventImages/{{event['event_image']}}" />
+        {% endif %}
         <div class="profile-info">
             <h4>{{event['event_name']}}</h4>
             <h5>{{event['club_name']}}</h5>

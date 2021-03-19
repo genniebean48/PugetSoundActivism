@@ -32,8 +32,13 @@ times and places, and then finally the social media links with the icons. This p
             editP.style.display = "none";
         }
     }
-    function editEvent(event_id){
-        document.getElementById("edit-event_name").value = event_id;
+    function editEvent(event_name,event_date,event_time,event_location,event_type,event_description){
+        document.getElementById("edit-event_name").value = event_name;
+        document.getElementById("edit-event_date").value = event_date;
+        document.getElementById("edit-event_time").value = event_time;
+        document.getElementById("edit-event_location").value = event_location;
+        document.getElementById("edit-event-type").value = event_type;
+        document.getElementById("edit-event-description").value = event_description;
         //hide add panel
         //reverse club panel
         //reverse edit panel
@@ -77,12 +82,18 @@ times and places, and then finally the social media links with the icons. This p
         {% for event in events %}
         <div class="events">
 <!--            TODO: HERE IS WHERE WE ARE GETTING THE EVENT IMAGE -->
-            <img src = "../static/images/default_image.jpg" />
+            {% if event['event_image']==None %}
+                <img src = "../static/images/default_image.jpg" />
+            {% else %}
+                <img src = "../static/eventImages/{{event['event_image']}}" />
+            {% endif %}
             <div class="profile-info">
                 <h4>{{event['event_name']}}</h4>
                 {% if 'club_id' in session and session['club_id']==info['clubID'] %}
                     <button id = "edit-btn"
-                            onclick="editEvent('{{event['event_name']}}')">Edit</button>
+                            onclick="editEvent('{{event['event_name']}}','{{event['event_date']}}',
+                            '{{event['event_time']}}','{{event['event_location']}}','{{event['event_type']}}',
+                            '{{event['event_description']}}')">Edit</button>
                     <button id = "delete-btn"
                             onclick="location.href='/deleteEvent?q={{event['eventID']}}'">
                         <i class="fa fa-times-circle" aria-hidden="true"></i>Delete</button>
@@ -101,7 +112,11 @@ times and places, and then finally the social media links with the icons. This p
     </div>
     <div class="club-panel-info">
         <div id="club-profile-panel">
-            <img src = "../static/images/trees-image.jpg" />
+            {% if info['club_image']==None %}
+                <img src = "../static/images/trees-image.jpg" />
+            {% else %}
+                <img src = "../static/clubImages/{{info['club_image']}}" />
+            {% endif %}
             {% if 'club_id' in session and session['club_id']==info['clubID'] %}
                 <button onclick = editClub()>Edit Profile</button>
             {% endif %}
@@ -157,7 +172,7 @@ times and places, and then finally the social media links with the icons. This p
                     <input type="text"
                            id="event_name"
                            name="event_name"
-                           placeholder="Event Name"
+
                            maxlength="255"><br>
                     <label for="event-img">Event Image:</label>
                     <input type="file"
@@ -176,7 +191,7 @@ times and places, and then finally the social media links with the icons. This p
                     <input type="text"
                            id="event_date"
                            name="event_date"
-                           placeholder="Event Date"
+
                            maxlength="255"><br>
                     <!--        The event time is a required field -->
                     <i class="fa fa-asterisk" aria-hidden="true"></i>
@@ -184,7 +199,7 @@ times and places, and then finally the social media links with the icons. This p
                     <input type="text"
                            id="event_time"
                            name="event_time"
-                           placeholder="Event Time"
+
                            maxlength="255"><br>
                     <!--        The event location is a required field -->
                     <i class="fa fa-asterisk" aria-hidden="true"></i>
@@ -192,7 +207,7 @@ times and places, and then finally the social media links with the icons. This p
                     <input type="text"
                            id="event_location"
                            name="event_location"
-                           placeholder="Event Location"
+
                            maxlength="255"><br>
                     <!--        The event description is a required field -->
                     <i class="fa fa-asterisk" aria-hidden="true"></i>
@@ -200,7 +215,7 @@ times and places, and then finally the social media links with the icons. This p
                     <input type="text"
                            id="event-description"
                            name="event-description"
-                           placeholder="Event Description"
+
                            maxLength="1000"><br>
                     <button type="submit">Add Event</button>
                 </form>
@@ -218,6 +233,7 @@ times and places, and then finally the social media links with the icons. This p
                 <label for="event_name">Event Name:</label>
                 <input type="text"
                        id="edit-event_name"
+                       placeholder="Event Name"
                        maxlength="255"><br>
                 <label for="event-img">Event Image:</label>
                 <input type="image"
