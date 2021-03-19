@@ -47,6 +47,9 @@ body {
   width: 100%;
   height: 100vh;
   background: white;
+  .fa-asterisk{
+    font-size: 0.5em;
+  }
 
   .upcoming-events {
     background: #003249;
@@ -232,13 +235,14 @@ body {
     #add-panel{
       display: none;
       .edit-event-add {
+        margin-left: 10px;
         h3 {
           margin-left: 20px;
         }
         label {
           margin-top: 5px;
           padding-top: 5px;
-          margin-left: 20px;
+          margin-left: 1px;
         }
         input {
           border-radius: 6px;
@@ -287,19 +291,18 @@ body {
         }
       }
     }
+
     #club-profile-panel {
       display: flex;
+      position: relative;
       justify-content: center;
-      background-image: url("images/adv_img.jpg");
-      background-size: cover;
-      background-repeat: no-repeat;
       width: 100%;
       height: 100%;
       height: 371px;
       border-radius: 6px;
       button {
         position: absolute;
-        top: 87px;
+        top: 25px;
         right: 10px;
         height: 20px;
         border: none;
@@ -314,9 +317,14 @@ body {
           background: #888888;
         }
       }
-
+      img{
+        display: flex;
+        position: relative;
+        width: 100%;
+      }
       h3 {
         display: flex;
+        position: absolute;
         align-items: center;
         text-align: center;
         width: 80%;
