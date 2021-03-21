@@ -36,6 +36,18 @@
   }
 }
 
+i.fa.fa-map-pin{
+  padding-right: 5px;
+}
+
+i.fa.fa-clock-o{
+  padding-right: 12px;
+}
+
+i.fa.fa-calendar{
+  padding-right: 17px;
+}
+
 body {
   background: #003249;
 }
@@ -263,6 +275,35 @@ body {
       }
     }
     #edit-panel{
+      display: none;
+      .edit-event-edit {
+        h3 {
+          margin-left: 20px;
+        }
+        label {
+          margin-top: 5px;
+          padding-top: 5px;
+          margin-left: 20px;
+        }
+        input {
+          border-radius: 6px;
+          padding: 8px;
+          width: 100%;
+          margin-left: 20px;
+          margin-bottom: 20px;
+        }
+        button {
+          margin-left: 20px;
+          border-radius: 6px;
+          font-family: "Liberation sans";
+          height: 30px;
+          &:hover {
+            background: slategrey;
+          }
+        }
+      }
+    }
+    #login-panel{
       display: none;
       .edit-event-edit {
         h3 {

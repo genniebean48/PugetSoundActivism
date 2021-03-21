@@ -12,7 +12,33 @@ times and places, and then finally the social media links with the icons. This p
         document.getElementById("edit-event_name").value = eventID;
     }
     function editClub(){
-        location.href = "/editClub"
+        //hide add panel
+        //reverse club panel
+        //hide edit panel
+        //reverse edit club panel
+        let title = document.getElementById("club-profile-info");
+        let events = document.getElementById("club-profile-panel");
+
+        let addP = document.getElementById("add-panel");
+
+        let editP = document.getElementById("edit-panel");
+
+        let loginPanel = document.getElementById("login-panel");
+        if(window.getComputedStyle(loginPanel).display === "none"){
+            title.style.display = "none";
+            events.style.display = "none";
+            editP.style.display = "none";
+            loginPanel.style.display = "flex";
+        }else{
+            title.style.display = "flex";
+            events.style.display = "flex";
+            editP.style.display = "none";
+            loginPanel.style.display = "none";
+        }
+
+        if(window.getComputedStyle(loginPanel).display === "flex"){
+            loginPanel.style.display = "none";
+        }
     }
     function addEvents(){
         //reverse club panel
@@ -116,9 +142,9 @@ times and places, and then finally the social media links with the icons. This p
                 <!-- TODO: QUERY MEETING DAYS, TIMES AND PLACES -->
                 <h4>Join Us!</h4>
                 <ul>
-                    <li>Meeting Days</li>
-                    <li>Meeting Times</li>
-                    <li>Meeting Place</li>
+                    <li><i class="fa fa-calendar" aria-hidden="true"></i>Meeting Days</li>
+                    <li><i class="fa fa-clock-o" aria-hidden="true"></i>Meeting Times</li>
+                    <li><i class="fa fa-map-pin" aria-hidden="true"></i>Meeting Place</li>
                 </ul>
                 <ul class="social-media"><a href="facebook.com"><i class="fa fa-facebook-official"
                                                                               aria-hidden="true"></i></a>
@@ -256,6 +282,108 @@ times and places, and then finally the social media links with the icons. This p
                        maxLength="1000"><br>
                 <button type="button" onclick="alert('Saving Account Information')">Edit Event</button>
             </div>
+        </div>
+        <div class="login-panel">
+            <h3>Edit Club Page</h3>
+            <p>* indicates required field </p>
+            <form action="/createAccount" method="post">
+                <!--        The club name is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="club-name">Club Name:</label><br>
+                <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE
+                            THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
+                <input type="text"
+                       id="club-name"
+                       placeholder="Club Name"
+                       maxlength="255"><br>
+
+                <!--        &lt;!&ndash;        The profile image is a required field &ndash;&gt;-->
+                <!--        <i class="fa fa-asterisk" aria-hidden="true"></i>-->
+                <label for="profile-image">Profile Image:</label><br>
+                <input type="file"
+                       id="profile-image"
+                       placeholder="Profile Image"
+                       size="5"><br>
+
+                <!--        The club description or about_info is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="club-description">Club Description:</label><br>
+                <input type="text"
+                       id="club-description"
+                       placeholder="What is your Club's Mission?"
+                       maxLength="1000"><br>
+
+                <label for="meeting-days">Meeting Day:</label><br>
+                <input type="text"
+                       id="meeting-days"
+                       placeholder="What days does your Club meet?"><br>
+
+                <label for="meeting-times">Meeting Time:</label><br>
+                <input type="text"
+                       id="meeting-times"
+                       placeholder="What time does your Club meet?"><br>
+
+                <label for="meeting-place">Meeting Place:</label><br>
+                <input type="text"
+                       id="meeting-place"
+                       placeholder="Where does your Club meet?"><br>
+
+                <label for="sm-facebook">Facebook:</label><br>
+                <input type="url"
+                       id="sm-facebook"
+                       placeholder="Facebook URL"><br>
+
+                <label for="sm-instagram">Instagram:</label><br>
+                <input type="url"
+                       id="sm-instagram"
+                       placeholder="Instagram URL"><br>
+
+                <label for="sm-twitter">Twitter:</label><br>
+                <input type="url"
+                       id="sm-twitter"
+                       placeholder="Twitter URL"><br>
+
+                <label for="sm-website">Website:</label><br>
+                <input type="url"
+                       id="sm-website"
+                       placeholder="Website URL"><br>
+
+                <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
+                <button type="button" onclick="alert('Saving Club Information')">Save</button>
+
+            </form>
+            <h3>Edit Account Info</h3>
+            <p>* indicates required field </p>
+            <form>
+                <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
+
+                <!--        The club email is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="club-email">Club Email:</label><br>
+                <input type="email"
+                       id="club-email"
+                       placeholder="Your Club's Email"
+                       pattern=".+@pugetsound.edu" required><br>
+
+                <!--        The admin name is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="admin-name">Admin Name:</label><br>
+                <input type="text"
+                       id="admin-name"
+                       placeholder="Your Name"><br>
+
+                <!--        The admin email is a required field -->
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="admin-email">Admin Email:</label><br>
+                <input type="email"
+                       id="admin-email"
+                       placeholder="Your @pugetsound.edu Email"
+                       pattern=".+@pugetsound.edu" required><br>
+
+                <!--       IF THEY PRESS THIS BUTTON THEN WE WANT TO SAVE THE ACCOUNT INFORMATION -->
+                <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE -->
+                <button type="button" onclick="alert('Saving Account Information')">Save</button>
+            </form>
         </div>
     </div>
 </div>
