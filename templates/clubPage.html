@@ -16,28 +16,30 @@ times and places, and then finally the social media links with the icons. This p
         //reverse club panel
         //hide edit panel
         //reverse edit club panel
+        console.log("got here");
         let title = document.getElementById("club-profile-info");
         let events = document.getElementById("club-profile-panel");
-
         let addP = document.getElementById("add-panel");
-
         let editP = document.getElementById("edit-panel");
-
         let loginPanel = document.getElementById("login-panel");
+
         if(window.getComputedStyle(loginPanel).display === "none"){
+            console.log("Got here 2");
             title.style.display = "none";
             events.style.display = "none";
             editP.style.display = "none";
             loginPanel.style.display = "flex";
         }else{
+            console.log("got here 3");
             title.style.display = "flex";
             events.style.display = "flex";
             editP.style.display = "none";
             loginPanel.style.display = "none";
         }
 
-        if(window.getComputedStyle(loginPanel).display === "flex"){
-            loginPanel.style.display = "none";
+        if(window.getComputedStyle(addP).display === "flex"){
+            console.log("got here 4");
+            addP.style.display = "none";
         }
     }
     function addEvents(){
@@ -48,13 +50,16 @@ times and places, and then finally the social media links with the icons. This p
         let events = document.getElementById("club-profile-panel");
         let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
+        let loginPanel = document.getElementById("login-panel");
         if(window.getComputedStyle(addP).display === "none"){
             title.style.display = "none";
             events.style.display = "none";
+            loginPanel.style.display = "none";
             addP.style.display = "flex";
         }else{
             title.style.display = "flex";
             events.style.display = "flex";
+            loginPanel.style.display = "none";
             addP.style.display = "none";
         }
 
@@ -70,9 +75,11 @@ times and places, and then finally the social media links with the icons. This p
         let events = document.getElementById("club-profile-panel");
         let addP = document.getElementById("add-panel");
         let editP = document.getElementById("edit-panel");
+        let loginPanel = document.getElementById("login-panel");
         if(window.getComputedStyle(editP).display === "none"){
             title.style.display = "none";
             events.style.display = "none";
+            loginPanel.style.display = "none";
             editP.style.display = "flex";
         }else{
             title.style.display = "flex";
@@ -283,8 +290,9 @@ times and places, and then finally the social media links with the icons. This p
                 <button type="button" onclick="alert('Saving Account Information')">Edit Event</button>
             </div>
         </div>
-        <div class="login-panel">
+        <div id="login-panel">
             <h3>Edit Club Page</h3>
+            <button id="btn-del">Delete Club</button>
             <p>* indicates required field </p>
             <form action="/createAccount" method="post">
                 <!--        The club name is a required field -->
