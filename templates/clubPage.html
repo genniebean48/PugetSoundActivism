@@ -94,6 +94,19 @@ times and places, and then finally the social media links with the icons. This p
     function deleteEvent(){
         console.log("deleting event");
     }
+    function exit(){
+        let title = document.getElementById("club-profile-info");
+        let events = document.getElementById("club-profile-panel");
+        let addP = document.getElementById("add-panel");
+        let editP = document.getElementById("edit-panel");
+        let loginPanel = document.getElementById("login-panel");
+
+        title.style.display = "flex";
+        events.style.display = "flex";
+        addP.style.display = "none";
+        editP.style.display = "none";
+        loginPanel.style.display = "none";
+    }
 </script>
 {% endblock %}
 
@@ -164,6 +177,7 @@ times and places, and then finally the social media links with the icons. This p
         </div>
         <div id="add-panel">
             <div class="edit-event-add">
+                <button class="exit" onclick = exit()><i class = "fa fa-times-circle" aria-hidden = "true"></i></button>
                 <h3 id = "add-title">Add Event</h3>
                 <p>* indicates required field </p>
                 <!--        The event name is a required field -->
@@ -231,6 +245,7 @@ times and places, and then finally the social media links with the icons. This p
         </div>
         <div id="edit-panel">
             <div class="edit-event-edit">
+                <button class="exit" onclick = exit()><i class = "fa fa-times-circle" aria-hidden = "true"></i></button>
                 <h3 id = "edit-title">Edit Event</h3>
                 <p>* indicates required field </p>
                 <!--        The event name is a required field -->
@@ -295,6 +310,7 @@ times and places, and then finally the social media links with the icons. This p
             </div>
         </div>
         <div id="login-panel">
+            <button class="exit" onclick = exit()><i class = "fa fa-times-circle" aria-hidden = "true"></i></button>
             <h3>Edit Club Page</h3>
             <p>* indicates required field </p>
             <button id="btn-del">Delete Club</button>
