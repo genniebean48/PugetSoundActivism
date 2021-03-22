@@ -107,6 +107,16 @@ times and places, and then finally the social media links with the icons. This p
         editP.style.display = "none";
         loginPanel.style.display = "none";
     }
+    function deleteClub(){
+        window.confirm("Do you want to delete your club?");
+        if(confirm){
+            //if the user clicks ok and therefore wants to delete the club
+            console.log("delete club");
+        }else{
+            console.log("keep club")
+            exit();
+        }
+    }
 </script>
 {% endblock %}
 
@@ -313,7 +323,7 @@ times and places, and then finally the social media links with the icons. This p
             <button class="exit" onclick = exit()><i class = "fa fa-times-circle" aria-hidden = "true"></i></button>
             <h3>Edit Club Page</h3>
             <p>* indicates required field </p>
-            <button id="btn-del">Delete Club</button>
+            <button id="btn-del" onclick = deleteClub()>Delete Club</button>
             <form action="/createAccount" method="post">
                 <!--        The club name is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
