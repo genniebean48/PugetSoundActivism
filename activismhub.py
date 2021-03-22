@@ -128,15 +128,15 @@ def enter_account():
    adminEmail = request.form['admin-email']
    password = request.form['password']
    #Insert new account info into club table
-   cursor.execute('''INSERT INTO testClub(club_name,admin_name,about_info,club_email)
-       VALUES(%s,%s,%s,%s)''',(clubName,adminName,description,email))
+   cursor.execute('''INSERT INTO testClub(club_name,about_info,club_email,password)
+       VALUES(%s,%s,%s,%s)''',(clubName,description,email,password))
    mysql.connection.commit()
    #get club new club id
    cursor.execute('''SELECT clubID FROM testClub where club_name = %s''',(clubName,))
    clubID=cursor.fetchall()[0]['clubID']
    #Insert new account info into admin table
-   cursor.execute('''INSERT INTO testClub_admin(club_name,clubID, admin_name,admin_email,password)
-       VALUES(%s,%s,%s,%s,%s)''',(clubName,clubID,adminName,adminEmail,password))
+   cursor.execute('''INSERT INTO testClub_admin(clubID,admin_name,admin_email)
+       VALUES(%s,%s,%s)''',(clubID,adminName,adminEmail))
    mysql.connection.commit()
    #reroute to home page
    return index()
