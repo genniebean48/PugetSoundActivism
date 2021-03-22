@@ -165,7 +165,7 @@ times and places, and then finally the social media links with the icons. This p
         <div id="add-panel">
             <div class="edit-event-add">
                 <h3 id = "add-title">Add Event</h3>
-
+                <p>* indicates required field </p>
                 <!--        The event name is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_name">Event Name:</label>
@@ -175,12 +175,14 @@ times and places, and then finally the social media links with the icons. This p
                        maxlength="255"><br>
 
 
-                <label for="event-img">Event Image:</label>
-                <input type="image"
+                <label class = "nonrequired" for="event-img">Event Image:</label>
+                <input class = "nonrequired"
+                       type="image"
                        id="event-img"><br>
 
-                <label for="event-type">Event Type:</label>
-                <input type="text"
+                <label class = "nonrequired" for="event-type">Event Type:</label>
+                <input class = "nonrequired"
+                       type="text"
                        id="event-type"
                        placeholder="Event Type"
                        maxlength="255"><br>
@@ -227,10 +229,10 @@ times and places, and then finally the social media links with the icons. This p
                 <button type="button" onclick="alert('Saving Account Information')">Add Event</button>
             </div>
         </div>
-<!--        TODO: the placeholders for the edit-panel can be what is already in the database so that the user can change it -->
         <div id="edit-panel">
             <div class="edit-event-edit">
                 <h3 id = "edit-title">Edit Event</h3>
+                <p>* indicates required field </p>
                 <!--        The event name is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="event_name">Event Name:</label>
@@ -239,12 +241,14 @@ times and places, and then finally the social media links with the icons. This p
                        placeholder="Event Name"
                        maxlength="255"><br>
 
-                <label for="event-img">Event Image:</label>
-                <input type="image"
+                <label class = "nonrequired" for="event-img">Event Image:</label>
+                <input class = "nonrequired"
+                       type="image"
                        id="edit-event-img"><br>
 
-                <label for="event-type">Event Type:</label>
-                <input type="text"
+                <label class = "nonrequired"  for="event-type">Event Type:</label>
+                <input class = "nonrequired"
+                       type="text"
                        id="edit-event-type"
                        placeholder="Event Type"
                        maxlength="255"><br>
@@ -292,8 +296,8 @@ times and places, and then finally the social media links with the icons. This p
         </div>
         <div id="login-panel">
             <h3>Edit Club Page</h3>
-            <button id="btn-del">Delete Club</button>
             <p>* indicates required field </p>
+            <button id="btn-del">Delete Club</button>
             <form action="/createAccount" method="post">
                 <!--        The club name is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
@@ -307,8 +311,9 @@ times and places, and then finally the social media links with the icons. This p
 
                 <!--        &lt;!&ndash;        The profile image is a required field &ndash;&gt;-->
                 <!--        <i class="fa fa-asterisk" aria-hidden="true"></i>-->
-                <label for="profile-image">Profile Image:</label><br>
-                <input type="file"
+                <label class = "nonrequired" for="profile-image">Profile Image:</label><br>
+                <input class = "nonrequired"
+                       type="file"
                        id="profile-image"
                        placeholder="Profile Image"
                        size="5"><br>
@@ -321,38 +326,44 @@ times and places, and then finally the social media links with the icons. This p
                        placeholder="What is your Club's Mission?"
                        maxLength="1000"><br>
 
-                <label for="meeting-days">Meeting Day:</label><br>
-                <input type="text"
+                <label class = "nonrequired" for="meeting-days">Meeting Day:</label><br>
+                <input class = "nonrequired"
+                       type="text"
                        id="meeting-days"
                        placeholder="What days does your Club meet?"><br>
 
-                <label for="meeting-times">Meeting Time:</label><br>
+                <label class = "nonrequired" for="meeting-times">Meeting Time:</label><br>
                 <input type="text"
                        id="meeting-times"
                        placeholder="What time does your Club meet?"><br>
 
-                <label for="meeting-place">Meeting Place:</label><br>
-                <input type="text"
+                <label class = "nonrequired" for="meeting-place">Meeting Place:</label><br>
+                <input class = "nonrequired"
+                       type="text"
                        id="meeting-place"
                        placeholder="Where does your Club meet?"><br>
 
-                <label for="sm-facebook">Facebook:</label><br>
-                <input type="url"
+                <label class = "nonrequired" for="sm-facebook">Facebook:</label><br>
+                <input class = "nonrequired"
+                       type="url"
                        id="sm-facebook"
                        placeholder="Facebook URL"><br>
 
-                <label for="sm-instagram">Instagram:</label><br>
-                <input type="url"
+                <label class = "nonrequired" for="sm-instagram">Instagram:</label><br>
+                <input class = "nonrequired"
+                       type="url"
                        id="sm-instagram"
                        placeholder="Instagram URL"><br>
 
-                <label for="sm-twitter">Twitter:</label><br>
-                <input type="url"
-                       id="sm-twitter"
+                <label class = "nonrequired" for="sm-twitter">Twitter:</label><br>
+                <input class = "nonrequired"
+                       id = "sm-twitter"
+                       type="url"
                        placeholder="Twitter URL"><br>
 
-                <label for="sm-website">Website:</label><br>
-                <input type="url"
+                <label class = "nonrequired" for="sm-website">Website:</label><br>
+                <input class = "nonrequired"
+                       type="url"
                        id="sm-website"
                        placeholder="Website URL"><br>
 

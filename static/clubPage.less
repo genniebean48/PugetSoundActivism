@@ -256,30 +256,82 @@ body {
 
     #add-panel {
       display: none;
-
+      margin-left: 10px;
       .edit-event-add {
-        margin-left: 10px;
-
         h3 {
-          margin-left: 20px;
+          margin-left: 0px;
+          margin-bottom: 5px;
+        }
+
+        p {
+          padding: 0px;
+          margin: 0px 0px 10px 0px;
+          font-size: 14px;
         }
 
         label {
           margin-top: 5px;
           padding-top: 5px;
-          margin-left: 1px;
+          //margin-left: 20px;
         }
 
         input {
           border-radius: 6px;
           padding: 8px;
           width: 100%;
-          margin-left: 20px;
+          margin-left: 10px;
           margin-bottom: 20px;
         }
 
         button {
-          margin-left: 20px;
+          margin-left: 10px;
+          border-radius: 6px;
+          font-family: "Liberation sans";
+          height: 30px;
+          width: 88px;
+
+          &:hover {
+            background: slategrey;
+          }
+        }
+
+        .nonrequired {
+          margin-left: 11px;
+        }
+      }
+    }
+
+    #edit-panel {
+      display: none;
+      margin-left: 10px;
+      .edit-event-edit {
+        h3 {
+          margin-left: 0px;
+          margin-bottom: 5px;
+        }
+
+        p{
+          padding: 0px;
+          margin: 0px 0px 10px 0px;
+          font-size: 14px;
+        }
+
+        label {
+          margin-top: 5px;
+          padding-top: 5px;
+          //margin-left: 20px;
+        }
+
+        input {
+          border-radius: 6px;
+          padding: 8px;
+          width: 100%;
+          margin-left: 10px;
+          margin-bottom: 20px;
+        }
+
+        button {
+          margin-left: 0px;
           border-radius: 6px;
           font-family: "Liberation sans";
           height: 30px;
@@ -289,40 +341,8 @@ body {
           }
         }
       }
-    }
-
-    #edit-panel {
-      display: none;
-
-      .edit-event-edit {
-        h3 {
-          margin-left: 20px;
-        }
-
-        label {
-          margin-top: 5px;
-          padding-top: 5px;
-          margin-left: 20px;
-        }
-
-        input {
-          border-radius: 6px;
-          padding: 8px;
-          width: 100%;
-          margin-left: 20px;
-          margin-bottom: 20px;
-        }
-
-        button {
-          margin-left: 20px;
-          border-radius: 6px;
-          font-family: "Liberation sans";
-          height: 30px;
-
-          &:hover {
-            background: slategrey;
-          }
-        }
+      .nonrequired{
+        margin-left: 11px;
       }
     }
 
@@ -330,6 +350,7 @@ body {
       display: none;
       flex-direction: column;
       overflow: scroll;
+      margin-left: 10px;
       /* width */
 
       &::-webkit-scrollbar {
@@ -359,28 +380,37 @@ body {
       #btn-del{
         background: red;
         opacity: 56%;
+        margin-bottom: 10px;
+        margin-left: 0px;
       }
 
       h3 {
-        margin-left: 20px;
+        margin-left: 0px;
+        margin-bottom: 5px;
+      }
+
+      p{
+        padding: 0px;
+        margin: 0px 0px 5px 0px;
+        font-size: 14px;
       }
 
       label {
         margin-top: 5px;
         padding-top: 5px;
-        margin-left: 20px;
+        //margin-left: 20px;
       }
 
       input {
         border-radius: 6px;
         padding: 8px;
         width: 100%;
-        margin-left: 20px;
+        margin-left: 10px;
         margin-bottom: 20px;
       }
 
       button {
-        margin-left: 20px;
+        margin-left: 10px;
         border-radius: 6px;
         font-family: "Liberation sans";
         height: 30px;
@@ -389,6 +419,10 @@ body {
         &:hover {
           background: slategrey;
         }
+      }
+
+      .nonrequired{
+        margin-left: 11px;
       }
     }
 
