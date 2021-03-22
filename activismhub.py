@@ -330,7 +330,7 @@ def updateEvent():
         cursor.execute('''SELECT event_image FROM testClub_event WHERE eventID=%s''',(eventID,))
         event_image = cursor.fetchall()[0]['event_image']
     #Update event
-    cursor.execute('''UPDATE testClub_event SET event_name=%s,event_date=%s,start_time=%s,start_time=%s,event_location=%s,
+    cursor.execute('''UPDATE testClub_event SET event_name=%s,event_date=%s,start_time=%s,end_time=%s,event_location=%s,
             event_description=%s,event_type=%s,event_image=%s WHERE eventID=%s''',(event_name,event_date,
             start_time,end_time,event_location,event_description,event_type,event_image,eventID))
     mysql.connection.commit()

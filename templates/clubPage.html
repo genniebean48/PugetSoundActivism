@@ -11,13 +11,27 @@ times and places, and then finally the social media links with the icons. This p
         website_link){
         document.getElementById("club_name").value = club_name;
         document.getElementById("about_info").value = about_info;
-        document.getElementById("meet_day").value = meet_day;
-        document.getElementById("meet_time").value = meet_time;
-        document.getElementById("meet_location").value = meet_location;
-        document.getElementById("facebook_link").value = facebook_link;
-        document.getElementById("instagram_link").value = instagram_link;
-        document.getElementById("twitter_link").value = twitter_link;
-        document.getElementById("website_link").value = website_link;
+        if(meet_day != "None"){
+            document.getElementById("meet_day").value = meet_day;
+        }
+        if(meet_time != "None"){
+            document.getElementById("meet_time").value = meet_time;
+        }
+        if(meet_location != "None"){
+            document.getElementById("meet_location").value = meet_location;
+        }
+        if(facebook_link != "None"){
+            document.getElementById("facebook_link").value = facebook_link;
+        }
+        if(instagram_link != "None"){
+            document.getElementById("instagram_link").value = instagram_link;
+        }
+        if(twitter_link != "None"){
+            document.getElementById("twitter_link").value = twitter_link;
+        }
+        if(website_link != "None"){
+            document.getElementById("website_link").value = website_link;
+        }
         //hide add panel
         //reverse club panel
         //hide edit panel
@@ -79,7 +93,9 @@ times and places, and then finally the social media links with the icons. This p
         document.getElementById("edit-start_time").value = start_time;
         document.getElementById("edit-end_time").value = end_time;
         document.getElementById("edit-event_location").value = event_location;
-        document.getElementById("edit-event-type").value = event_type;
+        if(event_type != "None"){
+            document.getElementById("edit-event-type").value = event_type;
+        }
         document.getElementById("edit-event-description").value = event_description;
         document.getElementById("edit-eventID").value = eventID;
         //hide add panel
@@ -171,7 +187,7 @@ times and places, and then finally the social media links with the icons. This p
                 <h5>{{event['club_name']}}</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
-                    <h5>{{event['start_time']}}</h5>
+                    <h5>{{event['start_time']}}-{{event['end_time']}}</h5>
                 </div>
                 <h5>{{event['event_location']}}</h5>
                 {% if event['event_type'] != None %}
@@ -180,6 +196,8 @@ times and places, and then finally the social media links with the icons. This p
                 <p>{{event['event_description']}}</p>
             </div>
         </div>
+        {% else %}
+        <p>No upcoming events!</p>
         {% endfor %}
     </div>
     <div class="club-panel-info">
@@ -390,7 +408,7 @@ times and places, and then finally the social media links with the icons. This p
             <h3>Edit Club Page</h3>
             <p>* indicates required field </p>
             <button id="btn-del" onclick = deleteClub()>Delete Club</button>
-            <form action="/updateAccount" method="post" enctype=multipart/form-data>
+            <form action="/updateClub" method="post" enctype=multipart/form-data>
                 <!--        The club name is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
                 <label for="club_name">Club Name:</label><br>
