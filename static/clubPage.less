@@ -36,6 +36,18 @@
   }
 }
 
+i.fa.fa-map-pin {
+  padding-right: 5px;
+}
+
+i.fa.fa-clock-o {
+  padding-right: 12px;
+}
+
+i.fa.fa-calendar {
+  padding-right: 17px;
+}
+
 body {
   background: #003249;
 }
@@ -46,8 +58,9 @@ body {
   margin: 0px;
   width: 100%;
   height: 100vh;
-  background: white;
-  .fa-asterisk{
+  background: #003249;
+
+  .fa-asterisk {
     font-size: 0.5em;
   }
 
@@ -128,11 +141,14 @@ body {
       overflow-x: hidden;
       overflow-y: scroll;
       color: #003249;
-      button{
+
+      button {
         display: flex;
-        position: absolute;
-        margin-top: 5px;
-        margin-left: 17%;
+        position: relative;
+        margin-top: -48px;
+        margin-bottom: 12px;
+        margin-left: 91px;
+        width: 52px;
         height: 20px;
         border: none;
         border-radius: 6px;
@@ -141,15 +157,20 @@ body {
         font-weight: 700;
         font-family: "Liberation sans", sans;
         color: #003249;
+
         &:hover {
           background: #888888;
         }
       }
-      #delete-btn{
+
+      #delete-btn {
         padding: 16px 16px 16px 23px;
-        margin-left: 22%;
+        margin-top: -44px;
+        margin-left: 152px;
         line-height: 3px;
-        i{
+        width: 73px;
+
+        i {
           position: absolute;
           top: 11px;
           right: 55px;
@@ -232,63 +253,207 @@ body {
     height: 100vh;
     width: 100%;
     background: #99adb6;
-    #add-panel{
+
+    .exit{
+      position: absolute;
+      top: 65px;
+      right: 5px;
+      border-radius: 6px;
+      width: 30px;
+    }
+
+
+    #add-panel {
       display: none;
+      margin-left: 10px;
       .edit-event-add {
-        margin-left: 10px;
-        h3 {
-          margin-left: 20px;
+        .exit{
+          position: absolute;
+          top: 65px;
+          right: 5px;
+          border-radius: 6px;
+          width: 30px;
         }
+
+        h3 {
+          margin-left: 0px;
+          margin-bottom: 5px;
+        }
+
+        p {
+          padding: 0px;
+          margin: 0px 0px 10px 0px;
+          font-size: 14px;
+        }
+
         label {
           margin-top: 5px;
           padding-top: 5px;
-          margin-left: 1px;
+          //margin-left: 20px;
         }
+
         input {
           border-radius: 6px;
           padding: 8px;
           width: 100%;
-          margin-left: 20px;
+          margin-left: 10px;
           margin-bottom: 20px;
         }
+
         button {
-          margin-left: 20px;
+          margin-left: 10px;
           border-radius: 6px;
           font-family: "Liberation sans";
           height: 30px;
+          width: 88px;
+
+          &:hover {
+            background: slategrey;
+          }
+        }
+
+        .nonrequired {
+          margin-left: 11px;
+        }
+      }
+    }
+
+    #edit-panel {
+      display: none;
+      margin-left: 10px;
+      .edit-event-edit {
+        .exit{
+          position: absolute;
+          top: 65px;
+          right: 5px;
+          border-radius: 6px;
+          width: 30px;
+        }
+
+        h3 {
+          margin-left: 0px;
+          margin-bottom: 5px;
+        }
+
+        p{
+          padding: 0px;
+          margin: 0px 0px 10px 0px;
+          font-size: 14px;
+        }
+
+        label {
+          margin-top: 5px;
+          padding-top: 5px;
+        }
+
+        input {
+          border-radius: 6px;
+          padding: 8px;
+          width: 100%;
+          margin-left: 10px;
+          margin-bottom: 20px;
+        }
+
+        button {
+          margin-left: 0px;
+          border-radius: 6px;
+          font-family: "Liberation sans";
+          height: 30px;
+
           &:hover {
             background: slategrey;
           }
         }
       }
+      .nonrequired{
+        margin-left: 11px;
+      }
     }
-    #edit-panel{
+
+    #login-panel {
       display: none;
-      .edit-event-edit {
-        h3 {
-          margin-left: 20px;
+      flex-direction: column;
+      overflow: scroll;
+      margin-left: 10px;
+      .exit{
+        position: absolute;
+        top: 65px;
+        right: 5px;
+        border-radius: 6px;
+        width: 30px;
+      }
+      /* width */
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      /* Track */
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+      }
+
+      /* Handle */
+
+      &::-webkit-scrollbar-thumb {
+        background: darkgrey;
+        height: 20px;
+      }
+
+      /* Handle on hover */
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      #btn-del{
+        background: red;
+        opacity: 56%;
+        margin-bottom: 10px;
+        margin-left: 0px;
+      }
+
+      h3 {
+        margin-left: 0px;
+        margin-bottom: 5px;
+      }
+
+      p{
+        padding: 0px;
+        margin: 0px 0px 5px 0px;
+        font-size: 14px;
+      }
+
+      label {
+        margin-top: 5px;
+        padding-top: 5px;
+        //margin-left: 20px;
+      }
+
+      input {
+        border-radius: 6px;
+        padding: 8px;
+        width: 100%;
+        margin-left: 10px;
+        margin-bottom: 20px;
+      }
+
+      button {
+        margin-left: 10px;
+        border-radius: 6px;
+        font-family: "Liberation sans";
+        height: 30px;
+        width: 88px;
+
+        &:hover {
+          background: slategrey;
         }
-        label {
-          margin-top: 5px;
-          padding-top: 5px;
-          margin-left: 20px;
-        }
-        input {
-          border-radius: 6px;
-          padding: 8px;
-          width: 100%;
-          margin-left: 20px;
-          margin-bottom: 20px;
-        }
-        button {
-          margin-left: 20px;
-          border-radius: 6px;
-          font-family: "Liberation sans";
-          height: 30px;
-          &:hover {
-            background: slategrey;
-          }
-        }
+      }
+
+      .nonrequired{
+        margin-left: 11px;
       }
     }
 
@@ -300,6 +465,7 @@ body {
       height: 100%;
       height: 371px;
       border-radius: 6px;
+
       button {
         position: absolute;
         top: 25px;
@@ -317,12 +483,14 @@ body {
           background: #888888;
         }
       }
-      img{
+
+      img {
         display: flex;
         position: relative;
         width: 100%;
         opacity: 45%
       }
+
       h3 {
         display: flex;
         position: absolute;
@@ -330,10 +498,13 @@ body {
         text-align: center;
         width: 80%;
         background: white;
+        opacity: 0.88;
+        border-radius: 6px;
         font-size: 70px;
         font-weight: 700;
       }
     }
+
     #club-profile-info {
       display: flex;
       width: 100%;
