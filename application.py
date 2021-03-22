@@ -35,8 +35,8 @@ def index():
    #Get events
    cursor.execute('''SELECT * FROM testClub_event WHERE event_date > CURDATE()
                      UNION
-                     SELECT * FROM testClub_event WHERE event_date = CURDATE() AND event_time > CURTIME()
-                     ORDER BY event_date, event_time''')
+                     SELECT * FROM testClub_event WHERE event_date = CURDATE() AND start_time > CURTIME()
+                     ORDER BY event_date, start_time''')
    events = cursor.fetchall()
    return render_template("homePage.html",events=events,clubs=clubs)
 
@@ -55,8 +55,8 @@ def club_page():
    #Get events
    cursor.execute('''SELECT * FROM testClub_event WHERE event_date > CURDATE() AND clubID=%s
                      UNION
-                     SELECT * FROM testClub_event WHERE event_date = CURDATE() AND event_time > CURTIME() AND
-                     clubID=%s ORDER BY event_date, event_time''',(clubID,clubID))
+                     SELECT * FROM testClub_event WHERE event_date = CURDATE() AND start_time > CURTIME() AND
+                     clubID=%s ORDER BY event_date, start_time''',(clubID,clubID))
    events = cursor.fetchall()
    #Get list of dicts of clubs
    clubs = getClubs()
@@ -171,18 +171,18 @@ def formatTimeFromSql(time):
 
 
 
-#route when user clicks edit club profile from club page
-@app.route("/editClub")
-def editClub():
-    cursor = mysql.connection.cursor()
-    #get which club
-    clubID = session['club_id']
-    #Get club info
-    cursor.execute('''SELECT * FROM testClub WHERE clubID = %s''',(clubID,))
-    info = cursor.fetchall()[0]
-    #get clubs
-    clubs = getClubs()
-    return render_template('editClub.html',clubs=clubs,info=info)
+# #route when user clicks edit club profile from club page
+# @app.route("/editClub")
+# def editClub():
+#     cursor = mysql.connection.cursor()
+#     #get which club
+#     clubID = session['club_id']
+#     #Get club info
+#     cursor.execute('''SELECT * FROM testClub WHERE clubID = %s''',(clubID,))
+#     info = cursor.fetchall()[0]
+#     #get clubs
+#     clubs = getClubs()
+#     return render_template('editClub.html',clubs=clubs,info=info)
 
 
 #when user clicks submit on edit club page
@@ -245,7 +245,8 @@ def addEvent():
     event_name = request.form['event_name']
     event_type = request.form['event-type']
     event_date = request.form['event_date']
-    event_time = request.form['event_time']
+    start_time = request.form['start_time']
+    end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event-description']
     #if optional fields empty, set as null
@@ -257,9 +258,9 @@ def addEvent():
     cursor.execute('''SELECT club_name FROM testClub where clubID = %s''',(clubID,))
     club_name=cursor.fetchall()[0]['club_name']
     #put new event in table NOTE - does not include image
-    cursor.execute('''INSERT INTO testClub_event(event_name,club_name,clubID,event_date,event_time,event_location,
-            event_description,event_type) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)''',(event_name,club_name,clubID,event_date,
-            event_time,event_location,event_description,event_type))
+    cursor.execute('''INSERT INTO testClub_event(event_name,club_name,clubID,event_date,start_time,end_time,event_location,
+            event_description,event_type) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)''',(event_name,club_name,clubID,event_date,
+            start_time,end_time,event_location,event_description,event_type))
     mysql.connection.commit()
 
     #Get image from form
@@ -309,7 +310,8 @@ def updateEvent():
     event_name = request.form['event_name']
     event_type = request.form['event_type']
     event_date = request.form['event_date']
-    event_time = request.form['event_time']
+    start_time = request.form['start_time']
+    end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event_description']
     #if optional fields empty, set as null
@@ -328,9 +330,9 @@ def updateEvent():
         cursor.execute('''SELECT event_image FROM testClub_event WHERE eventID=%s''',(eventID,))
         event_image = cursor.fetchall()[0]['event_image']
     #Update event
-    cursor.execute('''UPDATE testClub_event SET event_name=%s,event_date=%s,event_time=%s,event_location=%s,
+    cursor.execute('''UPDATE testClub_event SET event_name=%s,event_date=%s,start_time=%s,start_time=%s,event_location=%s,
             event_description=%s,event_type=%s,event_image=%s WHERE eventID=%s''',(event_name,event_date,
-            event_time,event_location,event_description,event_type,event_image,eventID))
+            start_time,end_time,event_location,event_description,event_type,event_image,eventID))
     mysql.connection.commit()
 
     #rerender club page

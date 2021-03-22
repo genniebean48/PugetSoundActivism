@@ -7,7 +7,17 @@ times and places, and then finally the social media links with the icons. This p
 {% block css_file %}
 <link href="{{ url_for('static', filename='clubPage.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
-    function editClub(){
+    function editClub(club_name,about_info,meet_day,meet_time,meet_location,facebook_link,instagram_link,twitter_link,
+        website_link){
+        document.getElementById("club_name").value = club_name;
+        document.getElementById("about_info").value = about_info;
+        document.getElementById("meet_day").value = meet_day;
+        document.getElementById("meet_time").value = meet_time;
+        document.getElementById("meet_location").value = meet_location;
+        document.getElementById("facebook_link").value = facebook_link;
+        document.getElementById("instagram_link").value = instagram_link;
+        document.getElementById("twitter_link").value = twitter_link;
+        document.getElementById("website_link").value = website_link;
         //hide add panel
         //reverse club panel
         //hide edit panel
@@ -63,10 +73,11 @@ times and places, and then finally the social media links with the icons. This p
             editP.style.display = "none";
         }
     }
-    function editEvent(event_name,event_date,event_time,event_location,event_type,event_description,eventID){
+    function editEvent(event_name,event_date,start_time,end_time,event_location,event_type,event_description,eventID){
         document.getElementById("edit-event_name").value = event_name;
         document.getElementById("edit-event_date").value = event_date;
-        document.getElementById("edit-event_time").value = event_time;
+        document.getElementById("edit-start_time").value = start_time;
+        document.getElementById("edit-end_time").value = end_time;
         document.getElementById("edit-event_location").value = event_location;
         document.getElementById("edit-event-type").value = event_type;
         document.getElementById("edit-event-description").value = event_description;
@@ -150,8 +161,9 @@ times and places, and then finally the social media links with the icons. This p
                 {% if 'club_id' in session and session['club_id']==info['clubID'] %}
                     <button id = "edit-btn"
                             onclick="editEvent('{{event['event_name']}}','{{event['event_date']}}',
-                            '{{event['event_time']}}','{{event['event_location']}}','{{event['event_type']}}',
-                            '{{event['event_description']}}','{{event['eventID']}}')">Edit</button>
+                            '{{event['start_time']}}','{{event['end_time']}}','{{event['event_location']}}',
+                            '{{event['event_type']}}','{{event['event_description']}}',
+                            '{{event['eventID']}}')">Edit</button>
                     <button id = "delete-btn"
                             onclick="location.href='/deleteEvent?q={{event['eventID']}}'">
                         <i class="fa fa-times-circle" aria-hidden="true"></i>Delete</button>
@@ -159,7 +171,7 @@ times and places, and then finally the social media links with the icons. This p
                 <h5>{{event['club_name']}}</h5>
                 <div class = "specific-info">
                     <h5>{{event['event_date']}}</h5>
-                    <h5>{{event['event_time']}}</h5>
+                    <h5>{{event['start_time']}}</h5>
                 </div>
                 <h5>{{event['event_location']}}</h5>
                 {% if event['event_type'] != None %}
@@ -178,7 +190,10 @@ times and places, and then finally the social media links with the icons. This p
                 <img src = "../static/clubImages/{{info['club_image']}}" />
             {% endif %}
             {% if 'club_id' in session and session['club_id']==info['clubID'] %}
-                <button onclick = editClub()>Edit Profile</button>
+                <button onclick = "editClub('{{info['club_name']}}','{{info['about_info']}}','{{info['meet_day']}}',
+                    '{{info['meet_time']}}','{{info['meet_location']}}','{{info['facebook_link']}}',
+                    '{{info['instagram_link']}}','{{info['twitter_link']}}',
+                    '{{info['website_link']}}')">Edit Profile</button>
             {% endif %}
             <h3>{{info['club_name']}}</h3>
         </div>
@@ -259,17 +274,17 @@ times and places, and then finally the social media links with the icons. This p
                            maxlength="255"><br>
                     <!--        The event time is a required field -->
                     <i class="fa fa-asterisk" aria-hidden="true"></i>
-                    <label for="event_time">Event Start Time:</label>
+                    <label for="start_time">Event Start Time:</label>
                     <input type="time"
-                           id="event_time"
+                           id="start_time"
                            name="start_time"
                            placeholder="Event Time"
                            maxlength="255"><br>
                     <!--        The event end time is a required field -->
                     <i class="fa fa-asterisk" aria-hidden="true"></i>
-                    <label for="event_time">Event End Time:</label>
+                    <label for="end_time">Event End Time:</label>
                     <input type="time"
-                           id="event_time2"
+                           id="end_time"
                            name="end_time"
                            placeholder="Event Time"
                            maxlength="255"><br>
@@ -308,6 +323,7 @@ times and places, and then finally the social media links with the icons. This p
                 <input type="text"
                        name="event_name"
                        id="edit-event_name"
+                       placeholder="Event Name"
                        maxlength="255"><br>
 
                 <label class = "nonrequired" for="event-img">Event Image:</label>
@@ -335,19 +351,17 @@ times and places, and then finally the social media links with the icons. This p
 
                 <!--        The event start time is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="event_time">Event Start Time:</label>
+                <label for="edit-start_time">Event Start Time:</label>
                 <input type="time"
-                       id="edit-event_time"
+                       id="edit-start_time"
                        name="start_time"
-                       placeholder="Event Time"
                        maxlength="255">
                 <!--        The event end time is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="event_time">Event End Time:</label>
+                <label for="edit-end_time">Event End Time:</label>
                 <input type="time"
-                       id="edit-event_time2"
+                       id="edit-end_time"
                        name="end_time"
-                       placeholder="Event Time"
                        maxlength="255"><br>
 
                 <!--        The event location is a required field -->
@@ -356,6 +370,7 @@ times and places, and then finally the social media links with the icons. This p
                 <input type="text"
                        name="event_location"
                        id="edit-event_location"
+                       placeholder="Event Location"
                        maxlength="255"><br>
 
                 <!--        The event description is a required field -->
@@ -375,14 +390,15 @@ times and places, and then finally the social media links with the icons. This p
             <h3>Edit Club Page</h3>
             <p>* indicates required field </p>
             <button id="btn-del" onclick = deleteClub()>Delete Club</button>
-            <form action="/createAccount" method="post">
+            <form action="/updateAccount" method="post" enctype=multipart/form-data>
                 <!--        The club name is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="club-name">Club Name:</label><br>
+                <label for="club_name">Club Name:</label><br>
                 <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE
                             THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
                 <input type="text"
-                       id="club-name"
+                       id="club_name"
+                       name="club_name"
                        placeholder="Club Name"
                        maxlength="255"><br>
 
@@ -392,94 +408,103 @@ times and places, and then finally the social media links with the icons. This p
                 <input class = "nonrequired"
                        type="file"
                        id="profile-image"
+                       name = "club_image"
                        placeholder="Profile Image"
                        size="5"><br>
 
                 <!--        The club description or about_info is a required field -->
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="club-description">Club Description:</label><br>
+                <label for="about_info">Club Description:</label><br>
                 <input type="text"
-                       id="club-description"
+                       id="about_info"
+                       name="about_info"
                        placeholder="What is your Club's Mission?"
                        maxLength="1000"><br>
 
-                <label class = "nonrequired" for="meeting-days">Meeting Day:</label><br>
+                <label class = "nonrequired" for="meet_day">Meeting Day:</label><br>
                 <input class = "nonrequired"
                        type="text"
-                       id="meeting-days"
+                       id="meet_day"
+                       name="meet_day"
                        placeholder="What days does your Club meet?"><br>
 
-                <label class = "nonrequired" for="meeting-times">Meeting Time:</label><br>
+                <label class = "nonrequired" for="meet_time">Meeting Time:</label><br>
                 <input type="text"
-                       id="meeting-times"
+                       id="meet_time"
+                       name="meet_time"
                        placeholder="What time does your Club meet?"><br>
 
-                <label class = "nonrequired" for="meeting-place">Meeting Place:</label><br>
+                <label class = "nonrequired" for="meet_location">Meeting Place:</label><br>
                 <input class = "nonrequired"
                        type="text"
-                       id="meeting-place"
+                       id="meet_location"
+                       name="meet_location"
                        placeholder="Where does your Club meet?"><br>
 
-                <label class = "nonrequired" for="sm-facebook">Facebook:</label><br>
+                <label class = "nonrequired" for="facebook_link">Facebook:</label><br>
                 <input class = "nonrequired"
                        type="url"
-                       id="sm-facebook"
+                       id="facebook_link"
+                       name="facebook_link"
                        placeholder="Facebook URL"><br>
 
-                <label class = "nonrequired" for="sm-instagram">Instagram:</label><br>
+                <label class = "nonrequired" for="instagram_link">Instagram:</label><br>
                 <input class = "nonrequired"
                        type="url"
-                       id="sm-instagram"
+                       id="instagram_link"
+                       name="instagram_link"
                        placeholder="Instagram URL"><br>
 
-                <label class = "nonrequired" for="sm-twitter">Twitter:</label><br>
+                <label class = "nonrequired" for="twitter_link">Twitter:</label><br>
                 <input class = "nonrequired"
-                       id = "sm-twitter"
+                       id = "twitter_link"
+                       name="twitter_link"
                        type="url"
                        placeholder="Twitter URL"><br>
 
-                <label class = "nonrequired" for="sm-website">Website:</label><br>
+                <label class = "nonrequired" for="website_link">Website:</label><br>
                 <input class = "nonrequired"
                        type="url"
-                       id="sm-website"
+                       id="website_link"
+                       name="website_link"
                        placeholder="Website URL"><br>
 
                 <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
-                <button type="button" onclick="alert('Saving Club Information')">Save</button>
+                <button type="submit">Save</button>
 
             </form>
-            <h3>Edit Account Info</h3>
-            <p>* indicates required field </p>
-            <form>
-                <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
+<!--            <h3>Edit Account Info</h3>-->
+<!--            <p>* indicates required field </p>-->
+<!--            <form>-->
+<!--                &lt;!&ndash; TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE THIS IS APPLICABLE FOR ALL OF THE INPUTS &ndash;&gt;-->
 
-                <!--        The club email is a required field -->
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="club-email">Club Email:</label><br>
-                <input type="email"
-                       id="club-email"
-                       placeholder="Your Club's Email"
-                       pattern=".+@pugetsound.edu" required><br>
+<!--                &lt;!&ndash;        The club email is a required field &ndash;&gt;-->
+<!--                <i class="fa fa-asterisk" aria-hidden="true"></i>-->
+<!--                <label for="club-email">Club Email:</label><br>-->
+<!--                <input type="email"-->
+<!--                       id="club-email"-->
+<!--                       placeholder="Your Club's Email"-->
+<!--                       pattern=".+@pugetsound.edu" required><br>-->
 
-                <!--        The admin name is a required field -->
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="admin-name">Admin Name:</label><br>
-                <input type="text"
-                       id="admin-name"
-                       placeholder="Your Name"><br>
+<!--                &lt;!&ndash;        The admin name is a required field &ndash;&gt;-->
+<!--                <i class="fa fa-asterisk" aria-hidden="true"></i>-->
+<!--                <label for="admin-name">Admin Name:</label><br>-->
+<!--                <input type="text"-->
+<!--                       id="admin-name"-->
+<!--                       placeholder="Your Name"><br>-->
 
-                <!--        The admin email is a required field -->
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="admin-email">Admin Email:</label><br>
-                <input type="email"
-                       id="admin-email"
-                       placeholder="Your @pugetsound.edu Email"
-                       pattern=".+@pugetsound.edu" required><br>
+<!--                &lt;!&ndash;        The admin email is a required field &ndash;&gt;-->
+<!--                <i class="fa fa-asterisk" aria-hidden="true"></i>-->
+<!--                <label for="admin-email">Admin Email:</label><br>-->
+<!--                <input type="email"-->
+<!--                       id="admin-email"-->
+<!--                       placeholder="Your @pugetsound.edu Email"-->
+<!--                       pattern=".+@pugetsound.edu" required><br>-->
 
-                <!--       IF THEY PRESS THIS BUTTON THEN WE WANT TO SAVE THE ACCOUNT INFORMATION -->
-                <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE -->
-                <button type="button" onclick="alert('Saving Account Information')">Save</button>
-            </form>
+<!--                &lt;!&ndash;       IF THEY PRESS THIS BUTTON THEN WE WANT TO SAVE THE ACCOUNT INFORMATION &ndash;&gt;-->
+<!--                &lt;!&ndash; TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE &ndash;&gt;-->
+<!--                <button type="button" onclick="alert('Saving Account Information')">Save</button>-->
+<!--            </form>-->
         </div>
     </div>
 </div>
