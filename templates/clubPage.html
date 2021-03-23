@@ -141,7 +141,7 @@ times and places, and then finally the social media links with the icons. This p
         window.confirm("Do you want to delete your club?");
         if(confirm){
             //if the user clicks ok and therefore wants to delete the club
-            console.log("delete club");
+            location.href='/deleteClub';
         }else{
             //otherwise the user clicked cancel and we should go back to club profile view by calling exit() function
             console.log("keep club")
