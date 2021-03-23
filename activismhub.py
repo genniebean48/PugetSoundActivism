@@ -54,6 +54,11 @@ def index():
                      SELECT * FROM %s WHERE event_date = CURDATE() AND start_time > CURTIME()
                      ORDER BY event_date, start_time''' % (EVENT_TABLE,EVENT_TABLE))
    events = cursor.fetchall()
+   #add formatted date and times
+   for event in events:
+        event['event_date_formatted']=formatDateFromSql(event['event_date'])
+        event['start_time_formatted']=formatTimeFromSql(event['start_time'])
+        event['end_time_formatted']=formatTimeFromSql(event['end_time'])
    return render_template("homePage.html",events=events,clubs=clubs)
 
 
@@ -74,6 +79,14 @@ def club_page():
                      SELECT * FROM %s WHERE event_date = CURDATE() AND start_time > CURTIME() AND
                      clubID=%%s ORDER BY event_date, start_time'''%(EVENT_TABLE,EVENT_TABLE),(clubID,clubID))
    events = cursor.fetchall()
+   #add formatted date and times
+   for event in events:
+           event['event_date_formatted']=formatDateFromSql(event['event_date'])
+           event['start_time_formatted']=formatTimeFromSql(event['start_time'])
+           event['end_time_formatted']=formatTimeFromSql(event['end_time'])
+   #add formatted meet time
+   if info['meet_time']!=None:
+       info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
    #Get list of dicts of clubs
    clubs = getClubs()
    return render_template("clubPage.html",info=info,events=events,clubs=clubs)
@@ -117,9 +130,9 @@ def do_login():
            return index()
        else:
            #if password incorrect, reload login page
-           return login("Incorrect password.")
+           return login_page("Incorrect password.")
    else:
-       return login("There is no account with that email.")
+       return login_page("There is no account with that email.")
 
 
 #Route when user clicks logout
@@ -156,50 +169,6 @@ def enter_account():
    mysql.connection.commit()
    #reroute to home page
    return index()
-
-
-#Gets list of club names and IDs
-def getClubs():
-   cursor = mysql.connection.cursor()
-   cursor.execute('''SELECT club_name, clubID FROM %s''' % (CLUB_TABLE,))
-   return cursor.fetchall()
-
-
-#formats date - not in use
-def formatDateFromSql(sqlDate):
-    months = ['January','February','March','April','May','June','July',
-        'August','September','October','November','December']
-    year = sqlDate.year
-    month = sqlDate.month
-    day = sqlDate.day
-    return months[month-1]+" "+str(day)+", "+str(year)
-
-#formats times - not in use
-def formatTimeFromSql(time):
-    hours = (int)(time.seconds/3600)
-    min = (int)((time.seconds/60)%60)
-    if min==0:
-        min='00'
-    ampm = 'AM'
-    if hours>12:
-        time=time-12
-        ampm='PM'
-    return str(hours)+":"+str(min)+" "+ampm
-
-
-
-# #route when user clicks edit club profile from club page
-# @app.route("/editClub")
-# def editClub():
-#     cursor = mysql.connection.cursor()
-#     #get which club
-#     clubID = session['club_id']
-#     #Get club info
-#     cursor.execute('''SELECT * FROM testClub WHERE clubID = %s''',(clubID,))
-#     info = cursor.fetchall()[0]
-#     #get clubs
-#     clubs = getClubs()
-#     return render_template('editClub.html',clubs=clubs,info=info)
 
 
 #when user clicks submit on edit club page
@@ -361,6 +330,7 @@ def updateEvent():
     return redirect(f"/clubPage?q={clubID}")
 
 
+#Route when user clicks delete club on edit profile page, then confirms
 @app.route("/deleteClub")
 def delete_club():
     #get which club
@@ -378,5 +348,37 @@ def delete_club():
     mysql.connection.commit()
     #logout
     return logout()
+
+########################################################################################################################
+##### Helper functions #################################################################################################
+
+#Gets list of club names and IDs
+def getClubs():
+   cursor = mysql.connection.cursor()
+   cursor.execute('''SELECT club_name, clubID FROM %s''' % (CLUB_TABLE,))
+   return cursor.fetchall()
+
+
+#formats date
+def formatDateFromSql(sqlDate):
+    months = ['January','February','March','April','May','June','July',
+        'August','September','October','November','December']
+    year = sqlDate.year
+    month = sqlDate.month
+    day = sqlDate.day
+    return months[month-1]+" "+str(day)+", "+str(year)
+
+
+#formats times
+def formatTimeFromSql(time):
+    hours = (int)(time.seconds/3600)
+    min = (int)((time.seconds/60)%60)
+    if min==0:
+        min='00'
+    ampm = 'AM'
+    if hours>12:
+        hours=hours-12
+        ampm='PM'
+    return str(hours)+":"+str(min)+" "+ampm
 
 
