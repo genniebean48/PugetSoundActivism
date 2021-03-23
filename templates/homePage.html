@@ -34,10 +34,10 @@ events that are coming up in the next week. -->
             <h4>{{event['event_name']}}</h4>
             <h5>{{event['club_name']}}</h5>
             <div class = "specific-info">
-                <h5>{{event['event_date']}}</h5>
-                <h5>{{event['start_time']}}-{{event['end_time']}}</h5>
+                <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
+                <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}</h5>
             </div>
-            <h5>{{event['event_location']}}</h5>
+            <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
             {% if event['event_type'] != None %}
                 <h5>{{event['event_type']}}</h5>
             {% endif %}

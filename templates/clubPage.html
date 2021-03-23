@@ -141,7 +141,7 @@ times and places, and then finally the social media links with the icons. This p
         window.confirm("Do you want to delete your club?");
         if(confirm){
             //if the user clicks ok and therefore wants to delete the club
-            console.log("delete club");
+            location.href='/deleteClub';
         }else{
             //otherwise the user clicked cancel and we should go back to club profile view by calling exit() function
             console.log("keep club")
@@ -186,10 +186,10 @@ times and places, and then finally the social media links with the icons. This p
                 {% endif %}
                 <h5>{{event['club_name']}}</h5>
                 <div class = "specific-info">
-                    <h5>{{event['event_date']}}</h5>
-                    <h5>{{event['start_time']}}-{{event['end_time']}}</h5>
+                    <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
+                    <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}</h5>
                 </div>
-                <h5>{{event['event_location']}}</h5>
+                <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
                 {% if event['event_type'] != None %}
                     <h5>{{event['event_type']}}</h5>
                 {% endif %}
@@ -197,7 +197,7 @@ times and places, and then finally the social media links with the icons. This p
             </div>
         </div>
         {% else %}
-        <p>No upcoming events!</p>
+            <p>There are no upcoming events!</p>
         {% endfor %}
     </div>
     <div class="club-panel-info">
@@ -229,7 +229,7 @@ times and places, and then finally the social media links with the icons. This p
                         <li><i class="fa fa-calendar" aria-hidden="true"></i>Meeting Day:</li>
                     {% endif %}
                     {% if info['meet_time']!=None %}
-                        <li><i class="fa fa-clock-o" aria-hidden="true"></i>Meeting Time: {{info['meet_time']}}</li>
+                        <li><i class="fa fa-clock-o" aria-hidden="true"></i>Meeting Time: {{info['meet_time_formatted']}}</li>
                     {% else %}
                         <li><i class="fa fa-clock-o" aria-hidden="true"></i>Meeting Time:</li>
                     {% endif %}
@@ -447,7 +447,7 @@ times and places, and then finally the social media links with the icons. This p
                        placeholder="What days does your Club meet?"><br>
 
                 <label class = "nonrequired" for="meet_time">Meeting Time:</label><br>
-                <input type="text"
+                <input type="time"
                        id="meet_time"
                        name="meet_time"
                        placeholder="What time does your Club meet?"><br>
