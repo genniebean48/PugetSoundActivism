@@ -5,6 +5,11 @@ email, and the password of the user in order to allow correct users to "LogIn" -
 
 {% block css_file %}
 <link href="{{ url_for('static', filename='login.less') }}" type="text/css" rel="stylesheet/less"/>
+<script>
+    function createAccount(){
+        location.href = "/createAccount"
+    }
+</script>
 {% endblock %}
 
 {% block title %}
@@ -14,13 +19,16 @@ email, and the password of the user in order to allow correct users to "LogIn" -
 {% block panel %}
 <div class="login-panel">
     <h3>Login</h3>
+    {% if message != "" %}
+        <p>{{message}}</p>
+    {% endif %}
     <form action="/doLogin" method="post">
         <label for="Email">Club Email:</label><br>
         <input type="text" id="Email" name="Email"><br>
         <label for="Password">Password:</label><br>
         <input type="text" id="Password" name="Password"><br>
-        <button type="submit">Submit</button>
-        <button type="button" id = "create-account" onclick="href='templates/create-account.html'">Create An Account</button>
+        <button type="submit">Login</button>
+        <button type="button" id = "create-account" onclick=createAccount()>Create An Account</button>
 <!-- TODO: WHEN THE USER PRESSES SUBMIT - VERIFY LOGIN INFO -->
     </form>
 </div>

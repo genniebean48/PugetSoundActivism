@@ -25,17 +25,22 @@ events that are coming up in the next week. -->
     {% for event in events %}
     <div class="events">
         <!--  TODO: THIS IS WHERE WE ARE GETTING THE EVENT IMAGE  -->
-        <img src = "../static/images/default_image.jpg" />
+        {% if event['event_image']==None %}
+            <img src = "../static/images/default_image.jpg" />
+        {% else %}
+            <img src = "../static/eventImages/{{event['event_image']}}" />
+        {% endif %}
         <div class="profile-info">
             <h4>{{event['event_name']}}</h4>
-            <!--  TODO: we need to query the clubs name here too  -->
-            <h5>Club Name</h5>
+            <h5>{{event['club_name']}}</h5>
             <div class = "specific-info">
-                <h5>{{event['event_date']}}</h5>
-                <h5>{{event['event_time']}}</h5>
+                <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
+                <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}</h5>
             </div>
-            <h5>{{event['event_location']}}</h5>
-            <h5>{{event['event_type']}}</h5>
+            <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
+            {% if event['event_type'] != None %}
+                <h5>{{event['event_type']}}</h5>
+            {% endif %}
             <p>{{event['event_description']}}</p>
         </div>
     </div>
