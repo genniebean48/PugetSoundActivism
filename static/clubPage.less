@@ -59,8 +59,8 @@ body {
   justify-content: center;
   margin: 0px;
   width: 100%;
-  height: 100vh;
-  background: #003249;
+  height: 93vh;
+  background: white;
 
   .fa-asterisk {
     font-size: 0.5em;
@@ -68,7 +68,6 @@ body {
 
   .upcoming-events {
     background: #003249;
-    margin-bottom: 20px;
     width: 70%;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -89,8 +88,8 @@ body {
 
       button {
         display: flex;
-        position: absolute;
-        left: 31%;
+        position: relative;
+        left: 13%;
         height: 20px;
         border: none;
         border-radius: 6px;
@@ -145,7 +144,7 @@ body {
       margin: 0px 0px 20px 15px;
       background-color: white;
       border-radius: 6px;
-      height: 105px;
+      height: 102px;
       width: 90%;
       overflow-x: hidden;
       overflow-y: scroll;
@@ -215,9 +214,8 @@ body {
       img {
         display: flex;
         background: darkgrey;
-        height: 75px;
-        width: 75px;
-        padding: 0px 10px;
+        height: 85px;
+        width: 85px;
         margin: 10px 10px;
       }
 
@@ -251,6 +249,7 @@ body {
         display: flex;
         font-size: 14px;
         margin: 0px 0px 10px 0px;
+        padding-bottom: 15px;
         color: #003249;
       }
     }
@@ -259,9 +258,9 @@ body {
   .club-panel-info {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 93vh;
     width: 100%;
-    background: #99adb6;
+    background: white;
 
     .exit{
       position: absolute;
@@ -275,6 +274,9 @@ body {
     #add-panel {
       display: none;
       margin-left: 10px;
+      background: white;
+      overflow: scroll;
+
       .edit-event-add {
         .exit{
           position: absolute;
@@ -361,6 +363,14 @@ body {
           width: 100%;
           margin-left: 10px;
           margin-bottom: 20px;
+        }
+
+        #clubEmail{
+          margin-bottom: 3px;
+        }
+
+        #clubShowEmail{
+          width: 2%;
         }
 
         button {
@@ -471,8 +481,7 @@ body {
       position: relative;
       justify-content: center;
       width: 100%;
-      height: 100%;
-      height: 371px;
+      height: 290px;
       border-radius: 6px;
 
       button {
@@ -507,7 +516,7 @@ body {
         text-align: center;
         width: 80%;
         background: white;
-        opacity: 0.88;
+        opacity: 0.68;
         border-radius: 6px;
         font-size: 70px;
         font-weight: 700;
@@ -559,6 +568,10 @@ body {
           font-size: 40px;
           padding: 0px;
           margin: 0px;
+          p{
+            font-size: 14px;
+            margin: 0px;
+          }
         }
       }
     }
