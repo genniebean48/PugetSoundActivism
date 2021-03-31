@@ -176,7 +176,7 @@ times and places, and then finally the social media links with the icons. This p
             {% else %}
             <img src="../static/eventImages/{{event['event_image']}}"/>
             {% endif %}
-            <div class="profile-info">
+            <div class="event-info">
                 <h4>{{event['event_name']}}</h4>
                 {% if 'club_id' in session and session['club_id']==info['clubID'] %}
                 <button id="edit-btn"
@@ -191,7 +191,7 @@ times and places, and then finally the social media links with the icons. This p
                 </button>
                 {% endif %}
                 <h5>{{event['club_name']}}</h5>
-                <div class="specific-info">
+                <div class="event-logistic-info">
                     <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
                     <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}
                     </h5>
@@ -208,7 +208,7 @@ times and places, and then finally the social media links with the icons. This p
         {% endfor %}
     </div>
     <div class="club-panel-info">
-        <div id="club-profile-panel">
+        <div id="club-profile-title">
             {% if info['club_image']==None %}
             <img src="../static/images/trees-image.jpg"/>
             {% else %}
@@ -221,12 +221,12 @@ times and places, and then finally the social media links with the icons. This p
             {% endif %}
             <h3>{{info['club_name']}}</h3>
         </div>
-        <div id="club-profile-info">
-            <div class="about">
+        <div id="club-profile-logistics">
+            <div class="club-logistics-about">
                 <h4>Who Are We?</h4>
                 <p> {{info['about_info']}} </p>
             </div>
-            <div class="specifics">
+            <div class="club-logistics-interact">
                 <h4>Join Us!</h4>
                 <ul>
                     {% if info['meet_day']!=None %}
@@ -265,8 +265,8 @@ times and places, and then finally the social media links with the icons. This p
                 </ul>
             </div>
         </div>
-        <div id="add-panel">
-            <div class="edit-event-add">
+        <div id="add-event-panel">
+            <div class="add-event-form">
                 <button class="exit" onclick=exit()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
                 <h3 id="add-title">Add Event</h3>
                 <p>* indicates required field </p>
@@ -343,8 +343,8 @@ times and places, and then finally the social media links with the icons. This p
                 </form>
             </div>
         </div>
-        <div id="edit-panel">
-            <div class="edit-event-edit">
+        <div id="edit-event-panel">
+            <div class="edit-event-form">
                 <button class="exit" onclick=exit()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
                 <h3 id="edit-title">Edit Event</h3>
                 <p>* indicates required field </p>
@@ -428,7 +428,7 @@ times and places, and then finally the social media links with the icons. This p
                 </form>
             </div>
         </div>
-        <div id="login-panel">
+        <div id="edit-club-panel">
             <button class="exit" onclick=exit()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
             <h3>Edit Club Page</h3>
             <p>* indicates required field </p>
@@ -513,41 +513,10 @@ times and places, and then finally the social media links with the icons. This p
                        placeholder="Website URL"><br>
 
                 <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
-                <button type="submit">Save</button>
+                <input type="submit"
+                       value="Edit Club"/>
 
             </form>
-            <!--            <h3>Edit Account Info</h3>-->
-            <!--            <p>* indicates required field </p>-->
-            <!--            <form>-->
-            <!--                &lt;!&ndash; TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE THIS IS APPLICABLE FOR ALL OF THE INPUTS &ndash;&gt;-->
-
-            <!--                &lt;!&ndash;        The club email is a required field &ndash;&gt;-->
-            <!--                <i class="fa fa-asterisk" aria-hidden="true"></i>-->
-            <!--                <label for="club-email">Club Email:</label><br>-->
-            <!--                <input type="email"-->
-            <!--                       id="club-email"-->
-            <!--                       placeholder="Your Club's Email"-->
-            <!--                       pattern=".+@pugetsound.edu" required><br>-->
-
-            <!--                &lt;!&ndash;        The admin name is a required field &ndash;&gt;-->
-            <!--                <i class="fa fa-asterisk" aria-hidden="true"></i>-->
-            <!--                <label for="admin-name">Admin Name:</label><br>-->
-            <!--                <input type="text"-->
-            <!--                       id="admin-name"-->
-            <!--                       placeholder="Your Name"><br>-->
-
-            <!--                &lt;!&ndash;        The admin email is a required field &ndash;&gt;-->
-            <!--                <i class="fa fa-asterisk" aria-hidden="true"></i>-->
-            <!--                <label for="admin-email">Admin Email:</label><br>-->
-            <!--                <input type="email"-->
-            <!--                       id="admin-email"-->
-            <!--                       placeholder="Your @pugetsound.edu Email"-->
-            <!--                       pattern=".+@pugetsound.edu" required><br>-->
-
-            <!--                &lt;!&ndash;       IF THEY PRESS THIS BUTTON THEN WE WANT TO SAVE THE ACCOUNT INFORMATION &ndash;&gt;-->
-            <!--                &lt;!&ndash; TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE &ndash;&gt;-->
-            <!--                <button type="button" onclick="alert('Saving Account Information')">Save</button>-->
-            <!--            </form>-->
         </div>
     </div>
 </div>
