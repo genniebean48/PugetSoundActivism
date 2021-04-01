@@ -5,6 +5,17 @@ contains all fo the information from the navigation bar because it extends the l
 
 {% block css_file %}
 <link href="{{ url_for('static', filename='create-account.less') }}" type="text/css" rel="stylesheet/less"/>
+<script>
+    function verifyPassword(password, confimPassword){
+        console.log("reached function");
+        if(password !== confimPassword){
+            alert("passwords don't match please try again.");
+            return false;
+        }else{
+            return true;
+        }
+    }
+</script>
 {% endblock %}
 
 {% block title %}
@@ -71,7 +82,9 @@ contains all fo the information from the navigation bar because it extends the l
                id="club-description"
                name="club-description"
                placeholder="What is your Club's mission?"><br>
-        <button type="submit">Submit</button>
+        <input type="submit"
+               value="Create Account"
+            onclick="return verifyPassword(password.value, cpassword.value)"/>
     </form>
 </div>
 <body>
