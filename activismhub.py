@@ -1,10 +1,13 @@
-# INITIAL BARE BONES FOR APPLICATION LAYER
-# 2/14/21
-# This file runs the application, SQL queries and route direction will be in here
-# Both flask and flask-mysqldb must be installed (on CL: pip install flask--mysqldb)
+# ACTivism Hub Web App application layer filename
+# Manya Mutschler-Aldine
+# Last edited: 3/22/21
+# This file handles routing, SQL queries, and data manipulation
+# If running on a local machine, both flask and flask-mysqldb must be installed (on CL: pip install flask,
+# pip install flask--mysqldb) - see instructions.txt for more details on how to run
 
-#IMPORT
-#request is for get/post data, render_template is to render html pages
+########################################################################################################################
+##### Initial setup ####################################################################################################
+
 from flask import Flask, request, render_template, session, redirect
 from flask_mysqldb import MySQL
 import os, datetime
@@ -26,22 +29,24 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead
 
 #Set start path for images - Change for whether running in server or on localhost
 #for server
-# app.config['IMAGE_PATH']='/var/www/ActivismHub/PugetSoundActivism/static'
+# IMAGE_PATH='/var/www/ActivismHub/PugetSoundActivism/static'
 #for localhost
 IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 
 #Set tables - Change for running in server or localhost if club access is an issue
 #for actually running
-# app.config['CLUB_TABLE']='club'
-# app.config['EVENT_TABLE']='club_event'
-# app.config['ADMIN_TABLE']='club_admin'
+# CLUB_TABLE='club'
+# EVENT_TABLE='club_event'
+# ADMIN_TABLE='club_admin'
 #for testing
 CLUB_TABLE='testClub'
 EVENT_TABLE='testClub_event'
 ADMIN_TABLE='testClub_admin'
 
+########################################################################################################################
+##### Main pages #######################################################################################################
 
-#Route with nothing appended (in our local machine, localhost:5000)
+#Route with nothing appended (in our local machine, localhost:5000, in our server, activism-hub.pugetsound.edu)
 @app.route("/")
 def index():
    #Establish connection
@@ -60,7 +65,6 @@ def index():
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
    return render_template("homePage.html",events=events,clubs=clubs)
-
 
 
 #Route when a club page is clicked
@@ -92,20 +96,15 @@ def club_page():
    return render_template("clubPage.html",info=info,events=events,clubs=clubs)
 
 
+########################################################################################################################
+##### Login/logout #####################################################################################################
+
 #Route when user clicks login
 @app.route("/login")
 def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
    return render_template("login.html",clubs=clubs,message=message)
-
-
-#Route when user clicks create account from login page
-@app.route("/createAccount")
-def create_account():
-   #sample list of dicts of clubs
-   clubs = getClubs()
-   return render_template("create-account.html",clubs=clubs)
 
 
 #Route when user clicks submit on login page
@@ -144,6 +143,17 @@ def logout():
    return index()
 
 
+########################################################################################################################
+##### Club Account #####################################################################################################
+
+#Route when user clicks create account from login page
+@app.route("/createAccount")
+def create_account():
+   #sample list of dicts of clubs
+   clubs = getClubs()
+   return render_template("create-account.html",clubs=clubs)
+
+
 #Route when user clicks submit on the create account page
 @app.route("/enterAccount",methods=["POST"])
 def enter_account():
@@ -156,9 +166,10 @@ def enter_account():
    description = request.form['club-description']
    adminEmail = request.form['admin-email']
    password = request.form['password']
+   club_email_display = request.form.get('club_email_display') != None
    #Insert new account info into club table
-   cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password)
-       VALUES(%%s,%%s,%%s,%%s)'''%(CLUB_TABLE,),(clubName,description,email,password))
+   cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display)
+       VALUES(%%s,%%s,%%s,%%s,%%s)'''%(CLUB_TABLE,),(clubName,description,email,password,club_email_display))
    mysql.connection.commit()
    #get club new club id
    cursor.execute('''SELECT clubID FROM %s where club_name = %%s'''%(CLUB_TABLE,),(clubName,))
@@ -188,6 +199,7 @@ def updateClub():
     instagram_link = request.form['instagram_link']
     twitter_link = request.form['twitter_link']
     website_link = request.form['website_link']
+    club_email_display = request.form.get('club_email_display') != None
     #for optional fields, if empty set to none
     if meet_time == '':
             meet_time = None
@@ -215,9 +227,10 @@ def updateClub():
         club_image = cursor.fetchall()[0]['club_image']
     #Put new info in database
     cursor.execute('''UPDATE %s SET club_name=%%s,about_info=%%s,meet_time=%%s,meet_day=%%s,meet_location=%%s,
-                    facebook_link=%%s,instagram_link=%%s,twitter_link=%%s,website_link=%%s,club_image=%%s WHERE
+                    facebook_link=%%s,instagram_link=%%s,twitter_link=%%s,website_link=%%s,club_image=%%s,
+                    club_email_display=%%s WHERE
                     clubID = %%s'''%(CLUB_TABLE,),(club_name,about_info,meet_time,meet_day,meet_location,
-                    facebook_link,instagram_link,twitter_link,website_link,club_image,clubID))
+                    facebook_link,instagram_link,twitter_link,website_link,club_image,club_email_display,clubID))
     mysql.connection.commit()
     #Update all of that club's events to possibly new club name
     cursor.execute('''UPDATE %s SET club_name = %%s WHERE clubID = %%s'''%(EVENT_TABLE,),(club_name,clubID))
@@ -225,6 +238,29 @@ def updateClub():
     #reroute to club page
     return redirect(f"/clubPage?q={clubID}")
 
+
+#Route when user clicks delete club on edit profile page, then confirms
+@app.route("/deleteClub")
+def delete_club():
+    #get which club
+    clubID = session['club_id']
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+    #delete all club events
+    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(EVENT_TABLE,),(clubID,))
+    mysql.connection.commit()
+    #delete club from admin table
+    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(ADMIN_TABLE,),(clubID,))
+    mysql.connection.commit()
+    #delete club from club table
+    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(CLUB_TABLE,),(clubID,))
+    mysql.connection.commit()
+    #logout
+    return logout()
+
+
+########################################################################################################################
+##### Events ###########################################################################################################
 
 #route when user clicks add event from add event page
 @app.route("/addEvent",methods=["POST"])
@@ -329,25 +365,6 @@ def updateEvent():
     #rerender club page
     return redirect(f"/clubPage?q={clubID}")
 
-
-#Route when user clicks delete club on edit profile page, then confirms
-@app.route("/deleteClub")
-def delete_club():
-    #get which club
-    clubID = session['club_id']
-    #instantiate cursor
-    cursor = mysql.connection.cursor()
-    #delete all club events
-    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(EVENT_TABLE,),(clubID,))
-    mysql.connection.commit()
-    #delete club from admin table
-    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(ADMIN_TABLE,),(clubID,))
-    mysql.connection.commit()
-    #delete club from club table
-    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(CLUB_TABLE,),(clubID,))
-    mysql.connection.commit()
-    #logout
-    return logout()
 
 ########################################################################################################################
 ##### Helper functions #################################################################################################

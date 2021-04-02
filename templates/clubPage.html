@@ -7,7 +7,7 @@ times and places, and then finally the social media links with the icons. This p
 {% block css_file %}
 <link href="{{ url_for('static', filename='clubPage.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
-    function editClub(club_name, about_info, meet_day, meet_time, meet_location, facebook_link, instagram_link, twitter_link, website_link) {
+    function editClub(club_name, about_info, meet_day, meet_time, meet_location, facebook_link, instagram_link, twitter_link, website_link, club_email_display) {
         document.getElementById("club_name").value = club_name;
         document.getElementById("about_info").value = about_info;
         if (meet_day != "None") {
@@ -31,25 +31,25 @@ times and places, and then finally the social media links with the icons. This p
         if (website_link != "None") {
             document.getElementById("website_link").value = website_link;
         }
+        if (club_email_display == 1) {
+            document.getElementById("club_email_display").checked=true;
+        }
         //hide add panel
         //reverse club panel
         //hide edit panel
         //reverse edit club panel
-        console.log("got here");
-        let title = document.getElementById("club-profile-info");
-        let events = document.getElementById("club-profile-panel");
-        let addP = document.getElementById("add-panel");
-        let editP = document.getElementById("edit-panel");
-        let loginPanel = document.getElementById("login-panel");
+        let title = document.getElementById("club-profile-logistics");
+        let events = document.getElementById("club-profile-title");
+        let addP = document.getElementById("add-event-panel");
+        let editP = document.getElementById("edit-event-panel");
+        let loginPanel = document.getElementById("edit-club-panel");
 
         if (window.getComputedStyle(loginPanel).display === "none") {
-            console.log("Got here 2");
             title.style.display = "none";
             events.style.display = "none";
             editP.style.display = "none";
             loginPanel.style.display = "flex";
         } else {
-            console.log("got here 3");
             title.style.display = "flex";
             events.style.display = "flex";
             editP.style.display = "none";
@@ -57,7 +57,6 @@ times and places, and then finally the social media links with the icons. This p
         }
 
         if (window.getComputedStyle(addP).display === "flex") {
-            console.log("got here 4");
             addP.style.display = "none";
         }
     }
@@ -66,11 +65,11 @@ times and places, and then finally the social media links with the icons. This p
         //reverse club panel
         //hide edit panel
         //reverse add panel
-        let title = document.getElementById("club-profile-info");
-        let events = document.getElementById("club-profile-panel");
-        let addP = document.getElementById("add-panel");
-        let editP = document.getElementById("edit-panel");
-        let loginPanel = document.getElementById("login-panel");
+        let title = document.getElementById("club-profile-logistics");
+        let events = document.getElementById("club-profile-title");
+        let addP = document.getElementById("add-event-panel");
+        let editP = document.getElementById("edit-event-panel");
+        let loginPanel = document.getElementById("edit-club-panel");
         if (window.getComputedStyle(addP).display === "none") {
             title.style.display = "none";
             events.style.display = "none";
@@ -102,11 +101,11 @@ times and places, and then finally the social media links with the icons. This p
         //hide add panel
         //reverse club panel
         //reverse edit panel
-        let title = document.getElementById("club-profile-info");
-        let events = document.getElementById("club-profile-panel");
-        let addP = document.getElementById("add-panel");
-        let editP = document.getElementById("edit-panel");
-        let loginPanel = document.getElementById("login-panel");
+        let title = document.getElementById("club-profile-logistics");
+        let events = document.getElementById("club-profile-title");
+        let addP = document.getElementById("add-event-panel");
+        let editP = document.getElementById("edit-event-panel");
+        let loginPanel = document.getElementById("edit-club-panel");
         if (window.getComputedStyle(editP).display === "none") {
             title.style.display = "none";
             events.style.display = "none";
@@ -128,11 +127,11 @@ times and places, and then finally the social media links with the icons. This p
     }
 
     function exit() {
-        let title = document.getElementById("club-profile-info");
-        let events = document.getElementById("club-profile-panel");
-        let addP = document.getElementById("add-panel");
-        let editP = document.getElementById("edit-panel");
-        let loginPanel = document.getElementById("login-panel");
+        let title = document.getElementById("club-profile-logistics");
+        let events = document.getElementById("club-profile-title");
+        let addP = document.getElementById("add-event-panel");
+        let editP = document.getElementById("edit-event-panel");
+        let loginPanel = document.getElementById("edit-club-panel");
 
         title.style.display = "flex";
         events.style.display = "flex";
@@ -215,7 +214,7 @@ times and places, and then finally the social media links with the icons. This p
             <img src="../static/clubImages/{{info['club_image']}}"/>
             {% endif %}
             {% if 'club_id' in session and session['club_id']==info['clubID'] %}
-            <button onclick="editClub('{{info['club_name']}}','{{info['about_info']}}','{{info['meet_day']}}','{{info['meet_time']}}','{{info['meet_location']}}','{{info['facebook_link']}}','{{info['instagram_link']}}','{{info['twitter_link']}}','{{info['website_link']}}')">
+            <button onclick="editClub('{{info['club_name']}}','{{info['about_info']}}','{{info['meet_day']}}','{{info['meet_time']}}','{{info['meet_location']}}','{{info['facebook_link']}}','{{info['instagram_link']}}','{{info['twitter_link']}}','{{info['website_link']}}','{{info['club_email_display']}}')">
                 Edit Profile
             </button>
             {% endif %}
@@ -249,7 +248,9 @@ times and places, and then finally the social media links with the icons. This p
                 <h4>Reach Out!</h4>
                 <ul class="social-media">
                     <!--                    TODO: IF THE EMAIL DISPLAY BOX IS CHECKED == TRUE THEN DISPLAY -->
-                    <p>{{info['club_email']}}</p>
+                    {% if info['club_email_display'] %}
+                        <p>{{info['club_email']}}</p>
+                    {% endif %}
                     {% if info['facebook_link']!=None %}
                     <a href={{info['facebook_link']}}><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
                     {% endif %}
@@ -359,9 +360,6 @@ times and places, and then finally the social media links with the icons. This p
                            maxlength="255"
                            required><br>
 
-                    <input type="checkbox" id="clubShowEmail" name="clubShowEmail"
-                           checked>
-                    <label for="clubShowEmail">Show Email</label><br>
 
                     <label class="nonrequired" for="event-img">Event Image:</label>
                     <input class="nonrequired"
@@ -511,6 +509,9 @@ times and places, and then finally the social media links with the icons. This p
                        id="website_link"
                        name="website_link"
                        placeholder="Website URL"><br>
+
+                <input type="checkbox" id="club_email_display" name="club_email_display">
+                <label for="club_email_display">Display email on club profile</label><br>
 
                 <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
                 <input type="submit"
