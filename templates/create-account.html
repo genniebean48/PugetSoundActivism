@@ -26,6 +26,10 @@ contains all fo the information from the navigation bar because it extends the l
 <div class="login-panel">
     <h3>Create an Account</h3>
     <p>* indicates required field </p>
+<!--    TODO: ADD FUNCTIONALITY OF ERROR CHECKING WITH PASSWORDS NOT MATCHING -->
+    {% if message != "" %}
+    <p>{{message}}</p>
+    {% endif %}
     <form action="/enterAccount" method="post">
         <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="clubEmail">Club Email:</label><br>
