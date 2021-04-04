@@ -28,7 +28,7 @@ contains all fo the information from the navigation bar because it extends the l
     <p>* indicates required field </p>
 <!--    TODO: ADD FUNCTIONALITY OF ERROR CHECKING WITH PASSWORDS NOT MATCHING -->
     {% if message != "" %}
-    <p>{{message}}</p>
+    <p id="message">{{message}}</p>
     {% endif %}
     <form action="/enterAccount" method="post">
         <i class="fa fa-asterisk" aria-hidden="true"></i>
