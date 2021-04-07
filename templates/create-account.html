@@ -5,6 +5,17 @@ contains all fo the information from the navigation bar because it extends the l
 
 {% block css_file %}
 <link href="{{ url_for('static', filename='create-account.less') }}" type="text/css" rel="stylesheet/less"/>
+<script>
+    function verifyPassword(password, confimPassword){
+        console.log("reached function");
+        if(password !== confimPassword){
+            alert("passwords don't match please try again.");
+            return false;
+        }else{
+            return true;
+        }
+    }
+</script>
 {% endblock %}
 
 {% block title %}
@@ -15,6 +26,10 @@ contains all fo the information from the navigation bar because it extends the l
 <div class="login-panel">
     <h3>Create an Account</h3>
     <p>* indicates required field </p>
+<!--    TODO: ADD FUNCTIONALITY OF ERROR CHECKING WITH PASSWORDS NOT MATCHING -->
+    {% if message != "" %}
+    <p id="message">{{message}}</p>
+    {% endif %}
     <form action="/enterAccount" method="post">
         <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="clubEmail">Club Email:</label><br>
@@ -23,17 +38,23 @@ contains all fo the information from the navigation bar because it extends the l
                id="clubEmail"
                name="clubEmail"
                placeholder="Club Email"><br>
+
+        <!--     TODO: hook up club show email-->
+        <input type="checkbox" id="clubShowEmail" name="club_email_display"
+               checked>
+        <label for="clubShowEmail">Display email on club profile</label><br>
+
         <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="password">Password:</label><br>
 <!--        //password is required-->
-        <input type="text"
+        <input type="password"
                id="password"
                name="password"
                placeholder="Password"><br>
         <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="cpassword">Confirm Password:</label><br>
 <!--        //confirm password is required-->
-        <input type="text"
+        <input type="password"
                id="cpassword"
                name="cpassword"
                placeholder="Confirm Password"><br>
@@ -65,7 +86,9 @@ contains all fo the information from the navigation bar because it extends the l
                id="club-description"
                name="club-description"
                placeholder="What is your Club's mission?"><br>
-        <button type="submit">Submit</button>
+        <input type="submit"
+               value="Create Account"
+            onclick="return verifyPassword(password.value, cpassword.value)"/>
     </form>
 </div>
 <body>

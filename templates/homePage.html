@@ -10,6 +10,17 @@ events that are coming up in the next week. -->
 
 {% block title %}
 <title>Actvism Hub</title>
+<script>
+    function showRideShare(){
+        const modal = document.getElementById("ride-share-modal");
+        modal.style.display = "block";
+    }
+
+    function hideRideShare(){
+        const modal = document.getElementById("ride-share-modal");
+        modal.style.display = "none";
+    }
+</script>
 {% endblock %}
 
 {% block panel %}
@@ -34,10 +45,14 @@ events that are coming up in the next week. -->
             <h4>{{event['event_name']}}</h4>
             <h5>{{event['club_name']}}</h5>
             <div class = "specific-info">
-                <h5>{{event['event_date']}}</h5>
-                <h5>{{event['start_time']}}-{{event['end_time']}}</h5>
+                <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
+                <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}</h5>
             </div>
-            <h5>{{event['event_location']}}</h5>
+
+            <div class="location-info">
+                <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
+                <button id="ride-share" onclick="showRideShare()"><i class="fa fa-car" aria-hidden="true"></i> Need a Ride? </button>
+            </div>
             {% if event['event_type'] != None %}
                 <h5>{{event['event_type']}}</h5>
             {% endif %}
@@ -45,6 +60,116 @@ events that are coming up in the next week. -->
         </div>
     </div>
     {% endfor %}
+</div>
+
+<div id="ride-share-modal">
+    <div class="modal-content">
+        <div class="modal-cars">
+            <div class="car-title">
+                <h3>Cars</h3>
+                <button id="add-car" onclick="hideRideShare()"><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
+            </div>
+
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+            <div class="cars">
+            <div class="seat-title">
+                <h4> Car #1 </h4>
+                <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+            </div>
+            <h5> Driver: Name </h5>
+            <h5> Seats Available: 8 </h5>
+        </div>
+            <div class="cars">
+            <div class="seat-title">
+                <h4> Car #1 </h4>
+                <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+            </div>
+            <h5> Driver: Name </h5>
+            <h5> Seats Available: 8 </h5>
+        </div>
+            <div class="cars">
+            <div class="seat-title">
+                <h4> Car #1 </h4>
+                <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+            </div>
+            <h5> Driver: Name </h5>
+            <h5> Seats Available: 8 </h5>
+        </div>
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+            <div class="cars">
+                <div class="seat-title">
+                    <h4> Car #1 </h4>
+                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                </div>
+                <h5> Driver: Name </h5>
+                <h5> Seats Available: 8 </h5>
+            </div>
+
+        </div>
+        <div class="modal-seats">
+            <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+            <h5> Ride Sharing </h5>
+            <p> This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.
+                This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.
+                This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.</p>
+        </div>
+    </div>
 </div>
 <body>
 
