@@ -20,6 +20,99 @@ events that are coming up in the next week. -->
         const modal = document.getElementById("ride-share-modal");
         modal.style.display = "none";
     }
+
+    function addCar() {
+        //reverse description panel
+        //reverse add panel
+        //hide reserve seat panel
+        let description = document.getElementById("modal-seats-description");
+        let addCar = document.getElementById("modal-seats-addCar");
+        let resSeat = document.getElementById("modal-seats-resSeat");
+
+        if (window.getComputedStyle(addCar).display === "none") {
+            description.style.display = "none";
+            resSeat.style.display = "none";
+            addCar.style.display = "inline-block";
+        } else {
+            addCar.style.display = "none";
+            resSeat.style.display = "none";
+            description.style.display = "flex";
+        }
+        //
+        // if (window.getComputedStyle(addP).display === "flex") {
+        //     addP.style.display = "none";
+        // }
+    }
+
+    function reserveSeat() {
+        //reverse description panel
+        //reverse add panel
+        //hide reserve seat panel
+        let description = document.getElementById("modal-seats-description");
+        let addCar = document.getElementById("modal-seats-addCar");
+        let resSeat = document.getElementById("modal-seats-resSeat");
+
+        if (window.getComputedStyle(resSeat).display === "none") {
+            description.style.display = "none";
+            addCar.style.display = "none";
+            resSeat.style.display = "inline-block";
+        } else {
+            addCar.style.display = "none";
+            resSeat.style.display = "none";
+            description.style.display = "flex";
+        }
+    }
+
+    function editEvent() {
+        document.getElementById("edit-event_name").value = event_name;
+        document.getElementById("edit-event_date").value = event_date;
+        document.getElementById("edit-start_time").value = start_time;
+        document.getElementById("edit-end_time").value = end_time;
+        document.getElementById("edit-event_location").value = event_location;
+        if (event_type != "None") {
+            document.getElementById("edit-event-type").value = event_type;
+        }
+        document.getElementById("edit-event-description").value = event_description;
+        document.getElementById("edit-eventID").value = eventID;
+        //hide add panel
+        //reverse club panel
+        //reverse edit panel
+        let title = document.getElementById("club-profile-logistics");
+        let events = document.getElementById("club-profile-title");
+        let addP = document.getElementById("add-event-panel");
+        let editP = document.getElementById("edit-event-panel");
+        let loginPanel = document.getElementById("edit-club-panel");
+        if (window.getComputedStyle(editP).display === "none") {
+            title.style.display = "none";
+            events.style.display = "none";
+            loginPanel.style.display = "none";
+            editP.style.display = "flex";
+        } else {
+            title.style.display = "flex";
+            events.style.display = "flex";
+            editP.style.display = "none";
+        }
+
+        if (window.getComputedStyle(addP).display === "flex") {
+            addP.style.display = "none";
+        }
+    }
+
+    function deleteEvent() {
+        console.log("deleting event");
+    }
+
+    function deleteClub() {
+        window.confirm("Do you want to delete your club?");
+        if (confirm) {
+            //if the user clicks ok and therefore wants to delete the club
+            location.href = '/deleteClub';
+        } else {
+            //otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+            console.log("keep club")
+            hideRideShare();
+        }
+    }
 </script>
 {% endblock %}
 
@@ -67,13 +160,13 @@ events that are coming up in the next week. -->
         <div class="modal-cars">
             <div class="car-title">
                 <h3>Cars</h3>
-                <button id="add-car" onclick="hideRideShare()"><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
+                <button id="add-car" onclick="addCar()"><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
             </div>
 
             <div class="cars">
                 <div class="seat-title">
                     <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
+                    <button onclick="reserveSeat()"><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
                     <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
                 </div>
                 <h5> Driver: Name </h5>
@@ -162,12 +255,82 @@ events that are coming up in the next week. -->
             </div>
 
         </div>
-        <div class="modal-seats">
+        <div id="modal-seats-description">
             <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
             <h5> Ride Sharing </h5>
             <p> This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.
                 This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.
                 This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.</p>
+        </div>
+        <div id="modal-seats-addCar">
+            <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+            <h3>Add Car</h3>
+            <p>* indicates required field </p>
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="driver_name">Driver's Name:</label><br>
+            <input type="text"
+                   id="driver_name"
+                   placeholder="Driver's Name"
+                   maxLength="255"
+                   required ><br>
+
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="driver_email">Driver's Email:</label><br>
+            <input type="text"
+                   id="driver_email"
+                   placeholder="Driver's Email"
+                   maxLength="255"
+                   required ><br>
+
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="num_seats">Number of Seats:</label><br>
+            <input type="number"
+                   id="num_seats"
+                   required ><br>
+
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="depart_time">Depart Time:</label><br>
+            <input type="time"
+                   id="depart_time"
+                   required ><br>
+
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="return_time">Return Time:</label><br>
+            <input type="time"
+                   id="return_time"
+                   required ><br>
+
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="meeting_location">Meeting Location:</label><br>
+            <input type="text"
+                   id="meeting_location"
+                   required ><br>
+
+            <input type="submit"
+                   value="Add Car"/>
+        </div>
+        <div id="modal-seats-resSeat">
+            <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+            <h3>Reserve a Seat</h3>
+            <p>* indicates required field </p>
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="passenger_name">Passenger's Name:</label><br>
+            <input type="text"
+                   id="passenger_name"
+                   placeholder="Passenger's Name"
+                   maxLength="255"
+                   required ><br>
+
+            <i class="fa fa-asterisk" aria-hidden="true"></i>
+            <label for="passenger_email">Passenger's Name:</label><br>
+            <input type="text"
+                   id="passenger_email"
+                   placeholder="Passenger's Email"
+                   maxLength="255"
+                   required ><br>
+
+            <input type="submit"
+                   value="Reserve Seat"/>
         </div>
     </div>
 </div>
