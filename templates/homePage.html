@@ -63,53 +63,13 @@ events that are coming up in the next week. -->
         }
     }
 
-    function editEvent() {
-        document.getElementById("edit-event_name").value = event_name;
-        document.getElementById("edit-event_date").value = event_date;
-        document.getElementById("edit-start_time").value = start_time;
-        document.getElementById("edit-end_time").value = end_time;
-        document.getElementById("edit-event_location").value = event_location;
-        if (event_type != "None") {
-            document.getElementById("edit-event-type").value = event_type;
-        }
-        document.getElementById("edit-event-description").value = event_description;
-        document.getElementById("edit-eventID").value = eventID;
-        //hide add panel
-        //reverse club panel
-        //reverse edit panel
-        let title = document.getElementById("club-profile-logistics");
-        let events = document.getElementById("club-profile-title");
-        let addP = document.getElementById("add-event-panel");
-        let editP = document.getElementById("edit-event-panel");
-        let loginPanel = document.getElementById("edit-club-panel");
-        if (window.getComputedStyle(editP).display === "none") {
-            title.style.display = "none";
-            events.style.display = "none";
-            loginPanel.style.display = "none";
-            editP.style.display = "flex";
-        } else {
-            title.style.display = "flex";
-            events.style.display = "flex";
-            editP.style.display = "none";
-        }
-
-        if (window.getComputedStyle(addP).display === "flex") {
-            addP.style.display = "none";
-        }
-    }
-
-    function deleteEvent() {
-        console.log("deleting event");
-    }
-
-    function deleteClub() {
-        window.confirm("Do you want to delete your club?");
+    function deleteCar() {
+        window.confirm("Do you want to delete this car?");
         if (confirm) {
             //if the user clicks ok and therefore wants to delete the club
-            location.href = '/deleteClub';
         } else {
             //otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-            console.log("keep club")
+            console.log("keep car")
             hideRideShare();
         }
     }
@@ -167,7 +127,7 @@ events that are coming up in the next week. -->
                 <div class="seat-title">
                     <h4> Car #1 </h4>
                     <button onclick="reserveSeat()"><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
+                    <button onclick="deleteCar()"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
                 </div>
                 <h5> Driver: Name </h5>
                 <h5> Seats Available: 8 </h5>
