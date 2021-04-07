@@ -252,16 +252,16 @@ times and places, and then finally the social media links with the icons. This p
                         <p>{{info['club_email']}}</p>
                     {% endif %}
                     {% if info['facebook_link']!=None %}
-                    <a href={{info['facebook_link']}}><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
+                    <a href={{info['facebook_link']}}, target="_blank"><i class="fa fa-facebook-official" aria-hidden="true"></i></a>
                     {% endif %}
                     {% if info['instagram_link']!=None %}
-                    <a href={{info['instagram_link']}}><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                    <a href={{info['instagram_link']}}, target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a>
                     {% endif %}
                     {% if info['twitter_link']!=None %}
-                    <a href={{info['twitter_link']}}><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+                    <a href={{info['twitter_link']}}, target="_blank"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
                     {% endif %}
                     {% if info['website_link']!=None %}
-                    <a href={{info['website_link']}}><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                    <a href={{info['website_link']}}, target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>
                     {% endif %}
                 </ul>
             </div>
@@ -443,6 +443,10 @@ times and places, and then finally the social media links with the icons. This p
                        placeholder="Club Name"
                        maxlength="255"><br>
 
+                <input type="checkbox" id="clubShowEmail" name="club_email_display"
+                       checked>
+                <label for="clubShowEmail">Display email on club profile</label><br>
+
                 <!--        &lt;!&ndash;        The profile image is a required field &ndash;&gt;-->
                 <!--        <i class="fa fa-asterisk" aria-hidden="true"></i>-->
                 <label class="nonrequired" for="profile-image">Profile Image:</label><br>
@@ -509,9 +513,6 @@ times and places, and then finally the social media links with the icons. This p
                        id="website_link"
                        name="website_link"
                        placeholder="Website URL"><br>
-
-                <input type="checkbox" id="club_email_display" name="club_email_display">
-                <label for="club_email_display">Display email on club profile</label><br>
 
                 <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
                 <input type="submit"

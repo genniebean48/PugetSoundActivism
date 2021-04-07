@@ -13,10 +13,11 @@ i.fa.fa-calendar {
   padding-right: 5px;
 }
 
-body{
+body {
   background: #003249;
 }
-.homepage{
+
+.homepage {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -27,7 +28,8 @@ body{
   background-image: url("./images/time-person-of-the-year-2018-runner-up-activists2.jpg");
   background-size: 100%;
   background-repeat: no-repeat;
-  .txt-homepage{
+
+  .txt-homepage {
     display: block;
     text-align: center;
     background: white;
@@ -35,28 +37,33 @@ body{
     opacity: 88%;
     height: 215px;
     width: 400px;
-    h3{
+
+    h3 {
       text-align: center;
       padding: 10px;
       margin: 0px;
       font-size: 25px;
     }
-    p{
+
+    p {
       font-size: 18px;
       margin: 0px;
       padding: 0px 30px 0px 30px;
     }
   }
 }
-.upcoming-events{
+
+.upcoming-events {
   background: #003249;
   margin-bottom: 20px;
-  h3{
+
+  h3 {
     margin-left: 30px;
     font-size: 27px;
     color: white;
   }
-  .events{
+
+  .events {
     display: inline-flex;
     margin: 0px 0px 20px 30px;
     background-color: white;
@@ -66,61 +73,260 @@ body{
     overflow-x: hidden;
     overflow-y: scroll;
     /* width */
+
     &::-webkit-scrollbar {
       width: 6px;
     }
 
     /* Track */
+
     &::-webkit-scrollbar-track {
       background: #f1f1f1;
       border-radius: 6px;
     }
 
     /* Handle */
+
     &::-webkit-scrollbar-thumb {
       background: darkgrey;
       height: 20px;
     }
 
     /* Handle on hover */
+
     &::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
-      img{
+
+    img {
+      display: flex;
+      background: darkgrey;
+      height: 85px;
+      width: 85px;
+      margin: 10px 10px;
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      background: white;
+      justify-content: left;
+
+      .specific-info {
         display: flex;
-        background: darkgrey;
-        height: 85px;
-        width: 85px;
-        margin: 10px 10px;
+        flex-direction: row;
       }
-      .profile-info{
+
+      .location-info{
         display: flex;
-        flex-direction: column;
-        background: white;
-        justify-content: left;
-        .specific-info{
+        flex-direction: row;
+
+        #ride-share {
           display: flex;
           flex-direction: row;
+          width: 120px;
+          margin-top: -3px;
+          padding-top: 2px;
+          height: 22px;
+          border-radius: 6px;
+          font-family: "Liberation sans";
+          &:hover {
+            background: slategrey;
+          }
+
+          i{
+            margin-right: 5px;
+          }
         }
       }
+    }
+
+    h4 {
+      display: flex;
+      padding: 10px 0px 10px 0px;
+      margin: 0px 0px 10px 0px;
+      border-bottom: solid #498C8A 3px;
+      color: #003249;
+    }
+
+    h5 {
+      display: flex;
+      margin: 0px 20px 10px 0px;
+      color: #003249;
+    }
+
+    p {
+      display: flex;
+      font-size: 14px;
+      margin: 0px 0px 10px 0px;
+      padding-bottom: 15px;
+      color: #003249;
+    }
+  }
+}
+
+.ride-share-modal{
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: hidden; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  .modal-content{
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    margin: 8% auto; /* 15% from the top and centered */
+    padding: 0px;
+    height: 80%;
+    width: 80%; /* Could be more or less, depending on screen size */
+    .modal-cars{
+      width: 40%;
+      height: 100%;
+      background: #003249;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      /* width */
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      /* Track */
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+      }
+
+      /* Handle */
+
+      &::-webkit-scrollbar-thumb {
+        background: darkgrey;
+        height: 20px;
+      }
+
+      /* Handle on hover */
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+    .car-title{
+        display: flex;
+        flex-direction: row;
+        h3{
+          margin: 10px 3px 15px 10px;
+          color: white;
+        }
+        button {
+          display: flex;
+          position: relative;
+          height: 20px;
+          border: none;
+          left: 60%;
+          margin-top: 10px;
+          border-radius: 6px;
+          line-height: 2px;
+          padding: 16px;
+          font-weight: 700;
+          font-family: "Liberation sans", sans;
+          color: #003249;
+          &:hover {
+            background: #888888;
+          }
+          i{
+            margin-right: 5px;
+            line-height: 3px;
+          }
+        }
+      }
+
+      .cars{
+        display: flex;
+        flex-direction: column;
+        margin: 0px 0px 20px 5px;
+        padding-left: 5px;
+        background-color: white;
+        border-radius: 6px;
+        height: 91px;
+        width: 95%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        /* width */
+
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+
+        /* Track */
+
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 6px;
+        }
+
+        /* Handle */
+
+        &::-webkit-scrollbar-thumb {
+          background: darkgrey;
+          height: 20px;
+        }
+
+        /* Handle on hover */
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+      }
+
       h4{
-        display: flex;
-        padding: 10px 0px 10px 0px;
-        margin: 0px 0px 10px 0px;
-        border-bottom: solid #498C8A 3px;
-        color: #003249;
+        margin: 5px 5px 5px 0px;
       }
+
       h5{
-        display: flex;
-        margin: 0px 20px 10px 0px;
-        color: #003249;
+        margin: 5px 5px 5px 0px;
       }
-      p{
+
+      .seat-title{
         display: flex;
-        font-size: 14px;
-        margin: 0px 0px 10px 0px;
-        padding-bottom: 15px;
-        color: #003249;
+        flex-direction: row;
+        margin-top: 5px;
+
+        h4{
+          margin: 5px 100px 5px 0px;
+        }
+
+        button {
+          display: flex;
+          position: relative;
+          height: 20px;
+          margin-right: 3px;
+          border: none;
+          border-radius: 6px;
+          line-height: 2px;
+          padding: 16px;
+          font-weight: 700;
+          font-family: "Liberation sans", sans;
+          color: #003249;
+          &:hover {
+            background: #888888;
+          }
+          i{
+            margin-right: 5px;
+            line-height: 3px;
+          }
+        }
       }
+    }
+    .modal-seats{
+      width: 60%;
+      height: 100%;
+      background: white;
+    }
   }
 }
