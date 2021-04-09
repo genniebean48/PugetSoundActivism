@@ -85,7 +85,6 @@ def index():
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
    #render homepage
-   activeType()
    return render_template("homePage.html",events=events,clubs=clubs)
 
 
