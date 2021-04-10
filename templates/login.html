@@ -9,8 +9,8 @@ email, and the password of the user in order to allow correct users to "LogIn" -
     function createAccount(){
         location.href = "/createAccount"
     }
-    function resetPassword(){
-        alert("Reset Password");
+    function forgotPassword(){
+        location.href="/forgotPassword";
     }
 </script>
 {% endblock %}
@@ -27,11 +27,11 @@ email, and the password of the user in order to allow correct users to "LogIn" -
     {% endif %}
     <form action="/doLogin" method="post">
         <label for="Email">Club Email:</label><br>
-        <input type="text" id="Email" name="Email"><br>
+        <input type="text" id="Email" placeholder="Club Email" name="Email"><br>
         <label for="Password">Password:</label><br>
-        <input type="password" id="Password" name="Password"><br>
+        <input type="password" id="Password" placeholder="Password" name="Password"><br>
         <button type="submit">Login</button>
-        <button type="button" id = "reset-password" onclick=resetPassword()>Reset Password</button>
+        <button type="button" id = "reset-password" onclick=forgotPassword()>Forgot Password?</button>
         <button type="button" id = "create-account" onclick=createAccount()>Create An Account</button>
 <!-- TODO: WHEN THE USER PRESSES SUBMIT - VERIFY LOGIN INFO -->
     </form>

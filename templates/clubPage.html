@@ -179,10 +179,10 @@ times and places, and then finally the social media links with the icons. This p
                 <h4>{{event['event_name']}}</h4>
                 {% if 'club_id' in session and session['club_id']==info['clubID'] %}
                 <button id="edit-btn"
-                        onclick="editEvent('{{event['event_name']}}','{{event['event_date']}}',
-                            '{{event['start_time']}}','{{event['end_time']}}','{{event['event_location']}}',
-                            '{{event['event_type']}}','{{event['event_description']}}',
-                            '{{event['eventID']}}')">Edit
+                        onclick="editEvent(`{{event['event_name']}}`,`{{event['event_date']}}`,
+                            `{{event['start_time']}}`,`{{event['end_time']}}`,`{{event['event_location']}}`,
+                            `{{event['event_type']}}`,`{{event['event_description']}}`,
+                            `{{event['eventID']}}`)">Edit
                 </button>
                 <button id="delete-btn"
                         onclick="location.href='/deleteEvent?q={{event['eventID']}}'">
@@ -214,7 +214,10 @@ times and places, and then finally the social media links with the icons. This p
             <img src="../static/clubImages/{{info['club_image']}}"/>
             {% endif %}
             {% if 'club_id' in session and session['club_id']==info['clubID'] %}
-            <button onclick="editClub('{{info['club_name']}}','{{info['about_info']}}','{{info['meet_day']}}','{{info['meet_time']}}','{{info['meet_location']}}','{{info['facebook_link']}}','{{info['instagram_link']}}','{{info['twitter_link']}}','{{info['website_link']}}','{{info['club_email_display']}}')">
+            <button onclick="editClub(`{{info['club_name']}}`,`{{info['about_info']}}`,`{{info['meet_day']}}`,
+                `{{info['meet_time']}}`,`{{info['meet_location']}}`,`{{info['facebook_link']}}`,
+                `{{info['instagram_link']}}`,`{{info['twitter_link']}}`,`{{info['website_link']}}`,
+                `{{info['club_email_display']}}`)">
                 Edit Profile
             </button>
             {% endif %}
