@@ -11,9 +11,16 @@ events that are coming up in the next week. -->
 {% block title %}
 <title>Actvism Hub</title>
 <script>
-    function showRideShare(){
+    function showRideShare(eventID){
         const modal = document.getElementById("ride-share-modal");
+        document.getElementById("add-car").onclick=function(){ addCar(eventID); };
         modal.style.display = "block";
+<!--        let description = document.getElementById("modal-seats-description");-->
+<!--        let addCarForm = document.getElementById("modal-seats-addCar");-->
+<!--        description.style.display = "flex";-->
+<!--        addCarForm.style.display = "none";-->
+
+
     }
 
     function hideRideShare(){
@@ -21,13 +28,14 @@ events that are coming up in the next week. -->
         modal.style.display = "none";
     }
 
-    function addCar() {
+    function addCar(eventID) {
         //reverse description panel
         //reverse add panel
         //hide reserve seat panel
         let description = document.getElementById("modal-seats-description");
         let addCar = document.getElementById("modal-seats-addCar");
         let resSeat = document.getElementById("modal-seats-resSeat");
+        document.getElementById("addCar-eventID").value = eventID;
 
         if (window.getComputedStyle(addCar).display === "none") {
             description.style.display = "none";
@@ -104,7 +112,7 @@ events that are coming up in the next week. -->
 
             <div class="location-info">
                 <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
-                <button id="ride-share" onclick="showRideShare()"><i class="fa fa-car" aria-hidden="true"></i> Rideshare </button>
+                <button id="ride-share" onclick="showRideShare({{event['eventID']}})"><i class="fa fa-car" aria-hidden="true"></i> Rideshare </button>
             </div>
             {% if event['event_type'] != None %}
                 <h5>{{event['event_type']}}</h5>
@@ -120,7 +128,7 @@ events that are coming up in the next week. -->
         <div class="modal-cars">
             <div class="car-title">
                 <h3>Cars</h3>
-                <button id="add-car" onclick="addCar()"><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
+                <button id="add-car" ><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
             </div>
 
             <div class="cars">
@@ -226,48 +234,60 @@ events that are coming up in the next week. -->
             <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
             <h3>Add Car</h3>
             <p>* indicates required field </p>
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="driver_name">Driver's Name:</label><br>
-            <input type="text"
-                   id="driver_name"
-                   placeholder="Driver's Name"
-                   maxLength="255"
-                   required ><br>
+            <form action="/addCar" method="post">
 
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="driver_email">Driver's Email:</label><br>
-            <input type="text"
-                   id="driver_email"
-                   placeholder="Driver's Email"
-                   maxLength="255"
-                   required ><br>
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="driver_name">Driver's Name:</label><br>
+                <input type="text"
+                       id="driver_name"
+                       placeholder="Driver's Name"
+                       maxLength="255"
+                       name = "driver_name"
+                       required ><br>
 
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="num_seats">Number of Seats:</label><br>
-            <input type="number"
-                   id="num_seats"
-                   required ><br>
 
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="depart_time">Depart Time:</label><br>
-            <input type="time"
-                   id="depart_time"
-                   required ><br>
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="driver_email">Driver's Email:</label><br>
+                <input type="text"
+                       id="driver_email"
+                       placeholder="Driver's Email"
+                       maxLength="255"
+                       name = "driver_email"
+                       required ><br>
 
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="return_time">Return Time:</label><br>
-            <input type="time"
-                   id="return_time"
-                   required ><br>
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="num_seats">Number of Seats:</label><br>
+                <input type="number"
+                       id="num_seats"
+                       name="num_seats_total"
+                       required ><br>
 
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="meeting_location">Meeting Location:</label><br>
-            <input type="text"
-                   id="meeting_location"
-                   required ><br>
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="depart_time">Depart Time:</label><br>
+                <input type="time"
+                       id="depart_time"
+                       name="depart_time"
+                       required ><br>
 
-            <input type="submit"
-                   value="Add Car"/>
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="return_time">Return Time:</label><br>
+                <input type="time"
+                       id="return_time"
+                       name="return_time"
+                       required ><br>
+
+                <i class="fa fa-asterisk" aria-hidden="true"></i>
+                <label for="meeting_location">Meeting Location:</label><br>
+                <input type="text"
+                       id="meeting_location"
+                       name="meeting_location"
+                       required ><br>
+
+                <input type="hidden" name="eventID" id="addCar-eventID">
+
+                <input type="submit"
+                       value="Add Car"/>
+            </form>
         </div>
         <div id="modal-seats-resSeat">
             <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>

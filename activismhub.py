@@ -113,7 +113,7 @@ def club_page():
            event['end_time_formatted']=formatTimeFromSql(event['end_time'])
    #add formatted meet time
    if info['meet_time']!=None:
-       info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
+       info['meet_time_formatted']=fgit bormatTimeFromSql(info['meet_time'])
    #Get list of dicts of clubs
    clubs = getClubs()
    return render_template("clubPage.html",info=info,events=events,clubs=clubs)
