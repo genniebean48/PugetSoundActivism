@@ -39,9 +39,11 @@ IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 # EVENT_TABLE='club_event'
 # ADMIN_TABLE='club_admin'
 #for testing
-CLUB_TABLE='testClub'
-EVENT_TABLE='testClub_event'
-ADMIN_TABLE='testClub_admin'
+CLUB_TABLE ='testClub'
+EVENT_TABLE ='testClub_event'
+ADMIN_TABLE ='testClub_admin'
+CAR_TABLE = 'testRideShare_car'
+PASSENGER_TABLE = 'testRideShare_passenger'
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -364,6 +366,62 @@ def updateEvent():
 
     #rerender club page
     return redirect(f"/clubPage?q={clubID}")
+
+########################################################################################################################
+##### Ride Sharing #####################################################################################################
+
+#route when user clicks submit on adding a car
+@app.route("/addCar",methods=["POST"])
+def addCar():
+    #Get which event // TODO
+    eventID = request.form['eventID']
+    #get form info
+    driver_name = request.form['driver_name']
+    driver_email = request.form['driver_email']
+    num_seats_total = request.form['num_seats_total']
+    num_seats_available = request.form['num_seats_total']
+    depart_time = request.form['depart_time']
+    return_time = request.form['return_time']
+    meeting_location = request.form['meeting_location']
+
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+    #add car
+    cursor.execute('''INSERT INTO %s(driver_name,driver_email,num_seats_total,num_seats_available,
+        depart_time,return_time,meeting_location,eventID) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CAR_TABLE,),
+        (driver_name,driver_email,num_seats_total, num_seats_available,depart_time,return_time,meeting_location,eventID))
+    mysql.connection.commit()
+    #reroute to home page
+    # -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
+    return index()
+
+
+#route when user clicks submit on reserving a seat
+@app.route("/addPassenger",methods=["POST"])
+def addPassenger():
+    #Get which car -- NOT SURE HOW TO DO THIS
+    carID = 1
+    #eventID = request.args.get("q")
+
+    #get form info
+    passenger_name = request.form['passenger_name']
+    passenger_email = request.form['passenger_email']
+
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+    #Add passenger
+    cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,carID) VALUES (%%s,%%s)'''
+                   %(PASSENGER_TABLE,),(passenger_name,passenger_email,carID))
+
+    #decrement number of available seats for specific car
+    cursor.execute('''UPDATE %s SET num_seats_available = num_seats_available - 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID))
+    #increment number of seats taken or specific car
+    cursor.execute('''UPDATE %s SET num_seats_taken = num_seats_taken + 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID))
+
+    mysql.connection.commit()
+    #reroute to home page
+    # -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
+    return index()
 
 
 ########################################################################################################################
