@@ -6,13 +6,22 @@ contains all fo the information from the navigation bar because it extends the l
 {% block css_file %}
 <link href="{{ url_for('static', filename='create-account.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
-    function verifyPassword(password, confimPassword){
-        console.log("reached function");
+    function verify(email, password, confimPassword){
+        const emailSplit = email.split("@");
+        console.log(emailSplit[1]);
         if(password !== confimPassword){
             alert("passwords don't match please try again.");
             return false;
+        }else if(emailSplit[1] !== "pugetsound.edu") {
+            alert("email must be a valid University of Puget Sound address.");
+            return false;
         }else{
-            return true;
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(re.test(email.toLowerCase()) == false){
+                alert("email must be a valid University of Puget Sound address.")
+            }else{
+                return true;
+            }
         }
     }
 </script>
@@ -34,7 +43,7 @@ contains all fo the information from the navigation bar because it extends the l
         <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="clubEmail">Club Email:</label><br>
 <!--        club email is required-->
-        <input type="text"
+        <input type="email"
                id="clubEmail"
                name="clubEmail"
                placeholder="Club Email"><br>
@@ -45,11 +54,12 @@ contains all fo the information from the navigation bar because it extends the l
         <label for="clubShowEmail">Display email on club profile</label><br>
 
         <i class="fa fa-asterisk" aria-hidden="true"></i>
-        <label for="password">Password:</label><br>
+        <label for="password">Password (must contain at least 8 characters):</label><br>
 <!--        //password is required-->
         <input type="password"
                id="password"
                name="password"
+               minlength="8"
                placeholder="Password"><br>
         <i class="fa fa-asterisk" aria-hidden="true"></i>
         <label for="cpassword">Confirm Password:</label><br>
@@ -74,7 +84,7 @@ contains all fo the information from the navigation bar because it extends the l
                placeholder="What is your Club's mission?"><br>
         <input type="submit"
                value="Create Account"
-            onclick="return verifyPassword(password.value, cpassword.value)"/>
+            onclick="return verify(clubEmail.value, password.value, cpassword.value)"/>
     </form>
 </div>
 <body>
