@@ -6,10 +6,10 @@ contains all fo the information from the navigation bar because it extends the l
 {% block css_file %}
 <link href="{{ url_for('static', filename='create-account.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
-    function verify(email, password, confimPassword){
+    function verify(email, password, confirmPassword){
         const emailSplit = email.split("@");
         console.log(emailSplit[1]);
-        if(password !== confimPassword){
+        if(password !== confirmPassword){
             alert("passwords don't match please try again.");
             return false;
         }else if(emailSplit[1] !== "pugetsound.edu") {
