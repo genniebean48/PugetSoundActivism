@@ -69,7 +69,7 @@ body {
   .upcoming-events {
     background: #003249;
     width: 70%;
-    overflow-x: hidden;
+    overflow-x: visible; //do i want this?
     overflow-y: scroll;
 
     p{
@@ -82,14 +82,22 @@ body {
       display: flex;
       flex-direction: row;
       justify-content: left;
-      align-items: center;
       background: #003249;
+
+      h3{
+        margin-left: 15px;
+        margin-right: 150px;
+        font-size: 27px;
+        color: white;
+      }
 
 
       button {
-        display: flex;
         position: relative;
-        left: 13%;
+        right: 10px;
+        top: 0px;
+        margin-top: 10px;
+        min-width: 100px;
         height: 20px;
         border: none;
         border-radius: 6px;
@@ -331,7 +339,7 @@ body {
         input {
           border-radius: 6px;
           padding: 8px;
-          width: 100%;
+          width: 75%;
           margin-left: 10px;
           margin-bottom: 20px;
         }
@@ -420,7 +428,7 @@ body {
         input {
           border-radius: 6px;
           padding: 8px;
-          width: 100%;
+          width: 75%;
           margin-left: 10px;
           margin-bottom: 20px;
         }
@@ -547,7 +555,7 @@ body {
       input {
         border-radius: 6px;
         padding: 8px;
-        width: 100%;
+        width: 75%;
         margin-left: 10px;
         margin-bottom: 20px;
       }
@@ -586,7 +594,7 @@ body {
 
       button {
         position: absolute;
-        top: 25px;
+        top: 10px;
         right: 10px;
         height: 20px;
         border: none;
@@ -618,7 +626,7 @@ body {
         background: white;
         opacity: 0.68;
         border-radius: 6px;
-        font-size: 70px;
+        font-size: 55px;
         font-weight: 700;
       }
     }
