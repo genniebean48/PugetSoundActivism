@@ -8,9 +8,9 @@
 ########################################################################################################################
 ##### Initial setup ####################################################################################################
 
-from flask import Flask, request, render_template, session, redirect
+from flask import Flask, request, render_template, session, redirect, jsonify
 from flask_mysqldb import MySQL
-import os, datetime, secrets
+import os, datetime, secrets, json
 from werkzeug.utils import secure_filename
 import smtplib, ssl, hashlib
 from email.mime.text import MIMEText
@@ -54,16 +54,12 @@ salt = '1kn0wy0ulov3m3'
 
 
 
-def activeType():
+def printClubs():
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT club_email, email_activated FROM %s'''%(CLUB_TABLE,))
-    results = cursor.fetchall()
-    for result in results:
-        print(result['club_email'])
-        print(result['email_activated'])
-    cursor.execute('''SELECT clubID FROM %s WHERE club_email="manyam686@gmail.com"'''%(CLUB_TABLE,))
-    me = len(cursor.fetchall())
-    print("Num my email: ",me)
+    cursor.execute('''SELECT * FROM %s'''%CLUB_TABLE)
+    result = cursor.fetchall()
+    for club in result:
+        print(club)
 
 
 ########################################################################################################################
@@ -71,7 +67,7 @@ def activeType():
 
 #Route with nothing appended (in our local machine, localhost:5000, in our server, activism-hub.pugetsound.edu)
 @app.route("/")
-def index():
+def index(message=""):
    #Establish connection
    cursor = mysql.connection.cursor()
    #Get list of clubs and IDs
@@ -82,13 +78,32 @@ def index():
                      SELECT * FROM %s WHERE event_date = CURDATE() AND start_time > CURTIME()
                      ORDER BY event_date, start_time''' % (EVENT_TABLE,EVENT_TABLE))
    events = cursor.fetchall()
-   #add formatted date and times
    for event in events:
+        #get cars for event
+        cursor.execute('''SELECT * FROM %s WHERE eventID=%%s'''%(CAR_TABLE,),(event['eventID'],))
+        cars = cursor.fetchall()
+        #get passengers for each car
+        #NOTE - possibly need to make car and passenger dicts JSON strings too
+        for car in cars:
+            cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID'],))
+            car['passengers'] = cursor.fetchall()
+            car = json.dumps(car,default=str)
+        #add JSON string of cars to event
+        event['cars'] = json.dumps(cars,default=str)
+        #add formatted date and times
         event['event_date_formatted']=formatDateFromSql(event['event_date'])
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
+#    #Get cars
+#    cursor.execute('''SELECT * FROM %s'''%(CAR_TABLE,))
+#    cars = cursor.fetchall()
+#    #get passengers for each car
+#    for car in cars:
+#        cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID']))
+#        car['passengers'] = cursor.fetchall()
    #render homepage
-   return render_template("homePage.html",events=events,clubs=clubs)
+   printClubs()
+   return render_template("homePage.html",events=events,clubs=clubs,message=message)
 
 
 #route when tracking button is pushed
@@ -206,10 +221,10 @@ def logout():
 
 #Route when user clicks create account from login page
 @app.route("/createAccount")
-def create_account():
+def create_account(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   return render_template("create-account.html",clubs=clubs)
+   return render_template("create-account.html",clubs=clubs,message=message)
 
 
 #Route when user clicks submit on the create account page
@@ -220,9 +235,9 @@ def enter_account():
    #get form info
    club_email = request.form['clubEmail']
    club_name = request.form['club-name']
-   admin_name = request.form['admin-name']
+#    admin_name = request.form['admin-name']
    about_info = request.form['club-description']
-   admin_email = request.form['admin-email']
+#    admin_email = request.form['admin-email']
    password = request.form['password']
    club_email_display = request.form.get('club_email_display') != None
    #if email already associated with a club, display error and return
@@ -230,7 +245,8 @@ def enter_account():
    emailExists = len(cursor.fetchall())>0
    #TODO - add message that email is already taken - popup?
    if emailExists:
-        return create_account()
+        message = "There is already an account using "+club_email+"."
+        return create_account(message)
    #hash password
    saltedPassword = password + salt
    password = hashlib.sha256(saltedPassword.encode()).hexdigest()
@@ -246,18 +262,25 @@ def enter_account():
    cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
    # mysql.connection.commit()
    #get club new club id
-   cursor.execute('''SELECT clubID FROM %s where club_name = %%s'''%(CLUB_TABLE,),(club_name,))
-   clubID=cursor.fetchall()[0]['clubID']
-   #Insert new account info into admin table
-   cursor.execute('''INSERT INTO %s(clubID,admin_name,admin_email) VALUES(%%s,%%s,%%s)'''%(ADMIN_TABLE,),
-        (clubID,admin_name,admin_email))
+   # cursor.execute('''SELECT clubID FROM %s where club_name = %%s'''%(CLUB_TABLE,),(club_name,))
+   # clubID=cursor.fetchall()[0]['clubID']
+   # #Insert new account info into admin table
+   # cursor.execute('''INSERT INTO %s(clubID,admin_name,admin_email) VALUES(%%s,%%s,%%s)'''%(ADMIN_TABLE,),
+   #      (clubID,admin_name,admin_email))
    mysql.connection.commit()
+#    #get club new club id
+#    cursor.execute('''SELECT clubID FROM %s where club_name = %%s'''%(CLUB_TABLE,),(club_name,))
+#    clubID=cursor.fetchall()[0]['clubID']
+#    #Insert new account info into admin table
+#    cursor.execute('''INSERT INTO %s(clubID,admin_name,admin_email) VALUES(%%s,%%s,%%s)'''%(ADMIN_TABLE,),
+#         (clubID,admin_name,admin_email))
+#    mysql.connection.commit()
    #Create text for email verification and send email
    texts = verifyEmailText(club_email,activation_hash)
    sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
    #TODO - render page with message about sent email
    #reroute to home page
-   return index()
+   return index("An email has been sent to "+club_email+" with an verification link.")
 
 
 #when user clicks submit on edit club page
@@ -822,9 +845,9 @@ def verifyEmail():
 
 #When click forgot password on login page
 @app.route("/forgotPassword")
-def forgotPassword():
+def forgotPassword(message=""):
     clubs = getClubs()
-    return render_template("forgotPassword.html",clubs=clubs)
+    return render_template("forgotPassword.html",clubs=clubs,message=message)
 
 
 #When click reset password button in forgot password page
@@ -839,14 +862,14 @@ def preparePasswordReset():
    #if that email isn't in the database
    #TODO - add message saying email not in database
    if len(result) == 0:
-        return forgotPassword()
+        return forgotPassword(club_email+" is not associated with an account.")
    #Prepare text and send email
    clubID=result[0]['clubID']
    activation_hash = result[0]['activation_hash']
    texts = resetPasswordText(club_email,activation_hash)
    sendEmail(club_email,texts['html'],texts['text'],"Reset your password")
    #TODO - where to return when email sent? Add pop up
-   return index()
+   return index("An email has been sent to "+club_email+" with a reset link.")
 
 
 #route for link clicked in email

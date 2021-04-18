@@ -11,16 +11,50 @@ events that are coming up in the next week. -->
 {% block title %}
 <title>Actvism Hub</title>
 <script>
-    function showRideShare(eventID){
+    function showRideShare(eventID,cars){
         const modal = document.getElementById("ride-share-modal");
         document.getElementById("add-car").onclick=function(){ addCar(eventID); };
         modal.style.display = "block";
-<!--        let description = document.getElementById("modal-seats-description");-->
-<!--        let addCarForm = document.getElementById("modal-seats-addCar");-->
-<!--        description.style.display = "flex";-->
-<!--        addCarForm.style.display = "none";-->
+        cars.forEach(carFcn);
+    }
 
-
+    function carFcn(car){
+        let div1 = document.createElement("div");
+        div1.className="cars";
+        let div2 = document.createElement("div");
+        div2.className="seat-title";
+        let h4 = document.createElement("h4");
+        h4.innerHTML="Car";
+        div2.appendChild(h4);
+        let reserveSeatButton = document.createElement("button");
+        reserveSeatButton.id = "reserve-seat"
+        reserveSeatButton.onclick = function(){ reserveSeat(car.carID); };
+//         let i = document.createElement("i");
+//         i.className="fa fa-car";
+// <!--        i.aria-hidden="true";-->
+//         reserveSeatButton.appendChild(i);
+        reserveSeatButton.innerHTML="Reserve Seat";
+        div2.appendChild(reserveSeatButton);
+        let deleteCarButton = document.createElement("button");
+        deleteCarButton.id = "delete-car";
+        deleteCarButton.onclick = function(){ deleteCar(car.carID); };
+        let i2 = document.createElement("i");
+        i2.className="fa fa-times-circle";
+<!--        i.aria-hidden="true";-->
+        deleteCarButton.appendChild(i2);
+        deleteCarButton.innerHTML="Delete Car";
+        div2.appendChild(deleteCarButton);
+        div1.appendChild(div2);
+        let div3 = document.createElement("div");
+        div3.className="car-logistics"
+        let h5 = document.createElement("h5");
+        h5.innerHTML= "Driver: "+ car.driver_name;
+        div3.appendChild(h5);
+        let h6 = document.createElement("h5");
+        h6.innerHTML="Seats Available: "+ car.num_seats_available;
+        div3.appendChild(h6);
+        div1.appendChild(div3);
+        document.getElementById("modal-cars").appendChild(div1);
     }
 
     function hideRideShare(){
@@ -52,14 +86,14 @@ events that are coming up in the next week. -->
         // }
     }
 
-    function reserveSeat() {
+    function reserveSeat(carID) {
         //reverse description panel
         //reverse add panel
         //hide reserve seat panel
         let description = document.getElementById("modal-seats-description");
         let addCar = document.getElementById("modal-seats-addCar");
         let resSeat = document.getElementById("modal-seats-resSeat");
-
+        document.getElementById("reserveSeat-carID").value = carID;
         if (window.getComputedStyle(resSeat).display === "none") {
             description.style.display = "none";
             addCar.style.display = "none";
@@ -71,7 +105,7 @@ events that are coming up in the next week. -->
         }
     }
 
-    function deleteCar() {
+    function deleteCar(carID) {
         window.confirm("Do you want to delete this car?");
         if (confirm) {
             //if the user clicks ok and therefore wants to delete the club
@@ -81,240 +115,157 @@ events that are coming up in the next week. -->
             hideRideShare();
         }
     }
+
+    function displayCars(cars){
+        let carsObj = JSON.parse(cars);
+        console.log(cars);
+    }
+
+    function displayMessage(message){
+        if(message != ""){
+            window.alert(message);
+        }
+    }
 </script>
 {% endblock %}
 
 {% block panel %}
-<div class="homepage">
-    <div class="txt-homepage">
-        <h3>Our Mission</h3>
-        <p>ACTivism Hub aims to elevate the voices of Puget Sound activism oriented clubs as well as provide them with a cohesive platform to share club programming. Through event postings and club profiles, students have access to event information such as times, places, resources and details
-            in a centralized location.</p>
+<body onload="displayMessage('{{message}}')">
+    <div class="homepage">
+        <div class="txt-homepage">
+            <h3>Our Mission</h3>
+            <p>ACTivism Hub aims to elevate the voices of Puget Sound activism oriented clubs as well as provide them with a cohesive platform to share club programming. Through event postings and club profiles, students have access to event information such as times, places, resources and details
+                in a centralized location.</p>
+        </div>
     </div>
-</div>
-<div class="upcoming-events">
-    <h3>Upcoming Events</h3>
-    {% for event in events %}
-    <div class="events">
-        <!--  TODO: THIS IS WHERE WE ARE GETTING THE EVENT IMAGE  -->
-        {% if event['event_image']==None %}
-            <img src = "../static/images/default_image.jpg" />
-        {% else %}
-            <img src = "../static/eventImages/{{event['event_image']}}" />
-        {% endif %}
-        <div class="profile-info">
-            <h4>{{event['event_name']}}</h4>
-            <h5>{{event['club_name']}}</h5>
-            <div class = "specific-info">
-                <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
-                <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}</h5>
-            </div>
-
-            <div class="location-info">
-                <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
-                <button id="ride-share" onclick="showRideShare({{event['eventID']}})"><i class="fa fa-car" aria-hidden="true"></i> Rideshare </button>
-            </div>
-            {% if event['event_type'] != None %}
-                <h5>{{event['event_type']}}</h5>
+    <div class="upcoming-events">
+        <h3>Upcoming Events</h3>
+        {% for event in events %}
+        <div class="events">
+            <!--  TODO: THIS IS WHERE WE ARE GETTING THE EVENT IMAGE  -->
+            {% if event['event_image']==None %}
+                <img src = "../static/images/default_image.jpg" />
+            {% else %}
+                <img src = "../static/eventImages/{{event['event_image']}}" />
             {% endif %}
-            <p>{{event['event_description']}}</p>
+            <div class="profile-info">
+                <h4>{{event['event_name']}}</h4>
+                <h5>{{event['club_name']}}</h5>
+                <div class = "specific-info">
+                    <h5><i class="fa fa-calendar" aria-hidden="true"></i>{{event['event_date_formatted']}}</h5>
+                    <h5><i class="fa fa-clock-o" aria-hidden="true"></i>{{event['start_time_formatted']}}-{{event['end_time_formatted']}}</h5>
+                </div>
+
+                <div class="location-info">
+                    <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
+                    <button id="ride-share" onclick="showRideShare({{event['eventID']}},{{event['cars']}})"><i class="fa fa-car" aria-hidden="true"></i> Rideshare </button>
+                </div>
+                {% if event['event_type'] != None %}
+                    <h5>{{event['event_type']}}</h5>
+                {% endif %}
+                <p>{{event['event_description']}}</p>
+            </div>
         </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
 
-<div id="ride-share-modal">
-    <div class="modal-content">
-        <div class="modal-cars">
-            <div class="car-title">
-                <h3>Cars</h3>
-                <button id="add-car" ><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
+    <div id="ride-share-modal">
+        <div class="modal-content">
+            <div class="modal-cars" id="modal-cars">
+                <div class="car-title">
+                    <h3>Cars</h3>
+                    <button id="add-car" ><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
+                    <button id="request-car" ><i class="fa fa-car" aria-hidden="true"></i> Request Car </button>
+                </div>
             </div>
+            <div id="modal-seats-description">
+                <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
+                <h5> Rideshare </h5>
+                <p> Welcome to Ridesharing on the ACTivism Hub! Here you can grab a seat in a car or add your car to provide rides to others. If you need a ride, take an available seat in any car! If you’re driving to this event and have available seats, add your car to give others a ride! Please note that your name will be displayed on the website if you are a driver or a passenger. </p>
+            </div>
+            <div id="modal-seats-addCar">
+                <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
+                <h3>Add Car</h3>
+                <p>* indicates required field </p>
+                <form action="/addCar" method="post">
 
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button onclick="reserveSeat()"><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button onclick="deleteCar()"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
-            <div class="cars">
-            <div class="seat-title">
-                <h4> Car #1 </h4>
-                <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-            </div>
-            <h5> Driver: Name </h5>
-            <h5> Seats Available: 8 </h5>
-        </div>
-            <div class="cars">
-            <div class="seat-title">
-                <h4> Car #1 </h4>
-                <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-            </div>
-            <h5> Driver: Name </h5>
-            <h5> Seats Available: 8 </h5>
-        </div>
-            <div class="cars">
-            <div class="seat-title">
-                <h4> Car #1 </h4>
-                <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-            </div>
-            <h5> Driver: Name </h5>
-            <h5> Seats Available: 8 </h5>
-        </div>
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
-            <div class="cars">
-                <div class="seat-title">
-                    <h4> Car #1 </h4>
-                    <button><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                    <button><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                </div>
-                <h5> Driver: Name </h5>
-                <h5> Seats Available: 8 </h5>
-            </div>
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="driver_name">Driver's Name:</label><br>
+                    <input type="text"
+                           id="driver_name"
+                           placeholder="Driver's Name"
+                           maxLength="255"
+                           name = "driver_name"
+                           required ><br>
 
-        </div>
-        <div id="modal-seats-description">
-            <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
-            <h5> Ride Sharing </h5>
-            <p> This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.
-                This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.
-                This is a rideshare description. This is a rideshare description. This is a rideshare description. This is a rideshare description.</p>
-        </div>
-        <div id="modal-seats-addCar">
-            <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
-            <h3>Add Car</h3>
-            <p>* indicates required field </p>
-            <form action="/addCar" method="post">
 
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="driver_email">Driver's Email:</label><br>
+                    <input type="text"
+                           id="driver_email"
+                           placeholder="Driver's Email"
+                           maxLength="255"
+                           name = "driver_email"
+                           required ><br>
+
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="num_seats">Number of Seats:</label><br>
+                    <input type="number"
+                           id="num_seats"
+                           name="num_seats_total"
+                           required ><br>
+
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="depart_time">Depart Time:</label><br>
+                    <input type="time"
+                           id="depart_time"
+                           name="depart_time"
+                           required ><br>
+
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="return_time">Return Time:</label><br>
+                    <input type="time"
+                           id="return_time"
+                           name="return_time"
+                           required ><br>
+
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="meeting_location">Meeting Location:</label><br>
+                    <input type="text"
+                           id="meeting_location"
+                           name="meeting_location"
+                           required ><br>
+
+                    <input type="hidden" name="eventID" id="addCar-eventID">
+
+                    <input type="submit"
+                           value="Add Car"/>
+                </form>
+            </div>
+            <div id="modal-seats-resSeat">
+                <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
+                <h3>Reserve a Seat</h3>
+                <p>* indicates required field </p>
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="driver_name">Driver's Name:</label><br>
+                <label for="passenger_name">Passenger's Name:</label><br>
                 <input type="text"
-                       id="driver_name"
-                       placeholder="Driver's Name"
+                       id="passenger_name"
+                       placeholder="Passenger's Name"
                        maxLength="255"
-                       name = "driver_name"
                        required ><br>
 
-
                 <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="driver_email">Driver's Email:</label><br>
+                <label for="passenger_email">Passenger's Name:</label><br>
                 <input type="text"
-                       id="driver_email"
-                       placeholder="Driver's Email"
+                       id="passenger_email"
+                       placeholder="Passenger's Email"
                        maxLength="255"
-                       name = "driver_email"
                        required ><br>
-
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="num_seats">Number of Seats:</label><br>
-                <input type="number"
-                       id="num_seats"
-                       name="num_seats_total"
-                       required ><br>
-
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="depart_time">Depart Time:</label><br>
-                <input type="time"
-                       id="depart_time"
-                       name="depart_time"
-                       required ><br>
-
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="return_time">Return Time:</label><br>
-                <input type="time"
-                       id="return_time"
-                       name="return_time"
-                       required ><br>
-
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="meeting_location">Meeting Location:</label><br>
-                <input type="text"
-                       id="meeting_location"
-                       name="meeting_location"
-                       required ><br>
-
-                <input type="hidden" name="eventID" id="addCar-eventID">
-
+                <input type="hidden" name="carID" id="reserveSeat-carID"/>
                 <input type="submit"
-                       value="Add Car"/>
-            </form>
-        </div>
-        <div id="modal-seats-resSeat">
-            <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
-            <h3>Reserve a Seat</h3>
-            <p>* indicates required field </p>
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="passenger_name">Passenger's Name:</label><br>
-            <input type="text"
-                   id="passenger_name"
-                   placeholder="Passenger's Name"
-                   maxLength="255"
-                   required ><br>
-
-            <i class="fa fa-asterisk" aria-hidden="true"></i>
-            <label for="passenger_email">Passenger's Name:</label><br>
-            <input type="text"
-                   id="passenger_email"
-                   placeholder="Passenger's Email"
-                   maxLength="255"
-                   required ><br>
-
-            <input type="submit"
-                   value="Reserve Seat"/>
+                       value="Reserve Seat"/>
+            </div>
         </div>
     </div>
-</div>
-<body>
-
 </body>
 {% endblock %}
