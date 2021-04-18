@@ -8,7 +8,7 @@
 ########################################################################################################################
 ##### Initial setup ####################################################################################################
 
-from flask import Flask, request, render_template, session, redirect
+from flask import Flask, request, render_template, session, redirect, jsonify
 from flask_mysqldb import MySQL
 import os, datetime, secrets, json
 from werkzeug.utils import secure_filename
@@ -53,16 +53,12 @@ salt = '1kn0wy0ulov3m3'
 
 
 
-def activeType():
+def printClubs():
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT club_email, email_activated FROM %s'''%(CLUB_TABLE,))
-    results = cursor.fetchall()
-    for result in results:
-        print(result['club_email'])
-        print(result['email_activated'])
-    cursor.execute('''SELECT clubID FROM %s WHERE club_email="manyam686@gmail.com"'''%(CLUB_TABLE,))
-    me = len(cursor.fetchall())
-    print("Num my email: ",me)
+    cursor.execute('''SELECT * FROM %s'''%CLUB_TABLE)
+    result = cursor.fetchall()
+    for club in result:
+        print(club)
 
 
 ########################################################################################################################
@@ -86,16 +82,13 @@ def index(message=""):
         cursor.execute('''SELECT * FROM %s WHERE eventID=%%s'''%(CAR_TABLE,),(event['eventID'],))
         cars = cursor.fetchall()
         #get passengers for each car
+        #NOTE - possibly need to make car and passenger dicts JSON strings too
         for car in cars:
-            print("in loop")
             cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID'],))
             car['passengers'] = cursor.fetchall()
-            car = json.dumps(car, default=str)
-            event['cars1']=car
+            car = json.dumps(car,default=str)
         #add JSON string of cars to event
         event['cars'] = json.dumps(cars,default=str)
-        print(event['cars'])
-        print(type(event['cars']))
         #add formatted date and times
         event['event_date_formatted']=formatDateFromSql(event['event_date'])
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
@@ -108,6 +101,7 @@ def index(message=""):
 #        cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID']))
 #        car['passengers'] = cursor.fetchall()
    #render homepage
+   printClubs()
    return render_template("homePage.html",events=events,clubs=clubs,message=message)
 
 

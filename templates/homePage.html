@@ -15,23 +15,43 @@ events that are coming up in the next week. -->
         const modal = document.getElementById("ride-share-modal");
         document.getElementById("add-car").onclick=function(){ addCar(eventID); };
         modal.style.display = "block";
-        console.log(typeof cars);
-<!--        var carsObj = JSON.parse(cars);-->
-<!--        console.log(typeof carsObj);-->
-        console.log(cars.carID);
-<!--        for(car in carsObj){-->
-<!--            console.log(typeof car);-->
-<!--            var carObj = JSON.parse(car);-->
-<!--            console.log(typeof carObj);-->
-<!--            console.log(carObj["carId"]);-->
-<!--        }-->
-<!--        document.getElementById("car-title").value=example-car;-->
-<!--        let description = document.getElementById("modal-seats-description");-->
-<!--        let addCarForm = document.getElementById("modal-seats-addCar");-->
-<!--        description.style.display = "flex";-->
-<!--        addCarForm.style.display = "none";-->
+        cars.forEach(carFcn);
+    }
 
-
+    function carFcn(car){
+        var div1 = document.createElement("div");
+        div1.class="cars";
+        var div2 = document.createElement("div");
+        div2.class="seat-title";
+        var h4 = document.createElement("h4");
+        h4.innerHTML="Car";
+        div2.appendChild(h4);
+        var reserveSeatButton = document.createElement("button");
+        reserveSeatButton.onclick = function(){ reserveSeat(car.carID); };
+        var i = document.createElement("i");
+        i.class="fa fa-car";
+<!--        i.aria-hidden="true";-->
+        reserveSeatButton.appendChild(i);
+        reserveSeatButton.innerHTML="Reserve Seat";
+        div2.appendChild(reserveSeatButton);
+        var deleteCarButton = document.createElement("button");
+        deleteCarButton.onclick = function(){ deleteCar(car.carID); };
+        var i2 = document.createElement("i");
+        i.class="fa fa-times-circle";
+<!--        i.aria-hidden="true";-->
+        deleteCarButton.appendChild(i2);
+        deleteCarButton.innerHTML="Delete Car";
+        div2.appendChild(deleteCarButton);
+        div1.appendChild(div2);
+        var div3 = document.createElement("div");
+        var h5 = document.createElement("h5");
+        h5.innerHTML="Driver: "+car.driver_name;
+        div3.appendChild(h5);
+        var h6 = document.createElement("h6");
+        h6.innerHTML="Seats Available: "+car.num_seats_available;
+        div3.appendChild(h6);
+        div1.appendChild(div3);
+        document.getElementById("modal-cars").appendChild(div1);
     }
 
     function hideRideShare(){
@@ -63,14 +83,14 @@ events that are coming up in the next week. -->
         // }
     }
 
-    function reserveSeat() {
+    function reserveSeat(carID) {
         //reverse description panel
         //reverse add panel
         //hide reserve seat panel
         let description = document.getElementById("modal-seats-description");
         let addCar = document.getElementById("modal-seats-addCar");
         let resSeat = document.getElementById("modal-seats-resSeat");
-
+        document.getElementById("reserveSeat-carID").value = carID;
         if (window.getComputedStyle(resSeat).display === "none") {
             description.style.display = "none";
             addCar.style.display = "none";
@@ -82,7 +102,7 @@ events that are coming up in the next week. -->
         }
     }
 
-    function deleteCar() {
+    function deleteCar(carID) {
         window.confirm("Do you want to delete this car?");
         if (confirm) {
             //if the user clicks ok and therefore wants to delete the club
@@ -135,7 +155,7 @@ events that are coming up in the next week. -->
 
                 <div class="location-info">
                     <h5><i class="fa fa-map-pin" aria-hidden="true"></i>{{event['event_location']}}</h5>
-                    <button id="ride-share" onclick="showRideShare({{event['eventID']}},{{event['cars1']}})"><i class="fa fa-car" aria-hidden="true"></i> Rideshare </button>
+                    <button id="ride-share" onclick="showRideShare({{event['eventID']}},{{event['cars']}})"><i class="fa fa-car" aria-hidden="true"></i> Rideshare </button>
                 </div>
                 {% if event['event_type'] != None %}
                     <h5>{{event['event_type']}}</h5>
@@ -148,21 +168,21 @@ events that are coming up in the next week. -->
 
     <div id="ride-share-modal">
         <div class="modal-content">
-            <div class="modal-cars">
+            <div class="modal-cars" id="modal-cars">
                 <div class="car-title">
                     <h3>Cars</h3>
                     <button id="add-car" ><i class="fa fa-car" aria-hidden="true"></i> Add Car </button>
                 </div>
 
-                <div class="cars" id="car-info">
-                    <div class="seat-title" id="car-first-line">
-                        <h4 id="car-title"></h4>
-                        <button onclick="reserveSeat()"><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>
-                        <button onclick="deleteCar()"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>
-                    </div>
-                    <h5 id="driver-name"></h5>
-                    <h5 id="seats-available"></h5>
-                </div>
+<!--                <div class="cars" id="car-info">-->
+<!--                    <div class="seat-title" id="car-first-line">-->
+<!--                        <h4 id="car-title"></h4>-->
+<!--                        <button onclick="reserveSeat()"><i class="fa fa-car" aria-hidden="true"></i> Reserve Seat </button>-->
+<!--                        <button onclick="deleteCar()"><i class="fa fa-times-circle" aria-hidden="true"></i> Delete Car </button>-->
+<!--                    </div>-->
+<!--                    <h5 id="driver-name"></h5>-->
+<!--                    <h5 id="seats-available"></h5>-->
+<!--                </div>-->
     <!--            <div class="cars">-->
     <!--                <div class="seat-title">-->
     <!--                    <h4> Car #1 </h4>-->
@@ -331,7 +351,7 @@ events that are coming up in the next week. -->
                        placeholder="Passenger's Email"
                        maxLength="255"
                        required ><br>
-
+                <input type="hidden" name="carID" id="reserveSeat-carID"/>
                 <input type="submit"
                        value="Reserve Seat"/>
             </div>
