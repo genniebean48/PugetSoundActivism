@@ -19,36 +19,37 @@ events that are coming up in the next week. -->
     }
 
     function carFcn(car){
-        var div1 = document.createElement("div");
-        div1.class="cars";
-        var div2 = document.createElement("div");
-        div2.class="seat-title";
-        var h4 = document.createElement("h4");
+        let div1 = document.createElement("div");
+        div1.className="cars";
+        let div2 = document.createElement("div");
+        div2.className="seat-title";
+        let h4 = document.createElement("h4");
         h4.innerHTML="Car";
         div2.appendChild(h4);
-        var reserveSeatButton = document.createElement("button");
+        let reserveSeatButton = document.createElement("button");
         reserveSeatButton.onclick = function(){ reserveSeat(car.carID); };
-        var i = document.createElement("i");
-        i.class="fa fa-car";
-<!--        i.aria-hidden="true";-->
-        reserveSeatButton.appendChild(i);
+//         let i = document.createElement("i");
+//         i.className="fa fa-car";
+// <!--        i.aria-hidden="true";-->
+//         reserveSeatButton.appendChild(i);
         reserveSeatButton.innerHTML="Reserve Seat";
         div2.appendChild(reserveSeatButton);
-        var deleteCarButton = document.createElement("button");
+        let deleteCarButton = document.createElement("button");
         deleteCarButton.onclick = function(){ deleteCar(car.carID); };
-        var i2 = document.createElement("i");
-        i.class="fa fa-times-circle";
+        let i2 = document.createElement("i");
+        i2.className="fa fa-times-circle";
 <!--        i.aria-hidden="true";-->
         deleteCarButton.appendChild(i2);
         deleteCarButton.innerHTML="Delete Car";
         div2.appendChild(deleteCarButton);
         div1.appendChild(div2);
-        var div3 = document.createElement("div");
-        var h5 = document.createElement("h5");
-        h5.innerHTML="Driver: "+car.driver_name;
+        let div3 = document.createElement("div");
+        div3.className="car-logistics"
+        let h5 = document.createElement("h5");
+        h5.innerHTML= "Driver: "+ car.driver_name;
         div3.appendChild(h5);
-        var h6 = document.createElement("h6");
-        h6.innerHTML="Seats Available: "+car.num_seats_available;
+        let h6 = document.createElement("h5");
+        h6.innerHTML="Seats Available: "+ car.num_seats_available;
         div3.appendChild(h6);
         div1.appendChild(div3);
         document.getElementById("modal-cars").appendChild(div1);
@@ -114,7 +115,7 @@ events that are coming up in the next week. -->
     }
 
     function displayCars(cars){
-        var carsObj = JSON.parse(cars);
+        let carsObj = JSON.parse(cars);
         console.log(cars);
     }
 
