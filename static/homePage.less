@@ -195,6 +195,7 @@ body {
     width: 80%; /* Could be more or less, depending on screen size */
 
     .modal-cars {
+      position: relative;
       width: 40%;
       height: 100%;
       background: #003249;
@@ -226,6 +227,18 @@ body {
         background: #555;
       }
 
+      #add-car{
+        position: absolute;
+        top: 0;
+        right: 133px;
+      }
+
+      #request-car{
+        position: absolute;
+        top: 0px;
+        right: 5px;
+      }
+
       .car-title {
         display: flex;
         flex-direction: row;
@@ -240,7 +253,7 @@ body {
           position: relative;
           height: 20px;
           border: none;
-          left: 60%;
+          //left: 60%;
           margin-top: 10px;
           border-radius: 6px;
           line-height: 2px;
@@ -263,6 +276,7 @@ body {
       .cars {
         display: flex;
         flex-direction: column;
+        position: relative;
         margin: 0px 0px 20px 5px;
         padding-left: 5px;
         background-color: white;
@@ -309,7 +323,10 @@ body {
       .seat-title {
         display: flex;
         flex-direction: row;
+        position: absolute;
         margin-top: 5px;
+        margin-bottom: 20px;
+        width: 100%;
 
         h4 {
           margin: 5px 100px 5px 0px;
@@ -317,8 +334,11 @@ body {
 
         button {
           display: flex;
-          position: relative;
+          position: absolute;
           height: 20px;
+          top: 0px;
+          right: 0px;
+          min-width: 105px;
           margin-right: 3px;
           border: none;
           border-radius: 6px;
@@ -337,9 +357,28 @@ body {
             line-height: 3px;
           }
         }
+
+        #reserve-seat{
+          position: absolute;
+          top: 0px;
+          right: 100px
+        }
+
+        #delete-car{
+          position: absolute;
+          top: 0px;
+          right: 5px;
+          min-width: 94px;
+        }
+
+
+
+
       }
 
       .car-logistics{
+        position: absolute;
+        margin-top: 35px;
         h4 {
           margin: 5px 5px 5px 0px;
         }
@@ -397,6 +436,7 @@ body {
     #modal-seats-addCar {
       display: none;
       flex-direction: column;
+      position: relative;
       width: 60%;
       margin-left: 10px;
       background: white;
@@ -435,7 +475,7 @@ body {
 
       h3 {
         margin-left: 0px;
-        margin-top: 0px;
+        margin-top: 20px;
         margin-bottom: 5px;
       }
 
@@ -495,6 +535,7 @@ body {
     #modal-seats-resSeat {
       display: none;
       flex-direction: column;
+      position: relative;
       width: 60%;
       margin-left: 10px;
       background: white;
@@ -533,7 +574,7 @@ body {
 
       h3 {
         margin-left: 0px;
-        margin-top: 0px;
+        margin-top: 20px;
         margin-bottom: 5px;
       }
 
