@@ -186,7 +186,7 @@ times and places, and then finally the social media links with the icons. This p
                 </button>
                 <button id="delete-btn"
                         onclick="location.href='/deleteEvent?q={{event['eventID']}}'">
-                    <i class="fa fa-times-circle" aria-hidden="true"></i>Delete
+                    <i class="fa fa-times-circle fa-lg" aria-hidden="true"></i>Delete
                 </button>
                 {% endif %}
                 <h5>{{event['club_name']}}</h5>
@@ -271,7 +271,7 @@ times and places, and then finally the social media links with the icons. This p
         </div>
         <div id="add-event-panel">
             <div class="add-event-form">
-                <button class="exit" onclick=exit()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+                <button class="exit" onclick=exit()><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
                 <h3 id="add-title">Add Event</h3>
                 <p>* indicates required field </p>
                 <form action="/addEvent" method="post" enctype=multipart/form-data>
@@ -430,7 +430,7 @@ times and places, and then finally the social media links with the icons. This p
             </div>
         </div>
         <div id="edit-club-panel">
-            <button class="exit" onclick=exit()><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+            <button class="exit" onclick=exit()><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
             <h3>Edit Club Page</h3>
             <p>* indicates required field </p>
             <button id="btn-del" onclick=deleteClub()>Delete Club</button>

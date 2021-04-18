@@ -353,6 +353,7 @@ body {
     #modal-seats-description {
       display: flex;
       flex-direction: column;
+      position: relative;
       width: 60%;
       height: 100%;
       background: white;
@@ -381,11 +382,16 @@ body {
       }
 
       .exit {
-        position: relative;
-        top: -190px;
-        right: -285px;
+        position: absolute;
+        top: 0px;
+        right: 15px;
         border-radius: 6px;
-        width: 30px;
+        width: 0px;
+        border: none;
+        background: none;
+        &:hover{
+          background: none;
+        }
       }
     }
     #modal-seats-addCar {
@@ -474,11 +480,16 @@ body {
       }
 
       .exit {
-        position: relative;
-        top: 5px;
-        right: -585px;
+        position: absolute;
+        top: 0px;
+        right: 15px;
         border-radius: 6px;
-        width: 30px;
+        width: 0px;
+        border: none;
+        background: none;
+        &:hover{
+          background: none;
+        }
       }
     }
     #modal-seats-resSeat {
@@ -567,11 +578,16 @@ body {
       }
 
       .exit {
-        position: relative;
-        top: 5px;
-        right: -585px;
+        position: absolute;
+        top: 0px;
+        right: 15px;
         border-radius: 6px;
-        width: 30px;
+        width: 0px;
+        border: none;
+        background: none;
+        &:hover{
+          background: none;
+        }
       }
     }
   }
