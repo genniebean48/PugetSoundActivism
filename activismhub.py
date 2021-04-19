@@ -596,7 +596,9 @@ def deleteCar():
         sendEmail(passenger_email,texts['html'],texts['text'],subject)
 
     #delete car and all passengers in car
-    cursor.execute('''DELETE from c, p USING %s c JOIN %s p ON c.carID = p.carID where c.carID = %%s'''%(CAR_TABLE,PASSENGER_TABLE,),(carID,))
+    cursor.execute('''DELETE FROM %s where carID = %%s''' %(CAR_TABLE,),(carID,))
+    if len(results) > 0:
+        cursor.execute('''DELETE FROM %s where carID = %%s''' %(PASSENGER_TABLE,),(carID,))
 
     mysql.connection.commit()
     #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
