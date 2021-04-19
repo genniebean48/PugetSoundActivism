@@ -55,7 +55,13 @@ events that are coming up in the next week. -->
     div2.appendChild( h4 );
     let reserveSeatButton = document.createElement( "button" );
     reserveSeatButton.id = "reserve-seat";
-    reserveSeatButton.onclick = function() { reserveSeat( car.carID ); };
+    reserveSeatButton.onclick = function() {
+      if(car.num_seats_available > 0 ) {
+        reserveSeat( car.carID );
+      }else{
+        alert("There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button");
+      }
+    }
 //         let i = document.createElement("i");
 //         i.className="fa fa-car";
 // <!--        i.aria-hidden="true";-->
