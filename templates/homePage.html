@@ -42,7 +42,7 @@ events that are coming up in the next week. -->
     }
     modal.style.display = "block";
     cars.forEach( carFcn );
-    console.log(cars);
+    console.log( cars );
   }
 
   function carFcn( car ) {
@@ -56,12 +56,12 @@ events that are coming up in the next week. -->
     let reserveSeatButton = document.createElement( "button" );
     reserveSeatButton.id = "reserve-seat";
     reserveSeatButton.onclick = function() {
-      if(car.num_seats_available > 0 ) {
+      if( car.num_seats_available > 0 ) {
         reserveSeat( car.carID );
-      }else{
-        alert("There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button");
+      } else {
+        alert( "There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button" );
       }
-    }
+    };
 //         let i = document.createElement("i");
 //         i.className="fa fa-car";
 // <!--        i.aria-hidden="true";-->
@@ -119,6 +119,13 @@ events that are coming up in the next week. -->
   }
 
   function hideRideShare() {
+    let description = document.getElementById( "modal-seats-description" );
+    let addCar = document.getElementById( "modal-seats-addCar" );
+    let resSeat = document.getElementById( "modal-seats-resSeat" );
+    addCar.style.display = "none";
+    resSeat.style.display = "none";
+    description.style.display = "flex";
+
     const modal = document.getElementById( "ride-share-modal" );
     modal.style.display = "none";
   }
