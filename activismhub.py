@@ -40,11 +40,11 @@ IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 #for actually running
 # CLUB_TABLE='club'
 # EVENT_TABLE='club_event'
-# ADMIN_TABLE='club_admin'
+
 #for testing
 CLUB_TABLE ='testClub'
 EVENT_TABLE ='testClub_event'
-ADMIN_TABLE ='testClub_admin'
+# ADMIN_TABLE ='testClub_admin'
 CAR_TABLE = 'testRideShare_car'
 PASSENGER_TABLE = 'testRideShare_passenger'
 TRACKING_TABLE = 'tracking'
@@ -257,24 +257,10 @@ def enter_account():
        email_activated) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,0)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
        club_email_display,activation_hash))
    #Increment tracking numbers
-   cursor.execute('''UPDATE %s SET club_total = club_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   cursor.execute('''UPDATE %s SET event_total = event_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   # mysql.connection.commit()
-   #get club new club id
-   # cursor.execute('''SELECT clubID FROM %s where club_name = %%s'''%(CLUB_TABLE,),(club_name,))
-   # clubID=cursor.fetchall()[0]['clubID']
-   # #Insert new account info into admin table
-   # cursor.execute('''INSERT INTO %s(clubID,admin_name,admin_email) VALUES(%%s,%%s,%%s)'''%(ADMIN_TABLE,),
-   #      (clubID,admin_name,admin_email))
+   # cursor.execute('''UPDATE %s SET club_total = club_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+   # cursor.execute('''UPDATE %s SET event_total = event_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+   # cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
    mysql.connection.commit()
-#    #get club new club id
-#    cursor.execute('''SELECT clubID FROM %s where club_name = %%s'''%(CLUB_TABLE,),(club_name,))
-#    clubID=cursor.fetchall()[0]['clubID']
-#    #Insert new account info into admin table
-#    cursor.execute('''INSERT INTO %s(clubID,admin_name,admin_email) VALUES(%%s,%%s,%%s)'''%(ADMIN_TABLE,),
-#         (clubID,admin_name,admin_email))
-#    mysql.connection.commit()
    #Create text for email verification and send email
    texts = verifyEmailText(club_email,activation_hash)
    sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
@@ -349,9 +335,6 @@ def delete_club():
     cursor = mysql.connection.cursor()
     #delete all club events
     cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(EVENT_TABLE,),(clubID,))
-    mysql.connection.commit()
-    #delete club from admin table
-    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(ADMIN_TABLE,),(clubID,))
     mysql.connection.commit()
     #delete club from club table
     cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(CLUB_TABLE,),(clubID,))
@@ -474,6 +457,7 @@ def updateEvent():
 def addCar():
     #Get which event
     eventID = request.form['eventID']
+
     #get form info
     driver_name = request.form['driver_name']
     driver_email = request.form['driver_email']
@@ -490,17 +474,15 @@ def addCar():
         depart_time,return_time,meeting_location,eventID) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CAR_TABLE,),
         (driver_name,driver_email,num_seats_total, num_seats_available,depart_time,return_time,meeting_location,eventID))
     mysql.connection.commit()
-    #reroute to home page
-    # -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
+    #reroute to home page -- TODO ideally we'd reroute back to the popup but might be complicated
     return index()
 
 
 #route when user clicks submit on reserving a seat -- ADD PASSENGER NOTIFICATION AND EDIT DRIVER NOTIFICATION
 @app.route("/addPassenger",methods=["POST"])
 def addPassenger():
-    #Get which car -- TODO
-    carID = 1
-    #eventID = request.args.get("q")
+    #Get which car
+    carID = request.form['carID']
 
     #get form info
     passenger_name = request.form['passenger_name']
@@ -508,37 +490,39 @@ def addPassenger():
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
-    #Add passenger
+    #add passenger
     cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,carID) VALUES (%%s,%%s,%%s)'''%(PASSENGER_TABLE,),(passenger_name,passenger_email,carID))
 
     #decrement number of available seats for specific car
-    cursor.execute('''UPDATE %s SET num_seats_available = num_seats_available - 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID))
+    cursor.execute('''UPDATE %s SET num_seats_available = num_seats_available - 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
     #increment number of seats taken or specific car
-    cursor.execute('''UPDATE %s SET num_seats_taken = num_seats_taken + 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID))
+    cursor.execute('''UPDATE %s SET num_seats_taken = num_seats_taken + 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
 
-    # Get eventID using carID
-    cursor.execute('''SELECT eventID,depart_time,driver_email FROM %s WHERE carID = %%s''' % (CAR_TABLE,),(carID))
-    r = cursor.fetchall()
-    results = r[0]
+    # Get eventID,depart_time,driver_email using carID
+    cursor.execute('''SELECT eventID,depart_time,driver_email FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
+    results = cursor.fetchall()[0]
     eventID = results['eventID']
-    time = results['depart_time']
+    depart_time = results['depart_time']
     driver_email = results['driver_email']
 
-
     #get event_name and date using eventID
-    cursor.execute('''SELECT event_name, event_date FROM %s WHERE eventID = %%s''' % (EVENT_TABLE,),(eventID))
+    cursor.execute('''SELECT event_name, event_date FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
     results = cursor.fetchall()[0]
     event_name = results['event_name']
     date = results['event_date']
 
+    #format date and time from SQL
+    date = formatDateFromSql(date)
+    depart_time = formatTimeFromSql(depart_time)
+
     #Notify driver that someone has added themselves to their car
-    texts = addPassengerDriverText(event_name,date,time)
+    texts = addPassengerDriverText(event_name,date,depart_time)
     subject = 'New Passenger Added to Your Car!'
     sendEmail(driver_email,texts['html'],texts['text'],subject)
 
     #Notify passenger that they've been added to the car
-    texts = addPassengerText(event_name,date,time)
-    subject = 'You Have Been Successfully Added to a Car!'
+    texts = addPassengerText(event_name,date,depart_time)
+    subject = 'Successfully Added to a Car!'
     sendEmail(passenger_email,texts['html'],texts['text'],subject)
 
     mysql.connection.commit()
@@ -546,45 +530,49 @@ def addPassenger():
     return index()
 
 #route when user clicks delete a car
-@app.route("/deleteCar",methods=["POST"])
+@app.route("/deleteCar")
 def deleteCar():
-    #Get which car - TODO
-    carID = request.args.get("q")
+    #Get which car
+    carID = request.args.get("id")
     #instantiate cursor
     cursor = mysql.connection.cursor()
 
-    #delete car and all passengers in car
-    cursor.execute('''DELETE from c, p USING %s c JOIN %s p ON c.carID = p.carID where c.carID = %%s'''%(CAR_TABLE,PASSENGER_TABLE,),(carID,))
-
-    #if that doesn't work, do it in two queries
-    # cursor.execute('''DELETE FROM %s WHERE carID = %%s'''%(CAR_TABLE,),(carID,))
-    # cursor.execute('''DELETE FROM %s WHERE carID = %%s'''%(PASSENGER_TABLE,),(carID,))
-
-    # Get eventID using carID
-    cursor.execute('''SELECT eventID FROM %s WHERE carID = %%s''' % (CAR_TABLE,),(carID))
-    r = cursor.fetchall()
-    results = r[0]
+    # Get eventID and depart_time using carID
+    cursor.execute('''SELECT eventID,depart_time,driver_email FROM %s WHERE carID = %%s''' % (CAR_TABLE,),(carID,))
+    results = cursor.fetchall()[0]
     eventID = results['eventID']
+    depart_time = results['depart_time']
+    driver_email = results['driver_email']
 
-    #get event_name, date, and time using eventID
-    cursor.execute('''SELECT event_name, event_date, start_time FROM %s WHERE eventID = %%s''' % (EVENT_TABLE,),(eventID))
+    #get event_name and date using eventID
+    cursor.execute('''SELECT event_name, event_date FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
     results = cursor.fetchall()[0]
     event_name = results['event_name']
     date = results['event_date']
-    time = results['start_time']
 
-    #loop through all passengers in car and send email -- I DONT THINK THIS IS RIGHT CHECK WITH MANYA
-    cursor.execute('''SELECT passenger_email FROM %s WHERE carID = %%s''' % (PASSENGER_TABLE,),(carID))
+    #format date and time from SQL
+    date = formatDateFromSql(date)
+    depart_time = formatTimeFromSql(depart_time)
+
+    #notify driver
+    texts = deleteCarDriverText(event_name,date,depart_time)
+    subject = 'Your Car Has Been Deleted'
+    sendEmail(driver_email,texts['html'],texts['text'],subject)
+
+    #loop through all passengers in car and cancellation send email
+    cursor.execute('''SELECT passenger_email FROM %s WHERE carID = %%s''' % (PASSENGER_TABLE,),(carID,))
     results = cursor.fetchall()
     subject = 'Car No Longer Available'
     for passenger in results:
         passenger_email = passenger['passenger_email']
-        texts = deleteCarText(event_name,date,time)
+        texts = deleteCarPassText(event_name,depart_time,date)
         sendEmail(passenger_email,texts['html'],texts['text'],subject)
 
+    #delete car and all passengers in car
+    cursor.execute('''DELETE from c, p USING %s c JOIN %s p ON c.carID = p.carID where c.carID = %%s'''%(CAR_TABLE,PASSENGER_TABLE,),(carID,))
+
     mysql.connection.commit()
-    #reroute to home page
-    # -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
+    #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
     return index()
 
 #route when user clicks delete a car
@@ -596,14 +584,14 @@ def requestCar():
     #instantiate cursor
     cursor = mysql.connection.cursor()
     #get event info and clubID
-    cursor.execute('''SELECT event_name, event_date,clubID FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID))
+    cursor.execute('''SELECT event_name, event_date,clubID FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
     results = cursor.fetchall()[0]
     event_name = results['event_name']
     date = results['event_date']
     clubID = results['clubID']
 
     #get club_name and club_email using clubID
-    cursor.execute('''SELECT club_name,club_email FROM %s WHERE clubID = %%s''' %(CLUB_TABLE,),(clubID))
+    cursor.execute('''SELECT club_name,club_email FROM %s WHERE clubID = %%s''' %(CLUB_TABLE,),(clubID,))
     results = cursor.fetchall()[0]
     club_name = results['club_name']
     club_email = results['club_email']
@@ -624,7 +612,7 @@ def addPassengerDriverText(event_name,date,time):
         <html>
           <body>
             <p>Hello,<br><br>
-               A new person has been added to your car for the {event_name} event leaving on {date} at {time}.<br><br>
+               A new person has been added to your car for {event_name} leaving on {date} at {time}.<br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -634,14 +622,14 @@ def addPassengerDriverText(event_name,date,time):
     text = f"""\
         Hello,
 
-        A new person has been added to your car for the {event_name} event leaving on {date} at {time}.
+        A new person has been added to your car for {event_name} leaving on {date} at {time}.
         
         Best,
         The ACTivism Hub Team
         """
     return {'html':html,'text':text}
 
-#returns a dict with the html and plain text versions of adding passenger email -- ADD EVENT_NAME
+#returns a dict with the html and plain text versions of adding passenger email
 def addPassengerText(event_name,date,time):
     html=f"""\
         <html>
@@ -664,14 +652,15 @@ def addPassengerText(event_name,date,time):
         """
     return {'html':html,'text':text}
 
-#returns a dict with the html and plain text versions of adding passenger email -- ADD EVENT_NAME
-def deleteCarText(event_name,date,time):
+#returns a dict with the html and plain text versions of deleting car send to passenger email
+def deleteCarPassText(event_name,date,time):
     html=f"""\
         <html>
           <body>
             <p>Hello,<br><br>
-               The car you reserved for the {event_name} event leaving on {date} at {time} is no longer available. 
-               Please visit ACTivism Hub to check if there are other cars.<br><br>
+               The car you reserved for {event_name} leaving on {date} at {time} is no longer available. 
+               Please visit ACTivism Hub and check for other cars. If there are no other cars, feel free 
+               to a request a car and we will notify the club leader.<br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -681,15 +670,40 @@ def deleteCarText(event_name,date,time):
     text = f"""\
         Hello,
 
-        The car you reserved for the {event_name} event leaving on {date} at {time} is no longer available. 
-        Please visit ACTivism Hub to check if there are other cars.
+        The car you reserved for {event_name} leaving on {date} at {time} is no longer available. 
+        Please visit ACTivism Hub and check for other cars. If there are no other cars, feel free 
+        to a request a car and we will notify the club leader.
         
         Best,
         The ACTivism Hub Team
         """
     return {'html':html,'text':text}
 
-#returns a dict with the html and plain text versions of passenger requesting car email -- ADD EVENT_NAME
+#returns a dict with the html and plain text versions of deleting car send to driver email
+def deleteCarDriverText(event_name,date,time):
+    html=f"""\
+        <html>
+          <body>
+            <p>Hello,<br><br>
+               Your car for {event_name} leaving on {date} at {time} has been deleted.  
+               If this was a mistake, please return to ACTivism Hub and add your car again.<br><br>
+               Best,<br>
+               The ACTivism Hub Team
+            </p>
+          </body>
+        </html>
+        """
+    text = f"""\
+        Hello,
+
+        Your car for {event_name} leaving on {date} at {time} has been deleted. If this was a mistake, please return to ACTivism Hub and add your car again.
+        
+        Best,
+        The ACTivism Hub Team
+        """
+    return {'html':html,'text':text}
+
+#returns a dict with the html and plain text versions of passenger requesting car email
 def carRequestText(club_name, event_name,date):
     html=f"""\
         <html>
@@ -738,8 +752,8 @@ def formatDateFromSql(sqlDate):
 def formatTimeFromSql(time):
     hours = (int)(time.seconds/3600)
     min = (int)((time.seconds/60)%60)
-    if min==0:
-        min='00'
+    if min<10:
+        min='0' + str(min)
     ampm = 'AM'
     if hours>12:
         hours=hours-12
@@ -789,8 +803,8 @@ def verifyEmailText(email,hash):
           <body>
             <p>Hello,<br><br>
                Welcome to ACTivism Hub!<br>
-               Please verify your email by clicking <a href={link}>here</a>.<br><br>
-               Best,<br>
+               Please verify your email by clicking here <a href={link}>here</a>.<br><br>
+               Best,<br><br>
                The ACTivism Hub Team
             </p>
           </body>
@@ -803,6 +817,7 @@ def verifyEmailText(email,hash):
         Please verify your email by clicking the link below.
 
         Best,
+
         The ACTivism Hub Team
 
         {link}

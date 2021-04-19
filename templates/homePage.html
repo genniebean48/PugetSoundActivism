@@ -109,6 +109,8 @@ events that are coming up in the next week. -->
         window.confirm("Do you want to delete this car?");
         if (confirm) {
             //if the user clicks ok and therefore wants to delete the club
+            location.href = '/deleteCar?id='+carID;
+
         } else {
             //otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
             console.log("keep car")
@@ -246,24 +248,31 @@ events that are coming up in the next week. -->
                 <button class="exit" onclick=hideRideShare()><i class="fa fa-times-circle fa-lg" aria-hidden="true"></i></button>
                 <h3>Reserve a Seat</h3>
                 <p>* indicates required field </p>
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="passenger_name">Passenger's Name:</label><br>
-                <input type="text"
-                       id="passenger_name"
-                       placeholder="Passenger's Name"
-                       maxLength="255"
-                       required ><br>
+                <form action="/addPassenger" method="post">
 
-                <i class="fa fa-asterisk" aria-hidden="true"></i>
-                <label for="passenger_email">Passenger's Name:</label><br>
-                <input type="text"
-                       id="passenger_email"
-                       placeholder="Passenger's Email"
-                       maxLength="255"
-                       required ><br>
-                <input type="hidden" name="carID" id="reserveSeat-carID"/>
-                <input type="submit"
-                       value="Reserve Seat"/>
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="passenger_name">Passenger's Name:</label><br>
+                    <input type="text"
+                           id="passenger_name"
+                           name = "passenger_name"
+                           placeholder="Passenger's Name"
+                           maxLength="255"
+                           required ><br>
+
+                    <i class="fa fa-asterisk" aria-hidden="true"></i>
+                    <label for="passenger_email">Passenger's Name:</label><br>
+                    <input type="text"
+                           id="passenger_email"
+                           name = "passenger_email"
+                           placeholder="Passenger's Email"
+                           maxLength="255"
+                           required ><br>
+
+                    <input type="hidden" name="carID" id="reserveSeat-carID"/>
+
+                    <input type="submit"
+                           value="Reserve Seat"/>
+                </form>
             </div>
         </div>
     </div>
