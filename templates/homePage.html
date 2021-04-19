@@ -16,12 +16,9 @@ events that are coming up in the next week. -->
         document.getElementById("add-car").onclick=function(){ addCar(eventID); };
         let allCars = document.getElementsByClassName("cars");
         for(let i=0; i<allCars.length; i++){
-            // console.log(allCars[i]);
             while(allCars[i]){
                 allCars[i].remove();
             }
-            // allCars[i].remove();
-            // allCars[i].innerHTML = '';
         }
         modal.style.display = "block";
         cars.forEach(carFcn);
@@ -269,7 +266,7 @@ events that are coming up in the next week. -->
                            required ><br>
 
                     <i class="fa fa-asterisk" aria-hidden="true"></i>
-                    <label for="passenger_email">Passenger's Name:</label><br>
+                    <label for="passenger_email">Passenger's Email:</label><br>
                     <input type="text"
                            id="passenger_email"
                            name = "passenger_email"
