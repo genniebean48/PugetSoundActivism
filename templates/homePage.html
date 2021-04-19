@@ -12,6 +12,7 @@ events that are coming up in the next week. -->
 <title>Actvism Hub</title>
 <script>
     function showRideShare(eventID,cars){
+        console.log(cars);
         const modal = document.getElementById("ride-share-modal");
         document.getElementById("add-car").onclick=function(){ addCar(eventID); };
         let allCars = document.getElementsByClassName("cars");
@@ -59,6 +60,32 @@ events that are coming up in the next week. -->
         let h6 = document.createElement("h5");
         h6.innerHTML="Seats Available: "+ car.num_seats_available;
         div3.appendChild(h6);
+        let hPass = document.createElement("h5");
+        hPass.innerHTML = "Passengers:";
+        console.log(car.passengers);
+        if(car.passengers.length === 0){
+            hPass.innerHTML += " none";
+        }else{
+            for(i=0; i<car.passengers.length; i++){
+                if(car.passengers.length === 1){
+                    hPass.innerHTML += " " + car.passengers[i].passenger_name;
+                }else if (i === car.passengers.length-1){
+                    hPass.innerHTML += " " + car.passengers[i].passenger_name;
+                } else{
+                    hPass.innerHTML += " " + car.passengers[i].passenger_name + ",";
+                }
+            }
+        }
+        div3.append(hPass);
+        let h7 = document.createElement("h5");
+        h7.innerHTML="Depart Time: "+ car.depart_time;
+        div3.append(h7);
+        let h72 = document.createElement("h5");
+        h72.innerHTML="Return Time: "+ car.return_time;
+        div3.append(h72);
+        let h73 = document.createElement("h5");
+        h73.innerHTML="Meeting Location: "+ car.meet_location;
+        div3.append(h73);
         div1.appendChild(div3);
         document.getElementById("modal-cars").appendChild(div1);
     }
