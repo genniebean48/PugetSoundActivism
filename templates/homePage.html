@@ -14,6 +14,15 @@ events that are coming up in the next week. -->
     function showRideShare(eventID,cars){
         const modal = document.getElementById("ride-share-modal");
         document.getElementById("add-car").onclick=function(){ addCar(eventID); };
+        let allCars = document.getElementsByClassName("cars");
+        for(let i=0; i<allCars.length; i++){
+            // console.log(allCars[i]);
+            while(allCars[i]){
+                allCars[i].remove();
+            }
+            // allCars[i].remove();
+            // allCars[i].innerHTML = '';
+        }
         modal.style.display = "block";
         cars.forEach(carFcn);
     }
