@@ -42,6 +42,7 @@ events that are coming up in the next week. -->
     }
     modal.style.display = "block";
     cars.forEach( carFcn );
+    console.log(cars);
   }
 
   function carFcn( car ) {
@@ -105,7 +106,7 @@ events that are coming up in the next week. -->
     h72.innerHTML = "Return Time: " + car.return_time;
     div3.append( h72 );
     let h73 = document.createElement( "h5" );
-    h73.innerHTML = "Meeting Location: " + car.meet_location;
+    h73.innerHTML = "Meeting Location: " + car.meeting_location;
     div3.append( h73 );
     div1.appendChild( div3 );
     document.getElementById( "modal-cars" ).appendChild( div1 );
