@@ -473,6 +473,33 @@ def addCar():
     cursor.execute('''INSERT INTO %s(driver_name,driver_email,num_seats_total,num_seats_available,
         depart_time,return_time,meeting_location,eventID) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CAR_TABLE,),
         (driver_name,driver_email,num_seats_total, num_seats_available,depart_time,return_time,meeting_location,eventID))
+
+    #get carID from just inserted car
+    cursor.execute('''SELECT last_insert_id()''')
+    results = cursor.fetchall()[0]
+    carID = results['last_insert_id()']
+
+    # Get depart_time,driver_email using carID
+    cursor.execute('''SELECT depart_time,driver_email FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
+    results = cursor.fetchall()[0]
+    depart_time = results['depart_time']
+    driver_email = results['driver_email']
+
+    #get event_name and date using eventID
+    cursor.execute('''SELECT event_name, event_date FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
+    results = cursor.fetchall()[0]
+    event_name = results['event_name']
+    date = results['event_date']
+
+    #format date and time from SQL
+    date = formatDateFromSql(date)
+    depart_time = formatTimeFromSql(depart_time)
+
+    #Notify driver that someone has added themselves to their car
+    texts = addCarDriverText(event_name,date,depart_time)
+    subject = 'Car Successfully Added!'
+    sendEmail(driver_email,texts['html'],texts['text'],subject)
+
     mysql.connection.commit()
     #reroute to home page -- TODO ideally we'd reroute back to the popup but might be complicated
     return index()
@@ -576,7 +603,7 @@ def deleteCar():
     return index()
 
 #route when user clicks delete a car
-@app.route("/requestCar",methods=["POST"])
+@app.route("/requestCar")
 def requestCar():
     #get eventID for requested car
     eventID = request.form['eventID']
@@ -605,6 +632,29 @@ def requestCar():
     #reroute to home page
     # -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
     return index()
+
+#returns a dict with the html and plain text versions of adding car email
+def addCarDriverText(event_name,date,time):
+    html=f"""\
+        <html>
+          <body>
+            <p>Hello,<br><br>
+               You have successfully added a car for the {event_name} event leaving on {date} at {time}.<br><br>
+               Best,<br>
+               The ACTivism Hub Team
+            </p>
+          </body>
+        </html>
+        """
+    text = f"""\
+        Hello,
+
+        You have successfully added a car for the {event_name} event leaving on {date} at {time}.
+        
+        Best,
+        The ACTivism Hub Team
+        """
+    return {'html':html,'text':text}
 
 #returns a dict with the html and plain text versions of adding passenger email -- ADD EVENT_NAME
 def addPassengerDriverText(event_name,date,time):
