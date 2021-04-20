@@ -102,7 +102,7 @@ def index(message=""):
 #        cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID']))
 #        car['passengers'] = cursor.fetchall()
    #render homepage
-   printClubs()
+   # printClubs()
    return render_template("homePage.html",events=events,clubs=clubs,message=message)
 
 
@@ -111,24 +111,38 @@ def index(message=""):
 def tracking():
     #Establish connection
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT count(*) AS total_clubs FROM %s''' %(CLUB_TABLE,))
-    r = cursor.fetchall()
-    results = r[0]
-    total_clubs = results['total_clubs']
 
-    cursor.execute('''SELECT count(*) AS total_events FROM %s''' %(EVENT_TABLE,))
-    r = cursor.fetchall()
-    results = r[0]
-    total_events = results['total_events']
+    #get current totals
+    cursor.execute('''SELECT count(*) AS total_current_clubs FROM %s''' %(CLUB_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_clubs = results['total_current_clubs']
 
-    cursor.execute('''SELECT count(*) AS total_passengers FROM %s''' %(PASSENGER_TABLE,))
-    r = cursor.fetchall()
-    results = r[0]
-    total_passengers = results['total_passengers']
+    cursor.execute('''SELECT count(*) AS total_current_events FROM %s''' %(EVENT_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_events = results['total_current_events']
+
+    cursor.execute('''SELECT count(*) AS total_current_cars FROM %s''' %(CAR_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_cars = results['total_current_cars']
+
+    cursor.execute('''SELECT count(*) AS total_current_passengers FROM %s''' %(PASSENGER_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_passengers = results['total_current_passengers']
+
+    #get overall totals
+    cursor.execute('''SELECT * FROM FROM %s WHERE trackingID = 1''' %(PASSENGER_TABLE,))
+    results = cursor.fetchall()[0]
+    total_overall_clubs = results['total_clubs']
+    total_overall_events = results['total_events']
+    total_overall_cars = results['total_cars']
+    total_overall_passengers = results['total_passengers']
+
+    #display current and overall stats
+
+
+
     #render homepage with stats
     #return render_template("homePage.html",events=events,clubs=clubs) -- this is wrong
-
-
 
 
 
@@ -257,9 +271,9 @@ def enter_account():
        email_activated) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,0)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
        club_email_display,activation_hash))
    #Increment tracking numbers
-   # cursor.execute('''UPDATE %s SET club_total = club_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   # cursor.execute('''UPDATE %s SET event_total = event_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   # cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+   cursor.execute('''UPDATE %s SET club_total = club_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+   cursor.execute('''UPDATE %s SET event_total = event_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+   cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
    mysql.connection.commit()
    #Create text for email verification and send email
    texts = verifyEmailText(club_email,activation_hash)
@@ -520,6 +534,7 @@ def addPassenger():
     #add passenger
     cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,carID) VALUES (%%s,%%s,%%s)'''%(PASSENGER_TABLE,),(passenger_name,passenger_email,carID))
 
+    print("added " + str(passenger_name))
     #decrement number of available seats for specific car
     cursor.execute('''UPDATE %s SET num_seats_available = num_seats_available - 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
     #increment number of seats taken or specific car
@@ -607,8 +622,11 @@ def deleteCar():
 #route when user clicks delete a car
 @app.route("/requestCar")
 def requestCar():
+    print("i made it!")
     #get eventID for requested car
     eventID = request.form['eventID']
+
+    print("eventID = " + str(eventID))
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
@@ -887,9 +905,9 @@ def verifyEmail():
     #NOTE - is it possible there would be none/more than one of this email in the db
     cursor.execute('''SELECT clubID, activation_hash, email_activated FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
     r = cursor.fetchall()
-    print(len(r))
-    print(club_email)
-    print(type(club_email))
+    # print(len(r))
+    # print(club_email)
+    # print(type(club_email))
     results = r[0]
     clubID=results['clubID']
     db_hash = results['activation_hash']

@@ -186,6 +186,9 @@ events that are coming up in the next week. -->
     }
   }
 
+  function requestCar(){
+        location.href = '/requestCar()';
+  }
   function displayCars( cars ) {
     let carsObj = JSON.parse( cars );
     console.log( cars );
@@ -273,7 +276,7 @@ events that are coming up in the next week. -->
               aria-hidden="true"></i>
             Add Car
           </button>
-          <button id="request-car">
+          <button id="request-car" onclick=requestCar()>
             <i
               class="fa fa-car"
               aria-hidden="true"></i>
