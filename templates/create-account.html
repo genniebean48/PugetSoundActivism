@@ -25,11 +25,6 @@ contains all fo the information from the navigation bar because it extends the l
         }
     }
 
-    function error(message){
-        if(message != ""){
-            window.alert(message);
-        }
-    }
 </script>
 {% endblock %}
 
@@ -38,11 +33,11 @@ contains all fo the information from the navigation bar because it extends the l
 {% endblock %}
 
 {% block panel %}
-<body onload="error('{{message}}')">
+<body>
     <div class="login-panel">
         <h3>Create an Account</h3>
         {% if message != "" %}
-            <p id="message">{{message}}</p>
+            <p id="error_message">{{message}}</p>
         {% endif %}
         <p>* indicates required field </p>
     <!--    TODO: ADD FUNCTIONALITY OF ERROR CHECKING WITH PASSWORDS NOT MATCHING -->
