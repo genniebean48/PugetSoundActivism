@@ -22,41 +22,188 @@ body {
   background: #003249;
 }
 
-.homepage {
+//.homepage {
+//  display: flex;
+//  flex-direction: row;
+//  justify-content: center;
+//  align-items: center;
+//  margin: 0px;
+//  width: 100%;
+//  height: 387px;
+//  /* ADMIN: HERE IS WHERE YOU CAN EDIT THE HOMEPAGE IMAGE */
+//  background-image: url("./images/DSC_0586-background4.jpeg");
+//  background-size: 100%;
+//  background-repeat: no-repeat;
+//
+//  .txt-homepage {
+//    display: block;
+//    text-align: center;
+//    background: white;
+//    margin-top: 50px;
+//    border-radius: 6px;
+//    opacity: 88%;
+//    height: 200px;
+//    width: 480px;
+//
+//    h3 {
+//      text-align: center;
+//      padding: 10px;
+//      margin: 0px;
+//      font-size: 25px;
+//    }
+//
+//    p {
+//      font-size: 18px;
+//      margin: 0px;
+//      padding: 0px 30px 0px 30px;
+//    }
+//  }
+//}
+//* {
+//  box-sizing: border-box
+//}
+//body {
+//  font-family: Verdana, sans-serif;
+//  margin: 0
+//}
+//img {
+//  vertical-align: middle;
+//}
+
+.txt-homepage{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  text-align: center;
+  /* text-align: center; */
+  /* align-content: center; */
+  background: white;
+  margin: auto auto;
+  border-radius: 6px;
+  top: 150px;
+  left: 300px;
+  opacity: 88%;
+  height: 200px;
+  width: 480px;
+  transition: none;
+  z-index: 10;
+  h3 {
+    text-align: center;
+    padding: 10px;
+    margin: 0px;
+    font-size: 25px;
+  }
+
+  p {
+    font-size: 18px;
+    margin: 0px;
+    padding: 0px 30px 0px 30px;
+  }
+}
+
+.slideshow-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin: 0px;
   width: 100%;
-  height: 387px;
-  /* ADMIN: HERE IS WHERE YOU CAN EDIT THE HOMEPAGE IMAGE */
-  background-image: url("./images/DSC_0586-background4.jpeg");
-  background-size: 100%;
-  background-repeat: no-repeat;
+  max-height: 387px;
+  position: relative;
+  margin: auto;
+  overflow: hidden;
+  .mySlides {
+    display: none;
+    width: 100%;
+    max-height: 387px;
 
-  .txt-homepage {
-    display: block;
-    text-align: center;
-    background: white;
-    margin-top: 50px;
-    border-radius: 6px;
-    opacity: 88%;
-    height: 200px;
-    width: 480px;
-
-    h3 {
-      text-align: center;
-      padding: 10px;
-      margin: 0px;
-      font-size: 25px;
-    }
-
-    p {
-      font-size: 18px;
-      margin: 0px;
-      padding: 0px 30px 0px 30px;
-    }
+  }
+}
+/* Next & previous buttons */
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover,
+.next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+/* Caption text */
+.text {
+  color: #ffffff;
+  font-size: 15px;
+  padding: 8px 12px;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+}
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #ffffff;
+  font-size: 12px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #999999;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+.active,
+.dot:hover {
+  background-color: #111111;
+}
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+@-webkit-keyframes fade {
+  from {
+    opacity: .4
+  }
+  to {
+    opacity: 1
+  }
+}
+@keyframes fade {
+  from {
+    opacity: .4
+  }
+  to {
+    opacity: 1
+  }
+}
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .prev,
+  .next,
+  .text {
+    font-size: 11px
   }
 }
 
