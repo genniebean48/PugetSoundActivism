@@ -53,21 +53,23 @@ events that are coming up in the next week. -->
     let h4 = document.createElement( "h4" );
     h4.innerHTML = "Car";
     div2.appendChild( h4 );
-    let reserveSeatButton = document.createElement( "button" );
-    reserveSeatButton.id = "reserve-seat";
-    reserveSeatButton.onclick = function() {
-      if( car.num_seats_available > 0 ) {
-        reserveSeat( car.carID );
-      } else {
-        alert( "There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button" );
-      }
-    };
-//         let i = document.createElement("i");
-//         i.className="fa fa-car";
-// <!--        i.aria-hidden="true";-->
-//         reserveSeatButton.appendChild(i);
-    reserveSeatButton.innerHTML = "Reserve Seat";
-    div2.appendChild( reserveSeatButton );
+    if(car.num_seats_available > 0){
+      let reserveSeatButton = document.createElement( "button" );
+      reserveSeatButton.id = "reserve-seat";
+      reserveSeatButton.onclick = function() {
+        if( car.num_seats_available > 0 ) {
+          reserveSeat( car.carID );
+        } else {
+          alert( "There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button" );
+        }
+      };
+  //         let i = document.createElement("i");
+  //         i.className="fa fa-car";
+  // <!--        i.aria-hidden="true";-->
+  //         reserveSeatButton.appendChild(i);
+      reserveSeatButton.innerHTML = "Reserve Seat";
+      div2.appendChild( reserveSeatButton );
+    }
     let deleteCarButton = document.createElement( "button" );
     deleteCarButton.id = "delete-car";
     deleteCarButton.onclick = function() { deleteCar( car.carID ); };
@@ -106,10 +108,10 @@ events that are coming up in the next week. -->
     }
     div3.append( hPass );
     let h7 = document.createElement( "h5" );
-    h7.innerHTML = "Depart Time: " + car.depart_time;
+    h7.innerHTML = "Depart Time: " + car.depart_time_formatted;
     div3.append( h7 );
     let h72 = document.createElement( "h5" );
-    h72.innerHTML = "Return Time: " + car.return_time;
+    h72.innerHTML = "Return Time: " + car.return_time_formatted;
     div3.append( h72 );
     let h73 = document.createElement( "h5" );
     h73.innerHTML = "Meeting Location: " + car.meeting_location;
