@@ -38,13 +38,15 @@ IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 
 #Set tables - Change for running in server or localhost if club access is an issue
 #for actually running
+# SERVER_NAME="http://activism-hub.pugetsound.edu"
 # CLUB_TABLE='club'
 # EVENT_TABLE='club_event'
-
+# ADMIN_TABLE='website_admin'
 #for testing
+SERVER_NAME="http://localhost:5000"
 CLUB_TABLE ='testClub'
 EVENT_TABLE ='testClub_event'
-# ADMIN_TABLE ='testClub_admin'
+ADMIN_TABLE ='website_admin'
 CAR_TABLE = 'testRideShare_car'
 PASSENGER_TABLE = 'testRideShare_passenger'
 TRACKING_TABLE = 'tracking'
@@ -60,6 +62,11 @@ def printClubs():
     result = cursor.fetchall()
     for club in result:
         print(club)
+
+def addAdmin():
+   cursor = mysql.connection.cursor()
+   cursor.execute('''INSERT INTO website_admin (web_admin_name,web_admin_email) VALUES ("Manya","manyam686@gmail.com")''')
+   mysql.connection.commit()
 
 
 ########################################################################################################################
@@ -85,6 +92,8 @@ def index(message=""):
         #get passengers for each car
         #NOTE - possibly need to make car and passenger dicts JSON strings too
         for car in cars:
+            car['depart_time_formatted']=formatTimeFromSql(car['depart_time'])
+            car['return_time_formatted']=formatTimeFromSql(car['return_time'])
             cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID'],))
             car['passengers'] = cursor.fetchall()
             car = json.dumps(car,default=str)
@@ -94,15 +103,7 @@ def index(message=""):
         event['event_date_formatted']=formatDateFromSql(event['event_date'])
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
-#    #Get cars
-#    cursor.execute('''SELECT * FROM %s'''%(CAR_TABLE,))
-#    cars = cursor.fetchall()
-#    #get passengers for each car
-#    for car in cars:
-#        cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID']))
-#        car['passengers'] = cursor.fetchall()
    #render homepage
-   printClubs()
    return render_template("homePage.html",events=events,clubs=clubs,message=message)
 
 
@@ -135,7 +136,7 @@ def tracking():
 #Route when a club page is clicked
 @app.route("/clubPage")
 def club_page():
-   #Establish
+   #Establish connection
    cursor = mysql.connection.cursor()
    #Get which club
    clubID = request.args.get("q")
@@ -199,12 +200,12 @@ def do_login():
                return index()
            else:
                #if club not active, reload login page
-               return login_page("Email not verified. Check your email for a verification link.")
+               return login_page(user+" not verified. Check your email for a verification link.")
        else:
            #if password incorrect, reload login page
            return login_page("Incorrect password.")
    else:
-       return login_page("There is no account with that email.")
+       return login_page(user+" is not associated with an account.")
 
 
 #Route when user clicks logout
@@ -261,12 +262,17 @@ def enter_account():
    # cursor.execute('''UPDATE %s SET event_total = event_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
    # cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
    mysql.connection.commit()
-   #Create text for email verification and send email
-   texts = verifyEmailText(club_email,activation_hash)
-   sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
+   #send request for account to admin
+   cursor.execute('''SELECT clubID FROM %s WHERE club_name=%%s AND club_email=%%s'''%(CLUB_TABLE,),(club_name,club_email))
+   clubID=cursor.fetchall()[0]['clubID']
+   requestApproval(clubID)
+#    #Create text for email verification and send email
+#    texts = verifyEmailText(club_email,activation_hash)
+#    sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
    #TODO - render page with message about sent email
    #reroute to home page
-   return index("An email has been sent to "+club_email+" with an verification link.")
+   return index('''An email has been sent to the website admin to review your request for an account. Once you are
+        approved, an email will be sent to '''+club_email+ " with an verification link.")
 
 
 #when user clicks submit on edit club page
@@ -450,7 +456,7 @@ def updateEvent():
     return redirect(f"/clubPage?q={clubID}")
 
 ########################################################################################################################
-##### Ridesharing #####################################################################################################
+##### Ride Sharing #####################################################################################################
 
 #route when user clicks submit on adding a car
 @app.route("/addCar",methods=["POST"])
@@ -652,7 +658,7 @@ def addCarDriverText(event_name,date,time):
         Hello,
 
         You have successfully added a car for the {event_name} event leaving on {date} at {time}.
-        
+
         Best,
         The ACTivism Hub Team
         """
@@ -675,7 +681,7 @@ def addPassengerDriverText(event_name,date,time):
         Hello,
 
         A new person has been added to your car for {event_name} leaving on {date} at {time}.
-        
+
         Best,
         The ACTivism Hub Team
         """
@@ -698,7 +704,7 @@ def addPassengerText(event_name,date,time):
         Hello,
 
         You have been added to a car for the {event_name} event leaving on {date} at {time}.
-        
+
         Best,
         The ACTivism Hub Team
         """
@@ -710,8 +716,8 @@ def deleteCarPassText(event_name,date,time):
         <html>
           <body>
             <p>Hello,<br><br>
-               The car you reserved for {event_name} leaving on {date} at {time} is no longer available. 
-               Please visit ACTivism Hub and check for other cars. If there are no other cars, feel free 
+               The car you reserved for {event_name} leaving on {date} at {time} is no longer available.
+               Please visit ACTivism Hub and check for other cars. If there are no other cars, feel free
                to a request a car and we will notify the club leader.<br><br>
                Best,<br>
                The ACTivism Hub Team
@@ -722,10 +728,10 @@ def deleteCarPassText(event_name,date,time):
     text = f"""\
         Hello,
 
-        The car you reserved for {event_name} leaving on {date} at {time} is no longer available. 
-        Please visit ACTivism Hub and check for other cars. If there are no other cars, feel free 
+        The car you reserved for {event_name} leaving on {date} at {time} is no longer available.
+        Please visit ACTivism Hub and check for other cars. If there are no other cars, feel free
         to a request a car and we will notify the club leader.
-        
+
         Best,
         The ACTivism Hub Team
         """
@@ -737,7 +743,7 @@ def deleteCarDriverText(event_name,date,time):
         <html>
           <body>
             <p>Hello,<br><br>
-               Your car for {event_name} leaving on {date} at {time} has been deleted.  
+               Your car for {event_name} leaving on {date} at {time} has been deleted.
                If this was a mistake, please return to ACTivism Hub and add your car again.<br><br>
                Best,<br>
                The ACTivism Hub Team
@@ -749,7 +755,7 @@ def deleteCarDriverText(event_name,date,time):
         Hello,
 
         Your car for {event_name} leaving on {date} at {time} has been deleted. If this was a mistake, please return to ACTivism Hub and add your car again.
-        
+
         Best,
         The ACTivism Hub Team
         """
@@ -771,8 +777,8 @@ def carRequestText(club_name, event_name,date):
     text = f"""\
         Hello {club_name},
 
-        There has been a car request made for the {event_name} event leaving on {date}. 
-        
+        There has been a car request made for the {event_name} event leaving on {date}.
+
         Best,
         The ACTivism Hub Team
         """
@@ -849,14 +855,14 @@ def sendEmail(receiver_email,html_text,plain_text,subject):
 
 #Returns a dict with html and plain versions of a verify password email body
 def verifyEmailText(email,hash):
-    link=f"http://localhost:5000/verifyEmail?e={email}&h={hash}"
+    link=f"{SERVER_NAME}/verifyEmail?e={email}&h={hash}"
     html=f"""\
         <html>
           <body>
             <p>Hello,<br><br>
                Welcome to ACTivism Hub!<br>
-               Please verify your email by clicking here <a href={link}>here</a>.<br><br>
-               Best,<br><br>
+               Please verify your email by clicking <a href={link}>here</a>.<br><br>
+               Best,<br>
                The ACTivism Hub Team
             </p>
           </body>
@@ -869,7 +875,6 @@ def verifyEmailText(email,hash):
         Please verify your email by clicking the link below.
 
         Best,
-
         The ACTivism Hub Team
 
         {link}
@@ -887,18 +892,19 @@ def verifyEmail():
     #NOTE - is it possible there would be none/more than one of this email in the db
     cursor.execute('''SELECT clubID, activation_hash, email_activated FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
     r = cursor.fetchall()
-    print(len(r))
-    print(club_email)
-    print(type(club_email))
+    #if no account with that email
+    if len(r) == 0:
+        return create_account(club_email+" is not associated with an account.")
+    #else get ID, hash, activation status
     results = r[0]
     clubID=results['clubID']
     db_hash = results['activation_hash']
     active = results['email_activated']
     #check if hash matches what we have stored for this email and account isn't active
     if active == 1:
-        return login_page("Club has already been activated.")
+        return login_page(club_email+" has already been verified.")
     if db_hash != hash:
-        message="Email verification failed."
+        return create_account("Email verification failed.")
         #how to reroute here?? With popup
     #activate club
     cursor.execute('''UPDATE %s SET email_activated=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
@@ -908,7 +914,7 @@ def verifyEmail():
 
 
 ########################################################################################################################
-########## Resetting Passwords ###########################################################################################
+##########Resetting Passwords###########################################################################################
 
 #When click forgot password on login page
 @app.route("/forgotPassword")
@@ -927,7 +933,6 @@ def preparePasswordReset():
    cursor.execute('''SELECT clubID, activation_hash FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
    result = cursor.fetchall()
    #if that email isn't in the database
-   #TODO - add message saying email not in database
    if len(result) == 0:
         return forgotPassword(club_email+" is not associated with an account.")
    #Prepare text and send email
@@ -949,7 +954,12 @@ def resetPassword():
     cursor = mysql.connection.cursor()
     #NOTE - is it possible there would be none/more than one of this email in the db
     cursor.execute('''SELECT clubID, activation_hash from %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
-    results = cursor.fetchall()[0]
+    results = cursor.fetchall()
+    #if no account with that email
+    if len(results)==0:
+        return create_account(club_email+" is not associated with an account.")
+    #else get clubID and hash for that email
+    results=results[0]
     clubID=results['clubID']
     db_hash = results['activation_hash']
     #check if hash matches what we have stored for this email and account is active
@@ -958,7 +968,7 @@ def resetPassword():
         clubs = getClubs()
         return render_template("resetPassword.html",clubs=clubs,clubID=clubID)
     else:
-        return login_page("Reset password via email failed")
+        return forgotPassword("Reset password via email failed")
 
 
 #When click submit on reset password form
@@ -970,9 +980,9 @@ def doPasswordReset():
     #hash password
     saltedPassword = password + salt
     password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-    #update password in database
+    #update password in database, set club to active if not already (this counts as email verification)
     cursor = mysql.connection.cursor()
-    cursor.execute('''UPDATE %s SET password=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(password,clubID))
+    cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(password,clubID))
     mysql.connection.commit()
     #render login page
     return login_page("Password successfully reset.")
@@ -980,7 +990,7 @@ def doPasswordReset():
 
 #returns a dict with the html and plain text versions of a reset password email
 def resetPasswordText(email,hash):
-    link=f"http://localhost:5000/resetPassword?e={email}&h={hash}"
+    link=f"{SERVER_NAME}/resetPassword?e={email}&h={hash}"
     html=f"""\
         <html>
           <body>
@@ -1005,6 +1015,139 @@ def resetPasswordText(email,hash):
         {link}
         """
     return {'html':html,'text':text}
+
+
+########################################################################################################################
+##########Club Approval#################################################################################################
+
+def requestApproval(clubID):
+    #get admin email
+    cursor=mysql.connection.cursor()
+    cursor.execute('''SELECT web_admin_email FROM %s'''%(ADMIN_TABLE))
+    #NOTE - this assumes there is one, and only gets the first one - is this what we want??
+    admin_email=cursor.fetchall()[0]['web_admin_email']
+    #get club info
+    cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+    #Will only be called right after inserting a club, there will be an account
+    club_info = cursor.fetchall()[0]
+    #prepare html and plain text emails
+    texts = requestApprovalTexts(club_info)
+    #send email
+    sendEmail(admin_email,texts['html'],texts['text'],"Approve or Deny New Club Account")
+
+
+#prepares email text for email to admin when club requests an account
+def requestApprovalTexts(club_info):
+    approval_link=f"{SERVER_NAME}/approveClub?id={club_info['clubID']}"
+    denial_link=f"{SERVER_NAME}/denyClub?id={club_info['clubID']}"
+    html = f"""\
+        <html>
+            <body>
+                <p>Hello,<br><br>
+                    A new club is requesting to make an account on ACTivism Hub.<br><br>
+                    Club Name: {club_info['club_name']}<br>
+                    Club Email: {club_info['club_email']}<br>
+                    Club Description: {club_info['about_info']}<br><br>
+                    If this club puts on activism related programming,
+                    please approve their request to make an account: <a href={approval_link}>Approve</a><br>
+                    If not, please deny their request to make an account: <a href={denial_link}>Deny</a><br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
+        </html>
+        """
+
+    text = f"""\
+        Hello,
+
+        A new club is requesting to make an account on ACTivism Hub.
+
+        Club Name: {club_info['club_name']}<br>
+        Club Email: {club_info['club_email']}<br>
+        Club Description: {club_info['about_info']}<br><br>
+
+        If this club puts on activism related programming,please
+        approve their request to make an account: {approval_link}
+        If not, please deny their request to make an account: {denial_link}
+
+        Best,
+        The ACTivism Hub Team
+        """
+    return {'html':html,'text':text}
+
+@app.route("/approveClub")
+def approveClub():
+    #get clubID
+    clubID=request.args.get('id')
+    #get info for that club
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+    club_info = cursor.fetchall()[0]
+    #send verification email
+    texts = verifyEmailText(club_info['club_email'],club_info['activation_hash'])
+    sendEmail(club_info['club_email'],texts['html'],texts['text'],"Verify your email")
+    #load home page with message that club was approved
+    return index(club_info['club_name']+" successfully approved. An email has been sent to the club to verify their email.")
+
+
+@app.route("/denyClub")
+def denyClub():
+    #NOTE - add check for if club already approved?
+    #get clubID
+    clubID=request.args.get('id')
+    #get admin email
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT web_admin_email FROM %s'''%(ADMIN_TABLE))
+    #NOTE - this assumes there is one, and only gets the first one - is this what we want??
+    admin_email=cursor.fetchall()[0]['web_admin_email']
+    #get info for club
+    cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+    #NOTE- add check? Would only trigger if they approved club, the club deleted itself, then they clicked deny
+    club_info = cursor.fetchall()[0]
+    #remove club from database
+    cursor.execute('''DELETE FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID))
+    cursor.connection.commit()
+    #send email to club informing them of denial
+    texts=clubDeniedTexts(admin_email)
+    sendEmail(club_info['club_email'],texts['html'],texts['text'],"Request to make club account denied")
+    #load home page with message that club was denied
+    return index(club_info['club_name']+'''\'s request to make an account was denied. An email has been sent to the club
+        to inform them of their denial.''')
+
+
+#Prepares text for emails if club was denied an account
+def clubDeniedTexts(admin_email):
+    html=f"""\
+        <html>
+            <body>
+                <p>
+                    Hello,<br><br>
+                    Your request to make an account on ACTivism Hub has been denied by the website admin.<br>
+                    If you think this was a mistake or want more information, email {admin_email}.<br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
+        </html>
+        """
+
+    text = f"""\
+        Hello,
+
+        Your request to make an account on ACTivism Hub has been denied by the website admin.
+        If you think this was a mistake or want more information, email {admin_email}.
+
+        Best,<br>
+        The ACTivism Hub Team
+        """
+
+    return {'html':html,'text':text}
+
+
+
+
+
 
 
 
