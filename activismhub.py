@@ -92,6 +92,8 @@ def index(message=""):
         #get passengers for each car
         #NOTE - possibly need to make car and passenger dicts JSON strings too
         for car in cars:
+            car['depart_time_formatted']=formatTimeFromSql(car['depart_time'])
+            car['return_time_formatted']=formatTimeFromSql(car['return_time'])
             cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID'],))
             car['passengers'] = cursor.fetchall()
             car = json.dumps(car,default=str)
@@ -101,13 +103,6 @@ def index(message=""):
         event['event_date_formatted']=formatDateFromSql(event['event_date'])
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
-#    #Get cars
-#    cursor.execute('''SELECT * FROM %s'''%(CAR_TABLE,))
-#    cars = cursor.fetchall()
-#    #get passengers for each car
-#    for car in cars:
-#        cursor.execute('''SELECT * FROM %s WHERE carID=%%s'''%(PASSENGER_TABLE,),(car['carID']))
-#        car['passengers'] = cursor.fetchall()
    #render homepage
    return render_template("homePage.html",events=events,clubs=clubs,message=message)
 
