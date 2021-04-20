@@ -144,8 +144,8 @@ times and places, and then finally the social media links with the icons. This p
   }
 
   function deleteClub() {
-    window.confirm( "Do you want to delete your club?" );
-    if( confirm ) {
+    let response = window.confirm( "Do you want to delete your club?" );
+    if( response === true ) {
       //if the user clicks ok and therefore wants to delete the club
       location.href = '/deleteClub';
     } else {
@@ -154,6 +154,7 @@ times and places, and then finally the social media links with the icons. This p
       exit();
     }
   }
+
 </script>{% endblock %}
 
 {% block title %}
