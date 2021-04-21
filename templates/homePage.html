@@ -71,7 +71,7 @@ events that are coming up in the next week. -->
 			//         i.className="fa fa-car";
 			// <!--        i.aria-hidden="true";-->
 			//         reserveSeatButton.appendChild(i);
-			reserveSeatButton.innerHTML = "Reserve Seat";
+			reserveSeatButton.innerHTML = "Save Seat";
 			div2.appendChild( reserveSeatButton );
 		}
 		let deleteCarButton = document.createElement( "button" );
@@ -81,8 +81,15 @@ events that are coming up in the next week. -->
 		i2.className = "fa fa-times-circle";
 		<!--        i.aria-hidden="true";-->
 		deleteCarButton.appendChild( i2 );
-		deleteCarButton.innerHTML = "Delete Car";
+		deleteCarButton.innerHTML = "Delete";
 		div2.appendChild( deleteCarButton );
+		div1.appendChild( div2 );
+		let editCarButton = document.createElement( "button" );
+		editCarButton.id = "edit-car";
+		editCarButton.onclick = function() { editCar( car.carID ); };
+		editCarButton.appendChild( i2 );
+		editCarButton.innerHTML = "Edit";
+		div2.appendChild( editCarButton );
 		div1.appendChild( div2 );
 		let div3 = document.createElement( "div" );
 		div3.className = "car-logistics";
@@ -145,21 +152,20 @@ events that are coming up in the next week. -->
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let editCar = document.getElementById( "modal-seats-editCar" );
 		document.getElementById( "addCar-eventID" ).value = eventID;
 
 		if( window.getComputedStyle( addCar ).display === "none" ) {
 			description.style.display = "none";
 			resSeat.style.display = "none";
+			editCar.style.display = "none";
 			addCar.style.display = "inline-block";
 		} else {
 			addCar.style.display = "none";
 			resSeat.style.display = "none";
+			editCar.style.display = "none";
 			description.style.display = "flex";
 		}
-		//
-		// if (window.getComputedStyle(addP).display === "flex") {
-		//     addP.style.display = "none";
-		// }
 	}
 
 	function reserveSeat( carID ) {
@@ -169,14 +175,17 @@ events that are coming up in the next week. -->
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let editCar = document.getElementById( "modal-seats-editCar" );
 		document.getElementById( "reserveSeat-carID" ).value = carID;
 		if( window.getComputedStyle( resSeat ).display === "none" ) {
 			description.style.display = "none";
 			addCar.style.display = "none";
+			editCar.style.display = "none";
 			resSeat.style.display = "inline-block";
 		} else {
 			addCar.style.display = "none";
 			resSeat.style.display = "none";
+			editCar.style.display = "none";
 			description.style.display = "flex";
 		}
 	}
@@ -202,6 +211,29 @@ events that are coming up in the next week. -->
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			console.log( "no request" );
 			hideRideShare();
+		}
+	}
+
+	function editCar( eventID ){
+		//reverse description panel
+		//reverse add panel
+		//hide reserve seat panel
+		let description = document.getElementById( "modal-seats-description" );
+		let addCar = document.getElementById( "modal-seats-addCar" );
+		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let editCar = document.getElementById( "modal-seats-editCar" );
+		document.getElementById( "editCar-eventID" ).value = eventID;
+
+		if( window.getComputedStyle( editCar ).display === "none" ) {
+			description.style.display = "none";
+			resSeat.style.display = "none";
+			addCar.style.display = "none";
+			editCar.style.display = "inline-block"
+		} else {
+			addCar.style.display = "none";
+			resSeat.style.display = "none";
+			editCar.style.display = "none"
+			description.style.display = "flex";
 		}
 	}
 
@@ -486,6 +518,21 @@ events that are coming up in the next week. -->
 						value="Reserve Seat"
 						onclick="return verify(passenger_email.value)"/>
 			</form>
+		</div>
+		<div id="modal-seats-editCar">
+			<button
+					class="exit"
+					onclick=hideRideShare()>
+				<i
+						class="fa fa-times-circle fa-lg"
+						aria-hidden="true"></i>
+			</button>
+			<input
+					type="hidden"
+					name="carID"
+					id="editCar-eventID"/>
+			<h3>Edit Car</h3>
+			<p>* indicates required field</p>
 		</div>
 	</div>
 </div>

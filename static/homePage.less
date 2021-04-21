@@ -375,8 +375,8 @@ body {
           position: absolute;
           height: 20px;
           top: 0px;
-          right: 0px;
-          min-width: 105px;
+          right: 73px;
+          max-width: 90px;
           margin-right: 3px;
           border: none;
           border-radius: 6px;
@@ -399,18 +399,15 @@ body {
         #reserve-seat{
           position: absolute;
           top: 0px;
-          right: 100px
+          right: 132px;
         }
 
         #delete-car{
           position: absolute;
           top: 0px;
-          right: 5px;
-          min-width: 94px;
+          right: 6px;
+          max-width: 65px;
         }
-
-
-
 
       }
 
@@ -574,6 +571,106 @@ body {
       }
     }
     #modal-seats-resSeat {
+      display: none;
+      flex-direction: column;
+      position: relative;
+      width: 60%;
+      margin-left: 10px;
+      padding-right: 10px;
+      background: white;
+      overflow-x: hidden;
+      overflow-y: scroll;
+
+      .fa-asterisk {
+        font-size: 0.5em;
+        width: 10px;
+      }
+      /* width */
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      /* Track */
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+      }
+
+      /* Handle */
+
+      &::-webkit-scrollbar-thumb {
+        background: darkgrey;
+        height: 20px;
+      }
+
+      /* Handle on hover */
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      h3 {
+        margin-left: 0px;
+        margin-top: 20px;
+        margin-bottom: 5px;
+      }
+
+      p {
+        padding: 0px;
+        margin: 0px 0px 10px 0px;
+        font-size: 14px;
+      }
+
+      label {
+        margin-top: 5px;
+        padding-top: 5px;
+        width: 80%;
+      }
+
+      input {
+        border-radius: 6px;
+        padding: 8px;
+        width: 80%;
+        margin-left: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type = submit] {
+        width: 100px;
+        font-family: "Liberation sans";
+
+        &:hover {
+          background: darkgrey;
+        }
+      }
+
+      button {
+        margin-left: 0px;
+        border-radius: 6px;
+        font-family: "Liberation sans";
+        height: 30px;
+
+        &:hover {
+          background: slategrey;
+        }
+      }
+
+      .exit {
+        position: absolute;
+        top: 0px;
+        right: 15px;
+        border-radius: 6px;
+        width: 0px;
+        border: none;
+        background: none;
+        &:hover{
+          background: none;
+        }
+      }
+    }
+    #modal-seats-editCar {
       display: none;
       flex-direction: column;
       position: relative;
