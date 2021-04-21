@@ -32,8 +32,12 @@ events that are coming up in the next week. -->
 
 	function showRideShare( eventID, cars ) {
 		console.log( cars );
+		const txtHome = document.getElementById("txt-homepage");
+		txtHome.style.display = "none";
 		const modal = document.getElementById( "ride-share-modal" );
-		document.getElementById( "add-car" ).onclick = function() { addCar( eventID ); };
+		document.getElementById( "add-car" ).onclick = function() {
+			addCar( eventID );
+		};
 		let allCars = document.getElementsByClassName( "cars" );
 		for( let i = 0; i < allCars.length; i++ ) {
 			while( allCars[ i ] ) {
@@ -124,9 +128,11 @@ events that are coming up in the next week. -->
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let txtHome = document.getElementById("txt-homepage");
 		addCar.style.display = "none";
 		resSeat.style.display = "none";
 		description.style.display = "flex";
+		txtHome.style.display = "flex"
 
 		const modal = document.getElementById( "ride-share-modal" );
 		modal.style.display = "none";
@@ -206,7 +212,7 @@ events that are coming up in the next week. -->
 {% block panel %}
 <body onload="displayMessage('{{message}}')">
 <div class="slideshow-container">
-	<div class="txt-homepage">
+	<div id="txt-homepage">
 		<h3>Our Mission</h3>
 		<p>ACTivism Hub aims to elevate the voices of Puget Sound activism oriented clubs as well as provide them with a cohesive platform to share club programming. Through event postings and club
 			profiles, students have access to event information such as times, places, resources and details in a centralized location.
