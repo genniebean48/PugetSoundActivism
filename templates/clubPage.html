@@ -256,42 +256,39 @@ times and places, and then finally the social media links with the icons. This p
             <i
               class="fa fa-calendar"
               aria-hidden="true"></i>
-            Meeting Day: {{info['meet_day']}}
+            {{info['meet_day']}}
           </li>
           {% else %}
           <li>
             <i
               class="fa fa-calendar"
               aria-hidden="true"></i>
-            Meeting Day:
           </li>
           {% endif %} {% if info['meet_time']!=None %}
           <li>
             <i
               class="fa fa-clock-o"
               aria-hidden="true"></i>
-            Meeting Time: {{info['meet_time_formatted']}}
+            {{info['meet_time_formatted']}}
           </li>
           {% else %}
           <li>
             <i
               class="fa fa-clock-o"
               aria-hidden="true"></i>
-            Meeting Time:
           </li>
           {% endif %} {% if info['meet_location']!=None %}
           <li>
             <i
               class="fa fa-map-pin"
               aria-hidden="true"></i>
-            Meeting Place: {{info['meet_location']}}
+            {{info['meet_location']}}
           </li>
           {% else %}
           <li>
             <i
               class="fa fa-map-pin"
               aria-hidden="true"></i>
-            Meeting Place:
           </li>
           {% endif %}
         </ul>
