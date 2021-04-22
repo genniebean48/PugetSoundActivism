@@ -745,7 +745,7 @@ def addPassenger():
 #route when user clicks to delete a single passenger
 @app.route("/deletePassenger")
 def deletePassenger():
-    #Get passengerID - TODO
+    #Get passengerID
     passengerID = request.args.get("id")
 
     #instantiate cursor

@@ -196,7 +196,7 @@ events that are coming up in the next week. -->
 	function deleteCar( carID ) {
 		let response = window.confirm( "Do you want to delete this car?" );
 		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the club
+			//if the user clicks ok and therefore wants to delete the car
 			location.href = '/deleteCar?id=' + carID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
@@ -269,7 +269,8 @@ events that are coming up in the next week. -->
 				deletePass.onclick = function() {
 					let response = window.confirm( "Do you want to delete this passenger?" );
 					if( response === true ) {
-						//if the user clicks ok and therefore wants to delete the club
+						//if the user clicks ok and therefore wants to delete the passenger
+
 					} else {
 						//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 						console.log( "no deleting" );
