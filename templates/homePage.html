@@ -266,17 +266,8 @@ events that are coming up in the next week. -->
 				passInput.value = car.passengers[ i ].passenger_name;
 				let deletePass = document.createElement( "button" );
 				deletePass.id = "delete-pass";
-				deletePass.onclick = function() {
-					let response = window.confirm( "Do you want to delete this passenger?" );
-					if( response === true ) {
-						//if the user clicks ok and therefore wants to delete the passenger
-
-					} else {
-						//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-						console.log( "no deleting" );
-						hideRideShare();
-					}
-				};
+				let passengerID = car.passengers[i].passengerID;
+				deletePass.onclick = function() { deletePassenger(passengerID) };
 				deletePass.innerHTML = "Delete";
 				//passDiv.append(deletePass);
 				let breaker = document.createElement("br");
@@ -299,6 +290,18 @@ events that are coming up in the next week. -->
 	function displayCars( cars ) {
 		let carsObj = JSON.parse( cars );
 		console.log( cars );
+	}
+
+	function deletePassenger(passengerID){
+		let response = window.confirm( "Do you want to delete this passenger?" + passengerID);
+		if( response === true ) {
+			//if the user clicks ok and therefore wants to delete the passenger
+			location.href = '/deletePassenger?id=' + passengerId;
+		} else {
+			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+			console.log( "no deleting" );
+			hideRideShare();
+		}
 	}
 
 	function displayMessage( message ) {
