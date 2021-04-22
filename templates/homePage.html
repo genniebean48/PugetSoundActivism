@@ -260,14 +260,12 @@ events that are coming up in the next week. -->
 		}
 		editModal.append(editPass);
 		let departTime;
-		console.log(car.depart_time.split(":"));
 		if(car.depart_time.split(":")[0] < 10){
 			departTime = "0" + car.depart_time;
 		}else{
 			departTime = car.depart_time;
 		}
 		let returnTime;
-		console.log(car.return_time.split(":"));
 		if(car.return_time.split(":")[0] < 10){
 			returnTime = "0" + car.return_time;
 		}else{
@@ -277,9 +275,6 @@ events that are coming up in the next week. -->
 		editDepartTime.value = departTime;
 		let editReturnTime = document.getElementById("edit-return_time");
 		editReturnTime.value = returnTime;
-
-		console.log(car.depart_time);
-		console.log(car.return_time);
 		let editMeetLoca = document.getElementById("edit-meeting_location");
 		editMeetLoca.value = car.meeting_location;
 	}
