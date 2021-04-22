@@ -11,7 +11,6 @@ contains all fo the information from the navigation bar because it extends the l
 <script>
   function verify( email, password, confirmPassword ) {
     const emailSplit = email.split( "@" );
-    console.log( emailSplit[ 1 ] );
     if( password !== confirmPassword ) {
       alert( "passwords don't match please try again." );
       return false;
@@ -45,7 +44,6 @@ contains all fo the information from the navigation bar because it extends the l
             <p id="error_message">{{message}}</p>
         {% endif %}
         <p>* indicates required field </p>
-    <!--    TODO: ADD FUNCTIONALITY OF ERROR CHECKING WITH PASSWORDS NOT MATCHING -->
     <form
       action="/enterAccount"
       method="post">
@@ -54,15 +52,12 @@ contains all fo the information from the navigation bar because it extends the l
         aria-hidden="true"></i>
       <label for="clubEmail">Club Email:</label>
       <br>
-      <!--        club email is required-->
       <input
         type="email"
         id="clubEmail"
         name="clubEmail"
         placeholder="Club Email">
       <br>
-
-      <!--     TODO: hook up club show email-->
       <input
         type="checkbox"
         id="clubShowEmail"
@@ -76,7 +71,6 @@ contains all fo the information from the navigation bar because it extends the l
         aria-hidden="true"></i>
       <label for="password">Password (must contain at least 8 characters):</label>
       <br>
-      <!--        //password is required-->
       <input
         type="password"
         id="password"
@@ -89,7 +83,6 @@ contains all fo the information from the navigation bar because it extends the l
         aria-hidden="true"></i>
       <label for="cpassword">Confirm Password:</label>
       <br>
-      <!--        //confirm password is required-->
       <input
         type="password"
         id="cpassword"
@@ -101,7 +94,6 @@ contains all fo the information from the navigation bar because it extends the l
         aria-hidden="true"></i>
       <label for="club-name">Club Name:</label>
       <br>
-      <!--        //club name is required-->
       <input
         type="text"
         id="club-name"
@@ -114,7 +106,6 @@ contains all fo the information from the navigation bar because it extends the l
         aria-hidden="true"></i>
       <label>Club Description:</label>
       <br>
-      <!--        //club description is required-->
       <textarea id="club-description" name="club-description" placeholder="What is your Club's mission?" maxLength="1500" required></textarea>
       <br>
       <input
