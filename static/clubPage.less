@@ -53,6 +53,17 @@ body {
   background: #003249;
 }
 
+textarea{
+  border-radius: 6px;
+  border-width: 2px;
+  height: 100px;
+  padding: 8px;
+  width: 75%;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  font-family: arial;
+}
+
 .club-panel {
   display: inline-flex;
   justify-content: center;
@@ -68,7 +79,7 @@ body {
   .upcoming-events {
     background: #003249;
     width: 70%;
-    overflow-x: visible; //do i want this?
+    overflow-x: visible;
     overflow-y: scroll;
 
     p{
@@ -343,6 +354,7 @@ body {
       }
 
       .add-event-form {
+        width: 100%;
         .exit{
           position: absolute;
           top: 65px;
@@ -438,6 +450,7 @@ body {
       }
 
       .edit-event-form {
+        width: 100%;
         .exit{
           position: absolute;
           top: 65px;
@@ -501,6 +514,7 @@ body {
       display: none;
       flex-direction: column;
       overflow: scroll;
+      width: 100%;
       margin-left: 10px;
       /* width */
 
@@ -594,7 +608,6 @@ body {
       label {
         margin-top: 5px;
         padding-top: 5px;
-        //margin-left: 20px;
       }
 
       input {
@@ -679,15 +692,18 @@ body {
 
       h3 {
         display: flex;
+        flex-direction: row;
         position: absolute;
         align-items: center;
         text-align: center;
-        width: 80%;
+        padding-right: 25px;
+        padding-left: 25px;
         background: white;
         opacity: 0.68;
         border-radius: 6px;
         font-size: 55px;
         font-weight: 700;
+        max-width: 80%;
       }
     }
 
@@ -730,6 +746,9 @@ body {
           margin: 0px 0px 10px 0px;
           padding: 0px;
           list-style: none;
+          li{
+            margin-bottom: 5px;
+          }
         }
 
         ul.social-media {

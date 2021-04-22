@@ -55,7 +55,6 @@ TRACKING_TABLE = 'tracking'
 salt = '1kn0wy0ulov3m3'
 
 
-
 def printClubs():
     cursor = mysql.connection.cursor()
     cursor.execute('''SELECT * FROM %s'''%CLUB_TABLE)
@@ -112,25 +111,37 @@ def index(message=""):
 def tracking():
     #Establish connection
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT count(*) AS total_clubs FROM %s''' %(CLUB_TABLE,))
-    r = cursor.fetchall()
-    results = r[0]
-    total_clubs = results['total_clubs']
 
-    cursor.execute('''SELECT count(*) AS total_events FROM %s''' %(EVENT_TABLE,))
-    r = cursor.fetchall()
-    results = r[0]
-    total_events = results['total_events']
+    #get current totals
+    cursor.execute('''SELECT count(*) AS total_current_clubs FROM %s''' %(CLUB_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_clubs = results['total_current_clubs']
 
-    cursor.execute('''SELECT count(*) AS total_passengers FROM %s''' %(PASSENGER_TABLE,))
-    r = cursor.fetchall()
-    results = r[0]
-    total_passengers = results['total_passengers']
+    cursor.execute('''SELECT count(*) AS total_current_events FROM %s''' %(EVENT_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_events = results['total_current_events']
+
+    cursor.execute('''SELECT count(*) AS total_current_cars FROM %s''' %(CAR_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_cars = results['total_current_cars']
+
+    cursor.execute('''SELECT count(*) AS total_current_passengers FROM %s''' %(PASSENGER_TABLE,))
+    results = cursor.fetchall()[0]
+    total_current_passengers = results['total_current_passengers']
+
+    #get overall totals
+    cursor.execute('''SELECT * FROM FROM %s WHERE trackingID = 1''' %(PASSENGER_TABLE,))
+    results = cursor.fetchall()[0]
+    total_overall_clubs = results['total_clubs']
+    total_overall_events = results['total_events']
+    total_overall_cars = results['total_cars']
+    total_overall_passengers = results['total_passengers']
+
+    #display current and overall stats
+
+
     #render homepage with stats
     #return render_template("homePage.html",events=events,clubs=clubs) -- this is wrong
-
-
-
 
 
 #Route when a club page is clicked
@@ -180,6 +191,7 @@ def do_login():
    #get user and password
    user = request.form['Email']
    password = request.form['Password']
+
    #check if club email exists
    cursor.execute('''SELECT clubID, password, email_activated FROM %s WHERE club_email = %%s'''%(CLUB_TABLE,),(user,))
    result = cursor.fetchall()
@@ -257,11 +269,7 @@ def enter_account():
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
        email_activated) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,0)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
        club_email_display,activation_hash))
-   #Increment tracking numbers
-   # cursor.execute('''UPDATE %s SET club_total = club_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   # cursor.execute('''UPDATE %s SET event_total = event_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   # cursor.execute('''UPDATE %s SET passenger_total = passenger_total + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-   mysql.connection.commit()
+
    #send request for account to admin
    cursor.execute('''SELECT clubID FROM %s WHERE club_name=%%s AND club_email=%%s'''%(CLUB_TABLE,),(club_name,club_email))
    clubID=cursor.fetchall()[0]['clubID']
@@ -339,15 +347,19 @@ def delete_club():
     clubID = session['club_id']
     #instantiate cursor
     cursor = mysql.connection.cursor()
-    #delete all club events
-    cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(EVENT_TABLE,),(clubID,))
-    mysql.connection.commit()
+
+    #get a list of all the events associated with club
+    cursor.execute('''SELECT eventID FROM %s where clubID = %%s'''%(EVENT_TABLE,),(clubID,))
+    results = cursor.fetchall()
+    for event in results:
+        eventID = event['eventID']
+        doDeleteEvent(eventID)
+
     #delete club from club table
     cursor.execute('''DELETE FROM %s WHERE clubID = %%s'''%(CLUB_TABLE,),(clubID,))
     mysql.connection.commit()
     #logout
     return logout()
-
 
 ########################################################################################################################
 ##### Events ###########################################################################################################
@@ -407,16 +419,30 @@ def deleteEvent():
     eventID = request.args.get("q")
     #get which club
     clubID = session['club_id']
-    #instantiate cursor
-    cursor = mysql.connection.cursor()
-    #delete from database
-    cursor.execute('''DELETE FROM %s WHERE eventID = %%s'''%(EVENT_TABLE,),(eventID,))
-    mysql.connection.commit()
+
+    doDeleteEvent(eventID)
+
     #rerender club page
     return redirect(f"/clubPage?q={clubID}")
 
+def doDeleteEvent(eventID):
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+
+    #get a list of all cars associated with this event, go through each car and delete cars and passengers
+    cursor.execute('''SELECT carID FROM %s where eventID = %%s'''%(CAR_TABLE,),(eventID,))
+    results = cursor.fetchall()
+    for car in results:
+        carID = car['carID']
+        doDeleteCar(carID)
+
+    #delete event from database
+    cursor.execute('''DELETE FROM %s WHERE eventID = %%s'''%(EVENT_TABLE,),(eventID,))
+    mysql.connection.commit()
+
 
 #route when user clicks submit on edit event
+@app.route("/updateEvent",methods=["POST"])
 @app.route("/updateEvent",methods=["POST"])
 def updateEvent():
     #get which club
@@ -479,6 +505,9 @@ def addCar():
     cursor.execute('''INSERT INTO %s(driver_name,driver_email,num_seats_total,num_seats_available,
         depart_time,return_time,meeting_location,eventID) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CAR_TABLE,),
         (driver_name,driver_email,num_seats_total, num_seats_available,depart_time,return_time,meeting_location,eventID))
+    mysql.connection.commit()
+
+    #TODO - test last_insert_id()
 
     #get carID from just inserted car
     cursor.execute('''SELECT last_insert_id()''')
@@ -506,7 +535,6 @@ def addCar():
     subject = 'Car Successfully Added!'
     sendEmail(driver_email,texts['html'],texts['text'],subject)
 
-    mysql.connection.commit()
     #reroute to home page -- TODO ideally we'd reroute back to the popup but might be complicated
     return index()
 
@@ -525,11 +553,14 @@ def addPassenger():
     cursor = mysql.connection.cursor()
     #add passenger
     cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,carID) VALUES (%%s,%%s,%%s)'''%(PASSENGER_TABLE,),(passenger_name,passenger_email,carID))
+    mysql.connection.commit()
 
     #decrement number of available seats for specific car
     cursor.execute('''UPDATE %s SET num_seats_available = num_seats_available - 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
+    mysql.connection.commit()
     #increment number of seats taken or specific car
     cursor.execute('''UPDATE %s SET num_seats_taken = num_seats_taken + 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
+    mysql.connection.commit()
 
     # Get eventID,depart_time,driver_email using carID
     cursor.execute('''SELECT eventID,depart_time,driver_email FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
@@ -558,7 +589,6 @@ def addPassenger():
     subject = 'Successfully Added to a Car!'
     sendEmail(passenger_email,texts['html'],texts['text'],subject)
 
-    mysql.connection.commit()
     #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
     return index()
 
@@ -567,6 +597,12 @@ def addPassenger():
 def deleteCar():
     #Get which car
     carID = request.args.get("id")
+
+    doDeleteCar(carID)
+    #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
+    return index()
+
+def doDeleteCar(carID):
     #instantiate cursor
     cursor = mysql.connection.cursor()
 
@@ -607,14 +643,15 @@ def deleteCar():
         cursor.execute('''DELETE FROM %s where carID = %%s''' %(PASSENGER_TABLE,),(carID,))
 
     mysql.connection.commit()
-    #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
-    return index()
 
 #route when user clicks delete a car
 @app.route("/requestCar")
 def requestCar():
+    print("i made it!")
     #get eventID for requested car
     eventID = request.form['eventID']
+
+    print("eventID = " + str(eventID))
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
@@ -914,7 +951,7 @@ def verifyEmail():
 
 
 ########################################################################################################################
-##########Resetting Passwords###########################################################################################
+########## Resetting Passwords ###########################################################################################
 
 #When click forgot password on login page
 @app.route("/forgotPassword")
@@ -1105,6 +1142,10 @@ def approveClub():
     #send verification email
     texts = verifyEmailText(club_info['club_email'],club_info['activation_hash'])
     sendEmail(club_info['club_email'],texts['html'],texts['text'],"Verify your email")
+
+    #Increment tracking numbers
+    cursor.execute('''UPDATE %s SET total_club = total_club + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+
     #load home page with message that club was approved
     return index(club_info['club_name']+" successfully approved. An email has been sent to the club to verify their email.")
 
