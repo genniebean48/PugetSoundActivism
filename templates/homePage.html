@@ -261,6 +261,7 @@ events that are coming up in the next week. -->
 				labelInput.innerHTML = [i+1] + ": ";
 				let passInput = document.createElement("input");
 				passInput.value = car.passengers[ i ].passenger_name;
+				passInput.readOnly = true;
 				let deletePass = document.createElement( "button" );
 				deletePass.id = "delete-pass";
 				//HERE IS WHERE I PASS IN PASSENGER ID AS A PARAMETER TO DELETE PASSENGER FUNCTION
