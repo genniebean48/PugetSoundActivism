@@ -747,7 +747,7 @@ def addPassenger():
 def deletePassenger():
     print("i made it!!")
     #Get passengerID
-    passengerID = request.args.get("id")
+    passengerID = request.args.get("p")
 
     #instantiate cursor
     cursor = mysql.connection.cursor()

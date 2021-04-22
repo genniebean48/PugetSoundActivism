@@ -52,13 +52,14 @@ events that are coming up in the next week. -->
 		console.log( cars );
 	}
 
-	function carFcn( car ) {
+	function carFcn( car, index) {
 		let div1 = document.createElement( "div" );
 		div1.className = "cars";
 		let div2 = document.createElement( "div" );
 		div2.className = "seat-title";
 		let h4 = document.createElement( "h4" );
-		h4.innerHTML = "Car";
+		var i = index + 1;	// variable to display car index
+		h4.innerHTML = "Car " + i;
 		div2.appendChild( h4 );
 		if( car.num_seats_available > 0 ) {
 			let reserveSeatButton = document.createElement( "button" );
@@ -292,11 +293,11 @@ events that are coming up in the next week. -->
 		console.log( cars );
 	}
 
-	function deletePassenger(passengerID){
-		let response = window.confirm( "Do you want to delete this passenger?" + passengerID);
+	function deletePassenger( passengerID ){
+		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/deletePassenger?id=' + passengerId;
+			location.href = '/deletePassenger?p=' + passengerId;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			console.log( "no deleting" );
