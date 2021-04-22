@@ -16,7 +16,6 @@ events that are coming up in the next week. -->
 
 	function verify( email ) {
 		const emailSplit = email.split( "@" );
-		console.log( emailSplit[ 1 ] );
 		if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
 			alert( "email must be a valid University of Puget Sound address." );
 			return false;
@@ -31,7 +30,6 @@ events that are coming up in the next week. -->
 	}
 
 	function showRideShare( eventID, cars ) {
-		console.log( cars );
 		const txtHome = document.getElementById("txt-homepage");
 		txtHome.style.display = "none";
 		const modal = document.getElementById( "ride-share-modal" );
@@ -49,7 +47,6 @@ events that are coming up in the next week. -->
 		}
 		modal.style.display = "block";
 		cars.forEach( carFcn );
-		console.log( cars );
 	}
 
 	function carFcn( car, index) {
@@ -71,10 +68,6 @@ events that are coming up in the next week. -->
 					alert( "There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button" );
 				}
 			};
-			//         let i = document.createElement("i");
-			//         i.className="fa fa-car";
-			// <!--        i.aria-hidden="true";-->
-			//         reserveSeatButton.appendChild(i);
 			reserveSeatButton.innerHTML = "Save Seat";
 			div2.appendChild( reserveSeatButton );
 		}
@@ -83,7 +76,6 @@ events that are coming up in the next week. -->
 		deleteCarButton.onclick = function() { deleteCar( car.carID ); };
 		let i2 = document.createElement( "i" );
 		i2.className = "fa fa-times-circle";
-		<!--        i.aria-hidden="true";-->
 		deleteCarButton.appendChild( i2 );
 		deleteCarButton.innerHTML = "Delete";
 		div2.appendChild( deleteCarButton );
@@ -105,7 +97,6 @@ events that are coming up in the next week. -->
 		div3.appendChild( h6 );
 		let hPass = document.createElement( "h5" );
 		hPass.innerHTML = "Current Passengers:";
-		console.log( car.passengers );
 		if( car.passengers.length === 0 ) {
 			hPass.innerHTML += " none";
 		} else {
@@ -139,9 +130,11 @@ events that are coming up in the next week. -->
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let editCar = document.getElementById( "modal-seats-editCar" );
 		let txtHome = document.getElementById("txt-homepage");
 		addCar.style.display = "none";
 		resSeat.style.display = "none";
+		editCar.style.display = "none";
 		description.style.display = "flex";
 		txtHome.style.display = "flex"
 
@@ -150,9 +143,6 @@ events that are coming up in the next week. -->
 	}
 
 	function addCar( eventID ) {
-		//reverse description panel
-		//reverse add panel
-		//hide reserve seat panel
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
@@ -173,9 +163,6 @@ events that are coming up in the next week. -->
 	}
 
 	function reserveSeat( carID ) {
-		//reverse description panel
-		//reverse add panel
-		//hide reserve seat panel
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
@@ -201,7 +188,6 @@ events that are coming up in the next week. -->
 			location.href = '/deleteCar?id=' + carID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			console.log( "keep car" );
 			hideRideShare();
 		}
 	}
@@ -213,15 +199,11 @@ events that are coming up in the next week. -->
 			location.href = '/requestCar?id=' + eventID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			console.log( "no request" );
 			hideRideShare();
 		}
 	}
 
 	function editCar( eventID, car ){
-		//reverse description panel
-		//reverse add panel
-		//hide reserve seat panel
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
@@ -265,6 +247,7 @@ events that are coming up in the next week. -->
 				labelInput.innerHTML = [i+1] + ": ";
 				let passInput = document.createElement("input");
 				passInput.value = car.passengers[ i ].passenger_name;
+				passInput.readOnly = true;
 				let deletePass = document.createElement( "button" );
 				deletePass.id = "delete-pass";
 				let passengerID = car.passengers[i].passengerID;
@@ -280,27 +263,38 @@ events that are coming up in the next week. -->
 			}
 		}
 		editModal.append(editPass);
+		let departTime;
+		console.log(car.depart_time.split(":"));
+		if(car.depart_time.split(":")[0] < 10){
+			departTime = "0" + car.depart_time;
+		}else{
+			departTime = car.depart_time;
+		}
+		let returnTime;
+		console.log(car.return_time.split(":"));
+		if(car.return_time.split(":")[0] < 10){
+			returnTime = "0" + car.return_time;
+		}else{
+			returnTime = car.return_time;
+		}
 		let editDepartTime = document.getElementById("edit-depart_time");
-		editDepartTime.value = car.depart_time;
+		editDepartTime.value = departTime;
 		let editReturnTime = document.getElementById("edit-return_time");
-		editReturnTime.value = car.return_time;
+		editReturnTime.value = returnTime;
+
+		console.log(car.depart_time);
+		console.log(car.return_time);
 		let editMeetLoca = document.getElementById("edit-meeting_location");
 		editMeetLoca.value = car.meeting_location;
 	}
 
-	function displayCars( cars ) {
-		let carsObj = JSON.parse( cars );
-		console.log( cars );
-	}
-
-	function deletePassenger( passengerID ){
-		let response = window.confirm( "Do you want to delete this passenger?");
+	function deletePassenger(passengerID){
+		let response = window.confirm( "Do you want to delete this passenger?" + passengerID);
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
 			location.href = '/deletePassenger?p=' + passengerId;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			console.log( "no deleting" );
 			hideRideShare();
 		}
 	}
@@ -310,6 +304,7 @@ events that are coming up in the next week. -->
 			window.alert( message );
 		}
 	}
+
 </script>{% endblock %}
 
 {% block panel %}
@@ -323,17 +318,17 @@ events that are coming up in the next week. -->
 	</div>
 	<div class="mySlides fade">
 		<img
-				src="../static/images/ups_walkout_1.jpg"
-				style="width:100%">
-	</div>
-	<div class="mySlides fade">
-		<img
 				src="../static/images/DSC_0586-background3.jpeg"
 				style="width:100%">
 	</div>
 	<div class="mySlides fade">
 		<img
-				src="../static/images/EZ8FX7lU4AAM5rX.jpg"
+				src="../static/images/BSUMarch_0256.jpg"
+				style="width:100%">
+	</div>
+	<div class="mySlides fade">
+		<img
+				src="../static/images/DSC_0584Crop.jpeg"
 				style="width:100%">
 	</div>
 </div>
@@ -342,7 +337,7 @@ events that are coming up in the next week. -->
 	<h3>Upcoming Events</h3>
 	{% for event in events %}
 	<div class="events">
-		<!--  TODO: THIS IS WHERE WE ARE GETTING THE EVENT IMAGE  -->{% if event['event_image']==None %}
+		{% if event['event_image']==None %}
 		<img src="../static/images/default_image.jpg"/>
 		{% else %}
 		<img src="../static/eventImages/{{event['event_image']}}"/>
@@ -389,7 +384,6 @@ events that are coming up in the next week. -->
 	</div>
 	{% endfor %}
 </div>
-
 <div id="ride-share-modal">
 	<div class="modal-content">
 		<div

@@ -37,10 +37,6 @@ times and places, and then finally the social media links with the icons. This p
     if( club_email_display == 1 ) {
       document.getElementById( "clubShowEmail" ).checked = true;
     }
-    //hide add panel
-    //reverse club panel
-    //hide edit panel
-    //reverse edit club panel
     let title = document.getElementById( "club-profile-logistics" );
     let events = document.getElementById( "club-profile-title" );
     let addP = document.getElementById( "add-event-panel" );
@@ -65,9 +61,6 @@ times and places, and then finally the social media links with the icons. This p
   }
 
   function addEvents() {
-    //reverse club panel
-    //hide edit panel
-    //reverse add panel
     let title = document.getElementById( "club-profile-logistics" );
     let events = document.getElementById( "club-profile-title" );
     let addP = document.getElementById( "add-event-panel" );
@@ -101,9 +94,6 @@ times and places, and then finally the social media links with the icons. This p
     }
     document.getElementById( "edit-event-description" ).value = event_description;
     document.getElementById( "edit-eventID" ).value = eventID;
-    //hide add panel
-    //reverse club panel
-    //reverse edit panel
     let title = document.getElementById( "club-profile-logistics" );
     let events = document.getElementById( "club-profile-title" );
     let addP = document.getElementById( "add-event-panel" );
@@ -171,7 +161,7 @@ times and places, and then finally the social media links with the icons. This p
     </div>
     {% for event in events %}
     <div class="events">
-      <!--            TODO: HERE IS WHERE WE ARE GETTING THE EVENT IMAGE -->{% if event['event_image']==None %}
+      {% if event['event_image']==None %}
       <img src="../static/images/default_image.jpg"/>
       {% else %}
       <img src="../static/eventImages/{{event['event_image']}}"/>
@@ -294,7 +284,7 @@ times and places, and then finally the social media links with the icons. This p
         </ul>
         <h4>Reach Out!</h4>
         <ul class="social-media">
-          <!--                    TODO: IF THE EMAIL DISPLAY BOX IS CHECKED == TRUE THEN DISPLAY -->{% if info['club_email_display'] %}
+          {% if info['club_email_display'] %}
           <p>{{info['club_email']}}</p>
           {% endif %} {% if info['facebook_link']!=None %}
           <a
@@ -347,7 +337,6 @@ times and places, and then finally the social media links with the icons. This p
           action="/addEvent"
           method="post"
           enctype=multipart/form-data>
-          <!--        The event name is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -383,7 +372,6 @@ times and places, and then finally the social media links with the icons. This p
             placeholder="Event Type"
             maxlength="255">
           <br>
-          <!--        The event date is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -396,7 +384,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-          <!--        The event time is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -409,7 +396,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-          <!--        The event end time is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -422,7 +408,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-          <!--        The event location is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -435,7 +420,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-          <!--        The event description is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -469,7 +453,6 @@ times and places, and then finally the social media links with the icons. This p
           action="/updateEvent"
           method="post"
           enctype=multipart/form-data>
-          <!--        The event name is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -507,8 +490,6 @@ times and places, and then finally the social media links with the icons. This p
             placeholder="Event Type"
             maxlength="255">
           <br>
-
-          <!--        The event date is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -520,8 +501,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-
-          <!--        The event start time is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -533,7 +512,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-          <!--        The event end time is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -545,8 +523,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-
-          <!--        The event location is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -559,8 +535,6 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
-
-          <!--        The event description is a required field -->
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -600,14 +574,11 @@ times and places, and then finally the social media links with the icons. This p
         action="/updateClub"
         method="post"
         enctype=multipart/form-data>
-        <!--        The club name is a required field -->
         <i
           class="fa fa-asterisk"
           aria-hidden="true"></i>
         <label for="club_name">Club Name:</label>
         <br>
-        <!-- TODO: PLACE HOLDER SHOULD BE WHAT IS CURRENTLY IN THE DB AND THEN AFTER SUBMISSION PUT IT IN THE DATABASE
-                    THIS IS APPLICABLE FOR ALL OF THE INPUTS -->
         <input
           type="text"
           id="club_name"
@@ -616,7 +587,6 @@ times and places, and then finally the social media links with the icons. This p
           maxlength="45"
           required>
         <br>
-
         <input
           type="checkbox"
           id="clubShowEmail"
@@ -624,9 +594,6 @@ times and places, and then finally the social media links with the icons. This p
           checked>
         <label for="clubShowEmail">Display email on club profile</label>
         <br>
-
-        <!--        &lt;!&ndash;        The profile image is a required field &ndash;&gt;-->
-        <!--        <i class="fa fa-asterisk" aria-hidden="true"></i>-->
         <label
           class="nonrequired"
           for="profile-image">Profile Image:
@@ -745,8 +712,6 @@ times and places, and then finally the social media links with the icons. This p
           maxLength="255"
           placeholder="Website URL">
         <br>
-
-        <!-- TODO: HERE IS WHERE YOU WANT TO PUT ALL OF THE INFORMATION INTO THE DATABASE EACH OF THE INPUTS HAS A VALUE-->
         <input
           type="submit"
           value="Edit Club"/>
