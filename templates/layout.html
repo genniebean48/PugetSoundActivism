@@ -13,7 +13,9 @@
     <img src="{{ url_for('static', filename='images/0OdLUp3z.jpg') }}"/>
     <li id="title"> ACTivism Hub</li>
     <div class="links">
-        <a id="webstats" onclick='alert("Here are the Stats: ")'> Website Stats </a>
+        {% if 'admin_id' in session %}
+            <a id="webstats" onclick='alert("Here are the Stats: ")'> Website Stats </a>
+        {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">
             <a id="clubs"> Clubs </a>
