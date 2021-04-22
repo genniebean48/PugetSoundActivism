@@ -263,6 +263,7 @@ events that are coming up in the next week. -->
 				passInput.value = car.passengers[ i ].passenger_name;
 				let deletePass = document.createElement( "button" );
 				deletePass.id = "delete-pass";
+				//HERE IS WHERE I PASS IN PASSENGER ID AS A PARAMETER TO DELETE PASSENGER FUNCTION
 				let passengerID = car.passengers[i].passengerID;
 				deletePass.onclick = function() { deletePassenger(passengerID) };
 				deletePass.innerHTML = "Delete";
@@ -590,10 +591,6 @@ events that are coming up in the next week. -->
 					type="hidden"
 					name="carID"
 					id="editCar-eventID"/>
-			<input
-					type="hidden"
-					name="passID"
-					id="editCar-passengerID"/>
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
 			<form>
