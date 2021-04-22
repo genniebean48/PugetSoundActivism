@@ -89,7 +89,7 @@ events that are coming up in the next week. -->
 		div1.appendChild( div2 );
 		let editCarButton = document.createElement( "button" );
 		editCarButton.id = "edit-car";
-		editCarButton.onclick = function() { editCar( car.carID ); };
+		editCarButton.onclick = function() { editCar( car.eventID, car ); };
 		editCarButton.appendChild( i2 );
 		editCarButton.innerHTML = "Edit";
 		div2.appendChild( editCarButton );
@@ -217,7 +217,7 @@ events that are coming up in the next week. -->
 		}
 	}
 
-	function editCar( eventID ){
+	function editCar( eventID, car ){
 		//reverse description panel
 		//reverse add panel
 		//hide reserve seat panel
@@ -238,6 +238,61 @@ events that are coming up in the next week. -->
 			editCar.style.display = "none"
 			description.style.display = "flex";
 		}
+		let editModal = document.getElementById("passengersDel");
+		editModal.innerHTML = '';
+		let editDriverName = document.getElementById("edit-driver_name");
+		editDriverName.value = car.driver_name;
+		let editDriverEmail = document.getElementById("edit-driver_email");
+		editDriverEmail.value = car.driver_email;
+		let editNumSeats = document.getElementById("edit-num_seats");
+		editNumSeats.value = car.num_seats_total;
+		let editPass = document.createElement("div");
+		editPass.className = "edit-pass";
+		let hPass = document.createElement( "label" );
+		hPass.innerHTML = "Passengers:\n";
+		hPass.className = "delete-passenger";
+		editPass.append(hPass);
+		editModal.append(hPass);
+		if( car.passengers.length === 0 ) {
+			hPass.innerHTML += ' reserve a seat by clicking the save seat button <br />';
+			let breaker = document.createElement("br");
+			hPass.append(breaker);
+		} else {
+			for( i = 0; i < car.passengers.length; i++ ) {
+				let passDiv = document.createElement("div");
+				let labelInput = document.createElement("label");
+				labelInput.innerHTML = [i+1] + ": ";
+				let passInput = document.createElement("input");
+				passInput.value = car.passengers[ i ].passenger_name;
+				let deletePass = document.createElement( "button" );
+				deletePass.id = "delete-pass";
+				deletePass.onclick = function() {
+					let response = window.confirm( "Do you want to delete this passenger?" );
+					if( response === true ) {
+						//if the user clicks ok and therefore wants to delete the club
+					} else {
+						//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+						console.log( "no deleting" );
+						hideRideShare();
+					}
+				};
+				deletePass.innerHTML = "Delete";
+				//passDiv.append(deletePass);
+				let breaker = document.createElement("br");
+				passDiv.append(labelInput);
+				passDiv.append(passInput);
+				passDiv.append(deletePass);
+				passDiv.append(breaker);
+				editPass.append(passDiv);
+			}
+		}
+		editModal.append(editPass);
+		let editDepartTime = document.getElementById("edit-depart_time");
+		editDepartTime.value = car.depart_time;
+		let editReturnTime = document.getElementById("edit-return_time");
+		editReturnTime.value = car.return_time;
+		let editMeetLoca = document.getElementById("edit-meeting_location");
+		editMeetLoca.value = car.meeting_location;
 	}
 
 	function displayCars( cars ) {
@@ -535,6 +590,93 @@ events that are coming up in the next week. -->
 					id="editCar-eventID"/>
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
+			<form>
+<!--					action="/addCar"-->
+<!--					method="post">-->
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="driver_name">Driver's Name:</label>
+				<br>
+				<input
+						type="text"
+						id="edit-driver_name"
+						placeholder="Driver's Name"
+						maxLength="255"
+						name="driver_name"
+						required>
+				<br>
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="driver_email">Driver's Email:</label>
+				<br>
+				<input
+						type="text"
+						id="edit-driver_email"
+						placeholder="Driver's Email"
+						maxLength="255"
+						name="driver_email"
+						required>
+				<br>
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="num_seats">Number of Seats:</label>
+				<br>
+				<input
+						type="number"
+						id="edit-num_seats"
+						name="num_seats_total"
+						required>
+				<br>
+
+				<div id="passengersDel"></div>
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="edit-depart_time">Depart Time:</label>
+				<br>
+				<input
+						type="time"
+						id="edit-depart_time"
+						name="depart_time"
+						required>
+				<br>
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="edit-return_time">Return Time:</label>
+				<br>
+				<input
+						type="time"
+						id="edit-return_time"
+						name="return_time"
+						required>
+				<br>
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="edit-meeting_location">Meeting Location:</label>
+				<br>
+				<input
+						type="text"
+						id="edit-meeting_location"
+						name="meeting_location"
+						required>
+				<br>
+
+				<input
+						type="submit"
+						value="Edit Car"
+						onclick="return verify(driver_email.value)"/>
+			</form>
 		</div>
 	</div>
 </div>
