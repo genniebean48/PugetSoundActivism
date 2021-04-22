@@ -38,6 +38,9 @@ events that are coming up in the next week. -->
 		document.getElementById( "add-car" ).onclick = function() {
 			addCar( eventID );
 		};
+		document.getElementById( "request-car" ).onclick = function() {
+			requestCar( eventID );
+		};
 		let allCars = document.getElementsByClassName( "cars" );
 		for( let i = 0; i < allCars.length; i++ ) {
 			while( allCars[ i ] ) {
@@ -202,11 +205,11 @@ events that are coming up in the next week. -->
 		}
 	}
 
-	function requestCar() {
+	function requestCar( eventID ) {
 		let response = window.confirm( "Do you want to request a car for this event?" );
 		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the club
-			location.href = '/requestCar()';
+			//if the user clicks ok and therefore wants to request the car
+			location.href = '/requestCar?id=' + eventID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			console.log( "no request" );
@@ -341,8 +344,7 @@ events that are coming up in the next week. -->
 					Add Car
 				</button>
 				<button
-						id="request-car"
-						onclick=requestCar()>
+						id="request-car">
 					<i
 							class="fa fa-car"
 							aria-hidden="true"></i>
