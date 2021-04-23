@@ -67,6 +67,15 @@ def addAdmin():
    cursor.execute('''INSERT INTO website_admin (web_admin_name,web_admin_email) VALUES ("Manya","manyam686@gmail.com")''')
    mysql.connection.commit()
 
+def addManyaAdminInfo():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT adminID from %s WHERE admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
+    adminID=cursor.fetchall()[0]['adminID']
+    saltedPassword = "manyapassword" + salt
+    password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+    cursor.execute('''UPDATE %s SET password=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
+    mysql.connection.commit()
+
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -217,7 +226,17 @@ def do_login():
            #if password incorrect, reload login page
            return login_page("Incorrect password.")
    else:
-       return login_page(user+" is not associated with an account.")
+       #check if admin
+       cursor.execute('''SELECT adminID, password FROM %s WHERE admin_email = %%s'''%(ADMIN_TABLE,),(user,))
+       result = cursor.fetchall()
+       if len(result)==1:
+            #salt and hash their inputted password
+            saltedPassword = password + salt
+            password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+            #if passwords matche
+            #if password == result[0]['password']:
+       else:
+            return login_page(user+" is not associated with an account.")
 
 
 #Route when user clicks logout
