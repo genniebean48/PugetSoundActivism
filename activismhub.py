@@ -102,12 +102,14 @@ def index(message=""):
         event['event_date_formatted']=formatDateFromSql(event['event_date'])
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
+
+   # stats = getStats(), stats=stats
    #render homepage
    return render_template("homePage.html",events=events,clubs=clubs,message=message)
 
 
-#gets tracking stats
-def tracking():
+#gets stats
+def getStats():
     #Establish connection
     cursor = mysql.connection.cursor()
 
@@ -129,20 +131,33 @@ def tracking():
     total_current_passengers = results['total_current_passengers']
 
     #get overall totals
-    cursor.execute('''SELECT * FROM FROM %s WHERE trackingID = 1''' %(PASSENGER_TABLE,))
+    cursor.execute('''SELECT * FROM %s WHERE trackingID = 1''' %(PASSENGER_TABLE,))
     results = cursor.fetchall()[0]
     total_overall_clubs = results['total_clubs']
     total_overall_events = results['total_events']
     total_overall_cars = results['total_cars']
     total_overall_passengers = results['total_passengers']
 
-    #display current and overall stats
-    #format information in a string and return it
-
     #render homepage with stats
     #add to line 16 grabbing variable
 
-    #return render_template("homePage.html",events=events,clubs=clubs) -- this is wrong
+    stats = f"""\
+    Current Stats: 
+        Current Total Clubs:      {total_current_clubs}
+        Current Total Events:     {total_current_events}
+        Current Total Cars:       {total_current_cars}
+        Current Total Passengers: {total_current_passengers}
+
+    Overall Stats: 
+        Overall Total Clubs:        {total_overall_clubs}
+        Overall Total Events:       {total_overall_events}
+        Overall Total Cars:         {total_overall_cars}
+        Overall Total Passengers:   {total_overall_passengers}
+        """
+
+    return stats
+
+    # return render_template("homePage.html",events=events,clubs=clubs)
 
 
 #Route when a club page is clicked
@@ -171,6 +186,9 @@ def club_page():
        info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
    #Get list of dicts of clubs
    clubs = getClubs()
+
+   # stats = getStats() , stats=stats
+
    return render_template("clubPage.html",info=info,events=events,clubs=clubs)
 
 
@@ -392,6 +410,10 @@ def addEvent():
             club_name,clubID,event_date,start_time,end_time,event_location,event_description,event_type))
     mysql.connection.commit()
 
+    #increment total events for tracking
+    # cursor.execute('''UPDATE %s SET total_events = total_events + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    # mysql.connection.commit()
+
     #Get image from form
     image = request.files['event_image']
     #if image inputted, save and store
@@ -505,6 +527,10 @@ def addCar():
         depart_time,return_time,meeting_location,eventID) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CAR_TABLE,),
         (driver_name,driver_email,num_seats_total, num_seats_available,depart_time,return_time,meeting_location,eventID))
     mysql.connection.commit()
+
+    #increment total cars for tracking
+    # cursor.execute('''UPDATE %s SET total_cars = total_cars + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    # mysql.connection.commit()
 
     #get carID from just inserted car
     cursor.execute('''SELECT last_insert_id()''')
@@ -711,6 +737,10 @@ def addPassenger():
     cursor.execute('''UPDATE %s SET num_seats_taken = num_seats_taken + 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
     mysql.connection.commit()
 
+    #increment total passengers for tracking
+    # cursor.execute('''UPDATE %s SET total_passengers = total_passengers + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    # mysql.connection.commit()
+
     # Get eventID,depart_time,driver_email using carID
     cursor.execute('''SELECT eventID,depart_time,driver_email FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
     results = cursor.fetchall()[0]
@@ -740,7 +770,6 @@ def addPassenger():
 
     #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
     return index()
-
 
 #route when user clicks to delete a single passenger
 @app.route("/deletePassenger")
@@ -1309,8 +1338,9 @@ def approveClub():
     texts = verifyEmailText(club_info['club_email'],club_info['activation_hash'])
     sendEmail(club_info['club_email'],texts['html'],texts['text'],"Verify your email")
 
-    #Increment tracking numbers
-    cursor.execute('''UPDATE %s SET total_club = total_club + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    #increment total clubs for tracking
+    # cursor.execute('''UPDATE %s SET total_clubs = total_club + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    # cursor.connection.commit()
 
     #load home page with message that club was approved
     return index(club_info['club_name']+" successfully approved. An email has been sent to the club to verify their email.")

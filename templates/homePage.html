@@ -251,7 +251,7 @@ events that are coming up in the next week. -->
 				let deletePass = document.createElement( "button" );
 				deletePass.id = "delete-pass";
 				let passengerID = car.passengers[i].passengerID;
-				deletePass.onclick = function() { deletePassenger(passengerID) };
+				deletePass.onclick = function() { deletePassenger( passengerID ) };
 				deletePass.innerHTML = "Delete";
 				//passDiv.append(deletePass);
 				let breaker = document.createElement("br");
@@ -288,11 +288,11 @@ events that are coming up in the next week. -->
 		editMeetLoca.value = car.meeting_location;
 	}
 
-	function deletePassenger(passengerID){
-		let response = window.confirm( "Do you want to delete this passenger?" + passengerID);
+	function deletePassenger( passengerID ){
+		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/deletePassenger?p=' + passengerId;
+			location.href = '/deletePassenger?id=' + eventID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();
@@ -323,7 +323,7 @@ events that are coming up in the next week. -->
 	</div>
 	<div class="mySlides fade">
 		<img
-				src="../static/images/BSUMarch_0256.jpg"
+				src="../static/images/BSUMarch_0256 (2).jpg"
 				style="width:100%">
 	</div>
 	<div class="mySlides fade">
