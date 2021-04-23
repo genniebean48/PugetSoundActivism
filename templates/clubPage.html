@@ -408,17 +408,35 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
+          <input
+                  type="checkbox"
+                  id="eventVirtual2"
+                  name="event_virtual">
+          <label for="eventVirtual2">Is your event virtual?</label><br>
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
           <label for="event_location">Event Location:</label><br>
+          <p id="virtualP3">if event is virtual, please add zoom information such as link and password to below text box</p><br>
           <input
             type="text"
             id="event_location"
             name="event_location"
             placeholder="Event Location"
-            maxlength="255"
+            maxlength="400"
             required>
+          <br>
+          <label
+                  class="nonrequired"
+                  for="event-facebook2">Event Facebook Link:
+          </label>
+          <br>
+          <input
+                  class="nonrequired"
+                  type="url"
+                  id="event-facebook2"
+                  placeholder="Event Facebook Link"
+                  size="255">
           <br>
           <i
             class="fa fa-asterisk"
@@ -523,10 +541,16 @@ times and places, and then finally the social media links with the icons. This p
             maxlength="255"
             required>
           <br>
+          <input
+                  type="checkbox"
+                  id="eventVirtual"
+                  name="event_virtual">
+          <label for="eventVirtual">Is your event virtual?</label><br>
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
           <label for="edit-event_location">Event Location:</label><br>
+          <p id="virtualP2">if event is virtual, please add zoom information such as link and password to below text box</p><br>
           <input
             type="text"
             name="event_location"
@@ -534,6 +558,18 @@ times and places, and then finally the social media links with the icons. This p
             placeholder="Event Location"
             maxlength="255"
             required>
+          <br>
+          <label
+                  class="nonrequired"
+                  for="event-facebook">Event Facebook Link:
+          </label>
+          <br>
+          <input
+                  class="nonrequired"
+                  type="url"
+                  id="event-facebook"
+                  placeholder="Event Facebook Link"
+                  size="255">
           <br>
           <i
             class="fa fa-asterisk"
@@ -607,8 +643,6 @@ times and places, and then finally the social media links with the icons. This p
           placeholder="Profile Image"
           size="5">
         <br>
-
-        <!--        The club description or about_info is a required field -->
         <i
           class="fa fa-asterisk"
           aria-hidden="true"></i>
@@ -648,6 +682,7 @@ times and places, and then finally the social media links with the icons. This p
           for="meet_location">Meeting Place:
         </label>
         <br>
+        <p id="virtualP">if club meetings are virtual, please add zoom information such as link and password to below text box</p><br>
         <input
           class="nonrequired"
           type="text"
