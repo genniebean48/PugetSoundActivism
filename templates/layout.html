@@ -14,7 +14,7 @@
     <li id="title"> ACTivism Hub</li>
     <div class="links">
         {% if 'admin_id' in session %}
-            <a id="webstats" onclick='alert("Here are the Stats: ")'> Website Stats </a>
+            <a id="webstats" onclick='alert("Here are the Stats: {{stats}}")'> Website Stats </a>
         {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">

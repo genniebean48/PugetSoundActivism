@@ -13,6 +13,7 @@ events that are coming up in the next week. -->
 {% block title %}
 <title>Actvism Hub</title>
 <script>
+
 	function verify( email ) {
 		const emailSplit = email.split( "@" );
 		if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
@@ -35,6 +36,9 @@ events that are coming up in the next week. -->
 		document.getElementById( "add-car" ).onclick = function() {
 			addCar( eventID );
 		};
+		document.getElementById( "request-car" ).onclick = function() {
+			requestCar( eventID );
+		};
 		let allCars = document.getElementsByClassName( "cars" );
 		for( let i = 0; i < allCars.length; i++ ) {
 			while( allCars[ i ] ) {
@@ -45,13 +49,14 @@ events that are coming up in the next week. -->
 		cars.forEach( carFcn );
 	}
 
-	function carFcn( car ) {
+	function carFcn( car, index) {
 		let div1 = document.createElement( "div" );
 		div1.className = "cars";
 		let div2 = document.createElement( "div" );
 		div2.className = "seat-title";
 		let h4 = document.createElement( "h4" );
-		h4.innerHTML = "Car";
+		var i = index + 1;	// variable to display car index
+		h4.innerHTML = "Car " + i;
 		div2.appendChild( h4 );
 		if( car.num_seats_available > 0 ) {
 			let reserveSeatButton = document.createElement( "button" );
@@ -179,7 +184,7 @@ events that are coming up in the next week. -->
 	function deleteCar( carID ) {
 		let response = window.confirm( "Do you want to delete this car?" );
 		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the club
+			//if the user clicks ok and therefore wants to delete the car
 			location.href = '/deleteCar?id=' + carID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
@@ -187,11 +192,11 @@ events that are coming up in the next week. -->
 		}
 	}
 
-	function requestCar() {
+	function requestCar( eventID ) {
 		let response = window.confirm( "Do you want to request a car for this event?" );
 		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the club
-			location.href = '/requestCar()';
+			//if the user clicks ok and therefore wants to request the car
+			location.href = '/requestCar?id=' + eventID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();
@@ -245,9 +250,8 @@ events that are coming up in the next week. -->
 				passInput.readOnly = true;
 				let deletePass = document.createElement( "button" );
 				deletePass.id = "delete-pass";
-				//HERE IS WHERE I PASS IN PASSENGER ID AS A PARAMETER TO DELETE PASSENGER FUNCTION
 				let passengerID = car.passengers[i].passengerID;
-				deletePass.onclick = function() { deletePassenger(passengerID) };
+				deletePass.onclick = function() { deletePassenger( passengerID ) };
 				deletePass.innerHTML = "Delete";
 				//passDiv.append(deletePass);
 				let breaker = document.createElement("br");
@@ -279,11 +283,11 @@ events that are coming up in the next week. -->
 		editMeetLoca.value = car.meeting_location;
 	}
 
-	function deletePassenger(passengerID){
-		let response = window.confirm( "Do you want to delete this passenger?" + passengerID);
+	function deletePassenger( passengerID ){
+		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the club
-			location.href = '/requestCar()';
+			//if the user clicks ok and therefore wants to delete the passenger
+			location.href = '/deletePassenger?id=' + eventID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();
@@ -314,7 +318,7 @@ events that are coming up in the next week. -->
 	</div>
 	<div class="mySlides fade">
 		<img
-				src="../static/images/BSUMarch_0256.jpg"
+				src="../static/images/BSUMarch_0256 (2).jpg"
 				style="width:100%">
 	</div>
 	<div class="mySlides fade">
@@ -389,8 +393,7 @@ events that are coming up in the next week. -->
 					Add Car
 				</button>
 				<button
-						id="request-car"
-						onclick=requestCar()>
+						id="request-car">
 					<i
 							class="fa fa-car"
 							aria-hidden="true"></i>
