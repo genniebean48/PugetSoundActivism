@@ -125,12 +125,6 @@ times and places, and then finally the social media links with the icons. This p
     }
   }
 
-  /* Javascript Function that will delete event that is already put into the database. The user will have the opportunity to click
-  * ok from an alert menu and then the event will be deleted. Otherwise, the user will be rerouted to the club page again. */
-  function deleteEvent() {
-    console.log( "deleting event" );
-  }
-
   /* Javascript Function exits the form that they were on and displays the default club information on the right side. */
   function exit() {
     let title = document.getElementById( "club-profile-logistics" );
@@ -155,7 +149,6 @@ times and places, and then finally the social media links with the icons. This p
       location.href = '/deleteClub';
     } else {
       //otherwise the user clicked cancel and we should go back to club profile view by calling exit() function
-      console.log( "keep club" );
       exit();
     }
   }
