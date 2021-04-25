@@ -10,6 +10,10 @@ times and places, and then finally the social media links with the icons. This p
   type="text/css"
   rel="stylesheet/less"/>
 <script>
+  /* Javascript function that edits the club information. In order to edit the club, the right side of the page with
+  * all of the club information will turn into an Edit Club form and the user will be able to edit the club name, the
+  * about information, the meeting day, meeting times, meeting location, facebook link, instagram link, twitter link,
+  * as well as the website link and whether or not they want their club email to be displayed. */
   function editClub( club_name, about_info, meet_day, meet_time, meet_location, facebook_link, instagram_link, twitter_link, website_link, club_email_display ) {
     document.getElementById( "club_name" ).value = club_name;
     document.getElementById( "about_info" ).value = about_info;
@@ -60,6 +64,9 @@ times and places, and then finally the social media links with the icons. This p
     }
   }
 
+  /* Javascript function that will add an event for a club. In order to add an event the right side of the page will disappear
+  * then an addEvent form will appear and the user will be able to add an event along with the title, and all of the other
+  * corresponding information. */
   function addEvents() {
     let title = document.getElementById( "club-profile-logistics" );
     let events = document.getElementById( "club-profile-title" );
@@ -83,6 +90,9 @@ times and places, and then finally the social media links with the icons. This p
     }
   }
 
+  /* Javascript function that will allow the user (if signed in) to edit Events that they have already put into the system.
+  * When the form pops up on the right side, the user will be able to edit the event name, the event date, the start time, the
+  * end time, the event location, the event type, and event description. */
   function editEvent( event_name, event_date, start_time, end_time, event_location, event_type, event_description, eventID ) {
     document.getElementById( "edit-event_name" ).value = event_name;
     document.getElementById( "edit-event_date" ).value = event_date;
@@ -115,10 +125,7 @@ times and places, and then finally the social media links with the icons. This p
     }
   }
 
-  function deleteEvent() {
-    console.log( "deleting event" );
-  }
-
+  /* Javascript Function exits the form that they were on and displays the default club information on the right side. */
   function exit() {
     let title = document.getElementById( "club-profile-logistics" );
     let events = document.getElementById( "club-profile-title" );
@@ -133,6 +140,8 @@ times and places, and then finally the social media links with the icons. This p
     loginPanel.style.display = "none";
   }
 
+  /* Javascript Function that deletes a club and all of the information that the club has including events, cars, etc. The user
+  * will again have the option to click ok in order to execute the function or cancel to hide and go back to the club page. */
   function deleteClub() {
     let response = window.confirm( "Do you want to delete your club?" );
     if( response === true ) {
@@ -140,7 +149,6 @@ times and places, and then finally the social media links with the icons. This p
       location.href = '/deleteClub';
     } else {
       //otherwise the user clicked cancel and we should go back to club profile view by calling exit() function
-      console.log( "keep club" );
       exit();
     }
   }

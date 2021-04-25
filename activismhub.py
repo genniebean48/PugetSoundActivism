@@ -808,7 +808,7 @@ def addPassenger():
 def deletePassenger():
     print("i made it!!")
     #Get passengerID
-    passengerID = request.args.get("p")
+    passengerID = request.args.get("id")
 
     print("passengerID =" + str(passengerID))
 

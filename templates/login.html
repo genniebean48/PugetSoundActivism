@@ -6,9 +6,13 @@ email, and the password of the user in order to allow correct users to "LogIn" -
 {% block css_file %}
 <link href="{{ url_for('static', filename='login.less') }}" type="text/css" rel="stylesheet/less"/>
 <script>
+    /* Javascript function that when the button for clicked for create an account is clicked then the user will be rerouted to the
+    * create account page. */
     function createAccount(){
         location.href = "/createAccount"
     }
+    /* Javascript function that when the button for clicked for forgot password is clicked then the user will be rerouted to the
+    * forgot password page. */
     function forgotPassword(){
         location.href="/forgotPassword";
     }

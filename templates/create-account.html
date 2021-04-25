@@ -9,6 +9,10 @@ contains all fo the information from the navigation bar because it extends the l
   type="text/css"
   rel="stylesheet/less"/>
 <script>
+
+  /* Javascript function that verifies the email to make sure that it is @pugetsound and also makes sure that it
+  * is a valid email address. In addition, this function also makes sure that the passwords that the user input into the
+  * first field matches the confirm password as well. */
   function verify( email, password, confirmPassword ) {
     const emailSplit = email.split( "@" );
     if( password !== confirmPassword ) {
