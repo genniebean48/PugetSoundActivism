@@ -10,7 +10,7 @@
 
 from flask import Flask, request, render_template, session, redirect, jsonify
 from flask_mysqldb import MySQL
-import os, datetime, secrets, json
+import os, datetime, secrets, json, time
 from werkzeug.utils import secure_filename
 import smtplib, ssl, hashlib
 from email.mime.text import MIMEText
@@ -688,7 +688,7 @@ def editCar():
     date = formatDateFromSql(date)
     # depart_time_notString = time.strptime(depart_time, '%H:%M:%S')
     # print(depart_time_notString)
-    # depart_time = formatTimeFromSql(depart_time_notString)
+    depart_time = formatTimeFromSql(depart_time)
 
     #Notify driver that car has been added
     texts = editCarDriverText(event_name,date,depart_time)
@@ -803,7 +803,7 @@ def addPassenger():
 def deletePassenger():
     print("i made it!!")
     #Get passengerID
-    passengerID = request.args.get("p")
+    passengerID = request.args.get("id")
 
     print("passengerID =" + str(passengerID))
 
@@ -1047,13 +1047,13 @@ def editCarDriverText(event_name,date,time):
     return {'html':html,'text':text}
 
 #returns a dict with the html and plain text versions of editing car send to passenger email
-def editCarPassText(event_name,date,time):
+def editCarPassText(event_name,time, date):
     html=f"""\
         <html>
           <body>
             <p>Hello,<br><br>
-               A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for the {event_name}.
-               Please visit ACTivism Hub and check that this still work for your schedule. <br><br>
+               A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for {event_name}.
+               Please visit ACTivism Hub and check that this still works with your schedule. <br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -1063,8 +1063,8 @@ def editCarPassText(event_name,date,time):
     text = f"""\
         Hello,
 
-        A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for the {event_name}.
-        Please visit ACTivism Hub and check that this still work for your schedule. <br><br>
+        A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for {event_name}.
+        Please visit ACTivism Hub and check that this still works with your schedule. 
             
         Best,
         The ACTivism Hub Team
@@ -1093,9 +1093,23 @@ def formatDateFromSql(sqlDate):
 
 
 #formats times
-def formatTimeFromSql(time):
-    hours = (int)(time.seconds/3600)
-    min = (int)((time.seconds/60)%60)
+def formatTimeFromSql(sqlTime):
+
+    # if time is string type
+    if isinstance(sqlTime, str):
+        sqlTime = sum(x * int(t) for x, t in zip([3600, 60, 1], sqlTime.split(":")))
+        hours = (int)(sqlTime/3600)
+        min = (int)((sqlTime/60)%60)
+        if min<10:
+            min='0' + str(min)
+        ampm = 'AM'
+        if hours>12:
+            hours=hours-12
+            ampm='PM'
+        return str(hours)+":"+str(min)+" "+ampm
+
+    hours = (int)(sqlTime.seconds/3600)
+    min = (int)((sqlTime.seconds/60)%60)
     if min<10:
         min='0' + str(min)
     ampm = 'AM'

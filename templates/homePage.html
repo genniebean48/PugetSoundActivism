@@ -14,6 +14,8 @@ events that are coming up in the next week. -->
 <title>Actvism Hub</title>
 <script>
 
+	/* Javascript Function to make sure that the inputted email is @pugetsound.edu as well as a
+	* valid email address that can be used. */
 	function verify( email ) {
 		const emailSplit = email.split( "@" );
 		if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
@@ -29,6 +31,9 @@ events that are coming up in the next week. -->
 		}
 	}
 
+	/* Javascript Function that displays the ride-share modal component and by default starts with
+	* the rideshare description on the right side. In addition, it loops through all of the cars
+	* for the event and generates the html to display them by calling the carFcn on each one. */
 	function showRideShare( eventID, cars ) {
 		const txtHome = document.getElementById("txt-homepage");
 		txtHome.style.display = "none";
@@ -50,6 +55,10 @@ events that are coming up in the next week. -->
 		cars.forEach( carFcn );
 	}
 
+	/* Javascript Function that generates the HTML to display the cars for the event on the left side
+	* of the rideshare module. Each Car will display what car number it is, as well as a Edit Car button,
+	* a Delete Car button, and a Save Seat Button. In addition, each car will display the driver's name,
+	* the depart and return times as well as which passengers are already in the car. */
 	function carFcn( car, index) {
 		let div1 = document.createElement( "div" );
 		div1.className = "cars";
@@ -135,6 +144,9 @@ events that are coming up in the next week. -->
 		document.getElementById( "modal-cars" ).appendChild( div1 );
 	}
 
+	/* Javascript Function that hides the rideshare modal when any of the exit buttons are clicked.
+	* This means that when the rideshare button is clicked again, all that has to happen is call the
+	* showRideShare button. */
 	function hideRideShare() {
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
@@ -151,6 +163,9 @@ events that are coming up in the next week. -->
 		modal.style.display = "none";
 	}
 
+	/* Javascript Function that adds a car for the event. It toggles the right side so that the addCar
+	* form shows up on the right side. It will prompt the user to enter the driver's name, email, as well as
+	* how many seats they have, their departing time and return time. */
 	function addCar( eventID ) {
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
@@ -171,6 +186,9 @@ events that are coming up in the next week. -->
 		}
 	}
 
+	/* Javascript Function that reserves a seat in a car for the event. It toggles the right side so that the
+	* reserveSeat form is showing. If there are seats left in the car, then it will prompt the user to enter their
+	* name as well as their email. The driver will then get an email that a passenger has been added to their car. */
 	function reserveSeat( carID ) {
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
@@ -190,6 +208,17 @@ events that are coming up in the next week. -->
 		}
 	}
 
+	/* Javascript Function that deletes a car from the event. When the user clicks on the button, it will ask the user
+	* if they actually want to delete the car. If the user clicks "ok" then the function will run otherwise the ride share
+	* modal will be hidden and the user can start over. */
+	function deleteCar( carID ) {
+		let response = window.confirm( "Do you want to delete this car?" );
+		if( response === true ) {
+			//if the user clicks ok and therefore wants to delete the car
+			location.href = '/deleteCar?id=' + carID;
+		} else {
+			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+			hideRideShare();
 	function deleteCar( carID, hasPassengers ) {
 		if( hasPassengers === 0 ) {
 		<!--	if the car has no passengers -->
@@ -215,6 +244,10 @@ events that are coming up in the next week. -->
 		}
 	}
 
+	/* Javascript Function that requests a car for the event. In order to request the car the user has to click the button, and then
+	* click "ok" from the drop down menu. Then the club who is running the event will get an email saying that someone has requested a car
+	* in order to go to the event. If the user decides not to request a car they can click cancel and then the function will not run and the
+	* rideshare modal will just be hidden. */
 	function requestCar( eventID ) {
 		let response = window.confirm( "Do you want to request a car for this event?" );
 		if( response === true ) {
@@ -227,8 +260,10 @@ events that are coming up in the next week. -->
 		}
 	}
 
+	/* Javascript Function that edits the car. When the button is clicked the form will appear on the right side of the ride share modal.
+	* Once the edit car button is clicked then the user will be able to edit the driver's name, the driver's email the depart time, return time
+	* and then also will be able to delete passengers. */
 	function editCar( carID, car ){
-
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
@@ -308,19 +343,10 @@ events that are coming up in the next week. -->
 		editReturnTime.value = returnTime;
 		let editMeetLoca = document.getElementById("edit-meeting_location");
 		editMeetLoca.value = car.meeting_location;
-
-<!--		let editCarButtonSubmit = document.createElement( "button" );-->
-<!--		editCarButtonSubmit.id = "edit-car-submit";-->
-
-<!--		document.getElementById( "edit-car-submit" ).onclick = function() {-->
-<!--				editCarSubmit( car.carID );-->
-<!--		};-->
-
 	}
 
 
 	function editCarSubmit( carID ){
-
 		let response = window.confirm( "Do you want to edit this car?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
@@ -331,7 +357,9 @@ events that are coming up in the next week. -->
 		}
 	}
 
-
+	/* Javascript Function that will take care of deleting a passenger from a car. In order to delete the passenger, the user
+	* will need to click on the delete passenger button in the editCar modal. The user will then be able to click on the ok button to
+	* delete the passenger or will click cancel and the rideshare modal will be hidden in order for the user to then start over. */
 	function deletePassenger( passengerID ){
 		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
