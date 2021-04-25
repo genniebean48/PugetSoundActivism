@@ -284,6 +284,7 @@ events that are coming up in the next week. -->
 				deletePass.type = "submit"
 				deletePass.id = "delete-pass";
 				let passengerID = car.passengers[i].passengerID;
+				document.getElementById("editCar-passengerID").value = car.passengers[i].passengerID
 				deletePass.onclick = function() { deletePassenger( passengerID ) };
 				deletePass.innerHTML = "Delete";
 				//passDiv.append(deletePass);
@@ -720,6 +721,11 @@ events that are coming up in the next week. -->
 						type="hidden"
 						name="carID"
 						id="editCar-carID"/>
+
+				<input
+						type="hidden"
+						name="carID"
+						id="editCar-passengerID"/>
 
 				<input
 						type="submit"
