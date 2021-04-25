@@ -74,7 +74,14 @@ events that are coming up in the next week. -->
 		}
 		let deleteCarButton = document.createElement( "button" );
 		deleteCarButton.id = "delete-car";
-		deleteCarButton.onclick = function() { deleteCar( car.carID ); };
+
+		// variable if car has passengers
+		var hasPassengers = 0;
+		if( car.passengers.length !== 0 ) {
+			hasPassengers = 1;
+		}
+
+		deleteCarButton.onclick = function() { deleteCar( car.carID, hasPassengers ); };
 		let i2 = document.createElement( "i" );
 		i2.className = "fa fa-times-circle";
 		deleteCarButton.appendChild( i2 );
@@ -183,14 +190,28 @@ events that are coming up in the next week. -->
 		}
 	}
 
-	function deleteCar( carID ) {
-		let response = window.confirm( "Do you want to delete this car?" );
-		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the car
-			location.href = '/deleteCar?id=' + carID;
+	function deleteCar( carID, hasPassengers ) {
+		if( hasPassengers === 0 ) {
+		<!--	if the car has no passengers -->
+			let response = window.confirm( "Do you want to delete this car?" );
+			if( response === true ) {
+				//if the user clicks ok and therefore wants to delete the car
+				location.href = '/deleteCar?id=' + carID;
+			} else {
+				//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+				hideRideShare();
+			}
+
 		} else {
-			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			hideRideShare();
+		<!--	if the car has passengers -->
+			let response = window.confirm( "There are passengers registered for the car. Are you sure you want to delete?" );
+			if( response === true ) {
+				//if the user clicks ok and therefore wants to delete the car
+				location.href = '/deleteCar?id=' + carID;
+			} else {
+				//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+				hideRideShare();
+			}
 		}
 	}
 

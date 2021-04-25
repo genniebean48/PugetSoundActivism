@@ -642,11 +642,8 @@ def doDeleteCar(carID):
 #route when user clicks edit a car
 @app.route("/editCar",methods=["POST"])
 def editCar():
-
     #get which car
     carID = request.form['carID']
-    print("carID = " + str(carID))
-
 
     #get form info
     driver_name = request.form['driver_name']
@@ -655,8 +652,6 @@ def editCar():
     depart_time = request.form['depart_time']
     return_time = request.form['return_time']
     meeting_location = request.form['meeting_location']
-
-    print()
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
