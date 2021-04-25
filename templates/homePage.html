@@ -274,13 +274,14 @@ events that are coming up in the next week. -->
 			hPass.append(breaker);
 		} else {
 			for( i = 0; i < car.passengers.length; i++ ) {
-				let passDiv = document.createElement("div");
+				let passDiv = document.createElement("form");
 				let labelInput = document.createElement("label");
 				labelInput.innerHTML = [i+1] + ": ";
 				let passInput = document.createElement("input");
 				passInput.value = car.passengers[ i ].passenger_name;
 				passInput.readOnly = true;
 				let deletePass = document.createElement( "button" );
+				deletePass.type = "submit"
 				deletePass.id = "delete-pass";
 				let passengerID = car.passengers[i].passengerID;
 				deletePass.onclick = function() { deletePassenger( passengerID ) };
@@ -725,11 +726,6 @@ events that are coming up in the next week. -->
 						value="Edit Car"
 						onclick="return verify(driver_email.value)"/>
 			</form>
-
-			<input
-					type="submit"
-					value="Delete Passenger"
-					onclick="deletePassenger()"/>
 		</div>
 	</div>
 </div>
