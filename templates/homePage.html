@@ -17,12 +17,12 @@ events that are coming up in the next week. -->
 	function verify( email ) {
 		const emailSplit = email.split( "@" );
 		if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
-			alert( "email must be a valid University of Puget Sound address." );
+			alert( "Email must be a valid University of Puget Sound address." );
 			return false;
 		} else {
 			const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 			if( re.test( email.toLowerCase() ) == false ) {
-				alert( "email must be a valid University of Puget Sound address." );
+				alert( "Email must be a valid University of Puget Sound address." );
 			} else {
 				return true;
 			}
@@ -39,6 +39,7 @@ events that are coming up in the next week. -->
 		document.getElementById( "request-car" ).onclick = function() {
 			requestCar( eventID );
 		};
+
 		let allCars = document.getElementsByClassName( "cars" );
 		for( let i = 0; i < allCars.length; i++ ) {
 			while( allCars[ i ] ) {
@@ -82,7 +83,7 @@ events that are coming up in the next week. -->
 		div1.appendChild( div2 );
 		let editCarButton = document.createElement( "button" );
 		editCarButton.id = "edit-car";
-		editCarButton.onclick = function() { editCar( car.eventID, car ); };
+		editCarButton.onclick = function() { editCar( car.carID, car ); };
 		editCarButton.appendChild( i2 );
 		editCarButton.innerHTML = "Edit";
 		div2.appendChild( editCarButton );
@@ -112,6 +113,7 @@ events that are coming up in the next week. -->
 				}
 			}
 		}
+		div3.append( hPass );
 		div3.append( hPass );
 		let h7 = document.createElement( "h5" );
 		h7.innerHTML = "Depart Time: " + car.depart_time_formatted;
@@ -197,18 +199,20 @@ events that are coming up in the next week. -->
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to request the car
 			location.href = '/requestCar?id=' + eventID;
+
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();
 		}
 	}
 
-	function editCar( eventID, car ){
+	function editCar( carID, car ){
+
 		let description = document.getElementById( "modal-seats-description" );
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
 		let editCar = document.getElementById( "modal-seats-editCar" );
-		document.getElementById( "editCar-eventID" ).value = eventID;
+		document.getElementById( "editCar-carID" ).value = carID;
 
 		if( window.getComputedStyle( editCar ).display === "none" ) {
 			description.style.display = "none";
@@ -221,6 +225,7 @@ events that are coming up in the next week. -->
 			editCar.style.display = "none"
 			description.style.display = "flex";
 		}
+
 		let editModal = document.getElementById("passengersDel");
 		editModal.innerHTML = '';
 		let editDriverName = document.getElementById("edit-driver_name");
@@ -262,6 +267,7 @@ events that are coming up in the next week. -->
 				editPass.append(passDiv);
 			}
 		}
+
 		editModal.append(editPass);
 		let departTime;
 		if(car.depart_time.split(":")[0] < 10){
@@ -281,13 +287,35 @@ events that are coming up in the next week. -->
 		editReturnTime.value = returnTime;
 		let editMeetLoca = document.getElementById("edit-meeting_location");
 		editMeetLoca.value = car.meeting_location;
+
+<!--		let editCarButtonSubmit = document.createElement( "button" );-->
+<!--		editCarButtonSubmit.id = "edit-car-submit";-->
+
+<!--		document.getElementById( "edit-car-submit" ).onclick = function() {-->
+<!--				editCarSubmit( car.carID );-->
+<!--		};-->
+
 	}
+
+
+	function editCarSubmit( carID ){
+
+		let response = window.confirm( "Do you want to edit this car?");
+		if( response === true ) {
+			//if the user clicks ok and therefore wants to delete the passenger
+			location.href = '/editCar?id=' + carID;
+		} else {
+			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+			hideRideShare();
+		}
+	}
+
 
 	function deletePassenger( passengerID ){
 		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/deletePassenger?id=' + eventID;
+			location.href = '/deletePassenger()';
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();
@@ -299,6 +327,7 @@ events that are coming up in the next week. -->
 			window.alert( message );
 		}
 	}
+
 
 </script>{% endblock %}
 
@@ -314,6 +343,11 @@ events that are coming up in the next week. -->
 	<div class="mySlides fade">
 		<img
 				src="../static/images/DSC_0586-background3.jpeg"
+				style="width:100%">
+	</div>
+	<div class="mySlides fade">
+		<img
+				src="../static/images/advinsidegroup_crop.jpeg"
 				style="width:100%">
 	</div>
 	<div class="mySlides fade">
@@ -578,15 +612,12 @@ events that are coming up in the next week. -->
 						class="fa fa-times-circle fa-lg"
 						aria-hidden="true"></i>
 			</button>
-			<input
-					type="hidden"
-					name="carID"
-					id="editCar-eventID"/>
+
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
-			<form>
-<!--					action="/addCar"-->
-<!--					method="post">-->
+			<form
+					action="/editCar"
+					method="post">
 
 				<i
 						class="fa fa-asterisk"
@@ -665,6 +696,10 @@ events that are coming up in the next week. -->
 						name="meeting_location"
 						required>
 				<br>
+				<input
+						type="hidden"
+						name="carID"
+						id="editCar-carID"/>
 
 				<input
 						type="submit"
