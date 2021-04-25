@@ -316,22 +316,21 @@ events that are coming up in the next week. -->
 		editMeetLoca.value = car.meeting_location;
 	}
 
-
-	function editCarSubmit( carID ){
-		let response = window.confirm( "Do you want to edit this car?");
-		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/editCar?id=' + carID;
-		} else {
-			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			hideRideShare();
-		}
-	}
+	//function editCarSubmit( carID ){
+	//	let response = window.confirm( "Do you want to edit this car?");
+	//	if( response === true ) {
+	//		//if the user clicks ok and therefore wants to delete the passenger
+	//		location.href = '/editCar?id=' + carID;
+	//	} else {
+	//		//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+	//		hideRideShare();
+	//	}
+	//}
 
 	/* Javascript Function that will take care of deleting a passenger from a car. In order to delete the passenger, the user
 	* will need to click on the delete passenger button in the editCar modal. The user will then be able to click on the ok button to
 	* delete the passenger or will click cancel and the rideshare modal will be hidden in order for the user to then start over. */
-	function deletePassenger( passengerID ){
+	function deletePassenger(){
 		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
@@ -726,6 +725,11 @@ events that are coming up in the next week. -->
 						value="Edit Car"
 						onclick="return verify(driver_email.value)"/>
 			</form>
+
+			<input
+					type="submit"
+					value="Delete Passenger"
+					onclick="deletePassenger()"/>
 		</div>
 	</div>
 </div>
