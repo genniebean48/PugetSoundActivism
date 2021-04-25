@@ -103,9 +103,9 @@ def index(message=""):
         event['start_time_formatted']=formatTimeFromSql(event['start_time'])
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
 
-   # stats = getStats(), stats=stats
+   stats = getStats()
    #render homepage
-   return render_template("homePage.html",events=events,clubs=clubs,message=message)
+   return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats)
 
 
 #gets stats
@@ -131,7 +131,7 @@ def getStats():
     total_current_passengers = results['total_current_passengers']
 
     #get overall totals
-    cursor.execute('''SELECT * FROM %s WHERE trackingID = 1''' %(PASSENGER_TABLE,))
+    cursor.execute('''SELECT * FROM %s WHERE trackingID = 1''' %(TRACKING_TABLE,))
     results = cursor.fetchall()[0]
     total_overall_clubs = results['total_clubs']
     total_overall_events = results['total_events']
@@ -141,24 +141,19 @@ def getStats():
     #render homepage with stats
     #add to line 16 grabbing variable
 
-    stats = f"""\
-    Current Stats: 
-        Current Total Clubs:      {total_current_clubs}
-        Current Total Events:     {total_current_events}
-        Current Total Cars:       {total_current_cars}
-        Current Total Passengers: {total_current_passengers}
-
-    Overall Stats: 
-        Overall Total Clubs:        {total_overall_clubs}
-        Overall Total Events:       {total_overall_events}
-        Overall Total Cars:         {total_overall_cars}
-        Overall Total Passengers:   {total_overall_passengers}
-        """
+    stats = """Current Stats:""" #\nCurrent Total Clubs: %s """% (total_current_clubs)
+    #    Current Total Events: %s
+     #    Current Total Cars: %s
+     #    Current Total Passengers: %s
+     #
+     # Overall Stats:
+     #     Overall Total Clubs: %s
+     #     Overall Total Events: %s
+     #     Overall Total Cars: %s
+     #     Overall Total Passengers: %s"""
+     #     % (total_current_clubs, total_current_events, total_current_cars,total_current_passengers,total_overall_clubs,total_overall_events,total_overall_cars,total_overall_passengers)
 
     return stats
-
-    # return render_template("homePage.html",events=events,clubs=clubs)
-
 
 #Route when a club page is clicked
 @app.route("/clubPage")
@@ -187,9 +182,9 @@ def club_page():
    #Get list of dicts of clubs
    clubs = getClubs()
 
-   # stats = getStats() , stats=stats
+   stats = getStats()
 
-   return render_template("clubPage.html",info=info,events=events,clubs=clubs)
+   return render_template("clubPage.html",info=info,events=events,clubs=clubs,stats=stats)
 
 
 ########################################################################################################################
@@ -284,10 +279,16 @@ def enter_account():
    password = hashlib.sha256(saltedPassword.encode()).hexdigest()
    #Create activation hash
    activation_hash = secrets.token_urlsafe()
+
+
+   #get current time stamp
+   cursor.execute('''SELECT NOW() + 0''')
+   time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+
    #Insert new account info into club table
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
-       email_activated) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,0)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
-       club_email_display,activation_hash))
+       time_last_edited) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
+       club_email_display,activation_hash,time_last_edited))
 
    #send request for account to admin
    cursor.execute('''SELECT clubID FROM %s WHERE club_name=%%s AND club_email=%%s'''%(CLUB_TABLE,),(club_name,club_email))
@@ -345,12 +346,17 @@ def updateClub():
     else:
         cursor.execute('''SELECT club_image FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
         club_image = cursor.fetchall()[0]['club_image']
+
+    #update time stamp
+    cursor.execute('''SELECT NOW() + 0''')
+    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+
     #Put new info in database
     cursor.execute('''UPDATE %s SET club_name=%%s,about_info=%%s,meet_time=%%s,meet_day=%%s,meet_location=%%s,
                     facebook_link=%%s,instagram_link=%%s,twitter_link=%%s,website_link=%%s,club_image=%%s,
-                    club_email_display=%%s WHERE
+                    club_email_display=%%s,time_last_edited=%%s WHERE
                     clubID = %%s'''%(CLUB_TABLE,),(club_name,about_info,meet_time,meet_day,meet_location,
-                    facebook_link,instagram_link,twitter_link,website_link,club_image,club_email_display,clubID))
+                    facebook_link,instagram_link,twitter_link,website_link,club_image,club_email_display,time_last_edited,clubID))
     mysql.connection.commit()
     #Update all of that club's events to possibly new club name
     cursor.execute('''UPDATE %s SET club_name = %%s WHERE clubID = %%s'''%(EVENT_TABLE,),(club_name,clubID))
@@ -396,18 +402,29 @@ def addEvent():
     end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event-description']
+    facebook_event_link = request.form['facebook_link']
+
     #if optional fields empty, set as null
     if event_type == '':
         event_type = None
+    if facebook_event_link=='':
+        facebook_event_link = None
     #instantiate cursor
     cursor = mysql.connection.cursor()
     #get club name
     cursor.execute('''SELECT club_name FROM %s where clubID = %%s'''%(CLUB_TABLE,),(clubID,))
     club_name=cursor.fetchall()[0]['club_name']
+
     #put new event in table NOTE - does not include image
     cursor.execute('''INSERT INTO %s(event_name,club_name,clubID,event_date,start_time,end_time,event_location,
-            event_description,event_type) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,
-            club_name,clubID,event_date,start_time,end_time,event_location,event_description,event_type))
+            event_description,event_type,facebook_event_link) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,
+            club_name,clubID,event_date,start_time,end_time,event_location,event_description,event_type,facebook_event_link))
+    mysql.connection.commit()
+
+    #update time stamp
+    cursor.execute('''SELECT NOW() + 0''')
+    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
     #increment total events for tracking
@@ -493,10 +510,18 @@ def updateEvent():
     else:
         cursor.execute('''SELECT event_image FROM %s WHERE eventID=%%s'''%(EVENT_TABLE,),(eventID,))
         event_image = cursor.fetchall()[0]['event_image']
+
+
     #Update event
     cursor.execute('''UPDATE %s SET event_name=%%s,event_date=%%s,start_time=%%s,end_time=%%s,event_location=%%s,
             event_description=%%s,event_type=%%s,event_image=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
             event_date,start_time,end_time,event_location,event_description,event_type,event_image,eventID))
+    mysql.connection.commit()
+
+    #update time stamp
+    cursor.execute('''SELECT NOW() + 0''')
+    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
     #rerender club page
@@ -528,7 +553,7 @@ def addCar():
         (driver_name,driver_email,num_seats_total, num_seats_available,depart_time,return_time,meeting_location,eventID))
     mysql.connection.commit()
 
-    #increment total cars for tracking
+    #increment total overall cars for tracking
     # cursor.execute('''UPDATE %s SET total_cars = total_cars + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
     # mysql.connection.commit()
 
@@ -536,8 +561,6 @@ def addCar():
     cursor.execute('''SELECT last_insert_id()''')
     results = cursor.fetchall()[0]
     carID = results['last_insert_id()']
-
-    # print("last id =" + str(carID))
 
     # Get depart_time,driver_email using carID
     cursor.execute('''SELECT depart_time,driver_email FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
@@ -560,7 +583,7 @@ def addCar():
     subject = 'Car Successfully Added!'
     sendEmail(driver_email,texts['html'],texts['text'],subject)
 
-    #reroute to home page -- TODO ideally we'd reroute back to the popup but might be complicated
+    #reroute to home page
     return index()
 
 #route when user clicks delete a car
@@ -619,39 +642,46 @@ def doDeleteCar(carID):
 #route when user clicks edit a car
 @app.route("/editCar",methods=["POST"])
 def editCar():
+
     #get which car
-    carID = request.args.get("q")
+    carID = request.form['carID']
+    print("carID = " + str(carID))
+
 
     #get form info
     driver_name = request.form['driver_name']
     driver_email = request.form['driver_email']
-    num_seats_total = request.form['num_seats_total']
+    num_seats_total = int(request.form['num_seats_total'])
     depart_time = request.form['depart_time']
     return_time = request.form['return_time']
     meeting_location = request.form['meeting_location']
+
+    print()
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
 
     # get num_seats taken
     cursor.execute('''SELECT num_seats_taken, num_seats_available FROM %s WHERE carID=%%s'''%(CAR_TABLE,),(carID,))
-    num_seats_taken = cursor.fetchall()[0]['num_seats_taken']
+    results = cursor.fetchall()[0]
+    num_seats_taken = results['num_seats_taken']
+    num_seats_available = results['num_seats_available']
 
-    if num_seats_taken > num_seats_taken:
-        #show an error and go back to unedited form?
+    if num_seats_taken > num_seats_total:
+        # show an error and go back to unedited form?
         print("still gotta do this")
     else:
         # otherwise reset number of seat available to total - taken
         num_seats_available = num_seats_total - num_seats_taken
 
-    #Update car
-    cursor.execute('''UPDATE %s SET driver_name=%%s,driver_email=%%s,num_seats_total=%%s,num_seats_available=%%s,depart_time=%%s,return_time=%%s,
-            meeting_location=%%s WHERE carID = %%s'''%(EVENT_TABLE,),(driver_name,driver_email,num_seats_total,num_seats_available, depart_time,return_time,meeting_location,carID))
-    mysql.connection.commit()
-
     #get eventID using carID
     cursor.execute('''SELECT eventID FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
     eventID = cursor.fetchall()[0]['eventID']
+
+    #Update car
+    cursor.execute('''UPDATE %s SET driver_name=%%s,driver_email=%%s,num_seats_total=%%s,num_seats_available=%%s,depart_time=%%s,return_time=%%s,
+            meeting_location=%%s WHERE carID = %%s'''%(CAR_TABLE,),(driver_name,driver_email,num_seats_total,num_seats_available, depart_time,return_time,meeting_location,carID))
+    mysql.connection.commit()
 
     #get event_name and date using eventID
     cursor.execute('''SELECT event_name, event_date FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
@@ -659,9 +689,11 @@ def editCar():
     event_name = results['event_name']
     date = results['event_date']
 
-    #format date and time from SQL
+    #format depart_time and return_time  from SQL
     date = formatDateFromSql(date)
-    depart_time = formatTimeFromSql(depart_time)
+    # depart_time_notString = time.strptime(depart_time, '%H:%M:%S')
+    # print(depart_time_notString)
+    # depart_time = formatTimeFromSql(depart_time_notString)
 
     #Notify driver that car has been added
     texts = editCarDriverText(event_name,date,depart_time)
@@ -778,6 +810,8 @@ def deletePassenger():
     #Get passengerID
     passengerID = request.args.get("id")
 
+    print("passengerID =" + str(passengerID))
+
     #instantiate cursor
     cursor = mysql.connection.cursor()
 
@@ -814,7 +848,14 @@ def deletePassenger():
     cursor.execute('''DELETE FROM %s where passengerID = %%s''' %(PASSENGER_TABLE,),(passengerID,))
     mysql.connection.commit()
 
-    #reroute to home page -- I DON'T THINK THIS IS WHAT WE WANT THO, GO BACK TO SPLIT SCREEN OF RIDES AND DESCRIPTION --
+    #increment number of available seats for specific car
+    cursor.execute('''UPDATE %s SET num_seats_available = num_seats_available + 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
+    mysql.connection.commit()
+    #decremement number of seats taken for specific car
+    cursor.execute('''UPDATE %s SET num_seats_taken = num_seats_taken - 1 WHERE carId = %%s'''%(CAR_TABLE,),(carID,))
+    mysql.connection.commit()
+
+    #reroute to home page
     return index()
 
 #returns a dict with the html and plain text versions of adding car email
@@ -1017,7 +1058,7 @@ def editCarPassText(event_name,date,time):
           <body>
             <p>Hello,<br><br>
                A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for the {event_name}.
-               Please visit ACTivism Hub and check that these details still work for your schedule. <br><br>
+               Please visit ACTivism Hub and check that this still work for your schedule. <br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -1028,7 +1069,7 @@ def editCarPassText(event_name,date,time):
         Hello,
 
         A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for the {event_name}.
-        Please visit ACTivism Hub and check that these details still work for your schedule. <br><br>
+        Please visit ACTivism Hub and check that this still work for your schedule. <br><br>
             
         Best,
         The ACTivism Hub Team
