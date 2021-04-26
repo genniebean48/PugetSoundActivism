@@ -274,23 +274,29 @@ events that are coming up in the next week. -->
 			hPass.append(breaker);
 		} else {
 			for( i = 0; i < car.passengers.length; i++ ) {
-				let passDiv = document.createElement("form");
+				let passDiv = document.createElement("div");
 				let labelInput = document.createElement("label");
 				labelInput.innerHTML = [i+1] + ": ";
 				let passInput = document.createElement("input");
 				passInput.value = car.passengers[ i ].passenger_name;
 				passInput.readOnly = true;
 				let deletePass = document.createElement( "button" );
-				deletePass.type = "submit"
 				deletePass.id = "delete-pass";
-				let passengerID = car.passengers[i].passengerID;
-				//document.getElementById("editCar-passengerID").value = car.passengers[i].passengerID
-				deletePass.onclick = function() {
-					let dltbtn = document.getElementById("dltPass");
-					dltbtn.value = car.passengers[i].passengerID;
-					dltbtn.click();
-				};
 				deletePass.innerHTML = "Delete";
+				console.log(car.passengers[i].passengerID);
+				let passengerID = car.passengers[i].passengerID;
+				deletePass.addEventListener('click', function(){
+					deletePassenger(passengerID);
+				});
+				//deletePass.onclick = function() {
+				//	console.log(car.passengers[i].passengerID);
+				//	hideRideShare();
+				//	//deletePassenger(passengerID);
+				//	//console.log(passengerID);
+				//	//let dltbtn = document.getElementById("dltPassID");
+				//	//dltbtn.value = car.passengers[i].passengerID;
+				//	////document.getElementById("dltPass").click();
+				//};
 				//passDiv.append(deletePass);
 				let breaker = document.createElement("br");
 				passDiv.append(labelInput);
@@ -341,7 +347,7 @@ events that are coming up in the next week. -->
 		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/deletePassenger()';
+			location.href = '/deletePassenger()?id=' + passengerID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();
@@ -628,11 +634,6 @@ events that are coming up in the next week. -->
 						type="submit"
 						value="Reserve Seat"
 						onclick="return verify(passenger_email.value)"/>
-
-				<input
-						type="submit"
-						id = "dltPass"
-						onclick="deletePassenger(value)"/>
 			</form>
 		</div>
 		<div id="modal-seats-editCar">
@@ -647,7 +648,7 @@ events that are coming up in the next week. -->
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
 			<form
-					action="/editCar"
+					action="/deletePassenger"
 					method="post">
 
 				<i
@@ -737,10 +738,10 @@ events that are coming up in the next week. -->
 						name="carID"
 						id="editCar-passengerID"/>
 
-				<input
-						type="submit"
-						value="Edit Car"
-						onclick="return verify(driver_email.value)"/>
+<!--				<input-->
+<!--						type="submit"-->
+<!--						value="Edit Car"-->
+<!--						onclick="return verify(driver_email.value)"/>-->
 			</form>
 		</div>
 	</div>

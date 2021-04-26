@@ -6,6 +6,22 @@
     {% block css_file %} {% endblock %}
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.min.css') }}"/>
     <script src="{{ url_for('static', filename='less.js') }}"></script>
+    <script>
+        /* Javascript function that displays the website stats and allows you to change the admin. */
+        function stats(){
+            const modal = document.getElementById("admin-modal");
+            modal.style.display = "block";
+            const textHome = document.getElementById("txt-homepage");
+            textHome.style.display = "none";
+        }
+        /* Javascript function that hides the website stats and admin forms. */
+        function hideStats(){
+            const modal = document.getElementById( "admin-modal" );
+            modal.style.display = "none";
+            const textHome = document.getElementById("txt-homepage");
+            textHome.style.display = "flex";
+        }
+    </script>
     {% block title %} {% endblock %}
 </head>
 
@@ -13,7 +29,7 @@
     <img src="{{ url_for('static', filename='images/0OdLUp3z.jpg') }}"/>
     <li id="title"> ACTivism Hub</li>
     <div class="links">
-        <a id="webstats" onclick="alert('{{stats}}')"> Website Stats </a>
+        <a id="webstats" onclick="stats()"> Admin </a>
         <a href="/"> Home </a>
         <div class="dropdown">
             <a id="clubs"> Clubs </a>
@@ -28,6 +44,27 @@
         {% else %}
             <a id="login" , href="/login"> Login </a>
         {% endif %}
+    </div>
+</div>
+
+<div id="admin-modal">
+    <div class="modal-content">
+        <div class="modal-stats" id="modal-cars"> </div>
+        <div id="modal-admin-description">
+            <button
+                    class="exit"
+                    onclick=hideStats()>
+                <i
+                        class="fa fa-times-circle fa-lg"
+                        aria-hidden="true"></i>
+            </button>
+            <h5> Rideshare</h5>
+            <p> Welcome to Ridesharing on the ACTivism Hub! Here you can grab a seat in a car or add your car to provide rides to others. If you need a ride,
+                take an available seat in any car! If you’re
+                driving to this event and have available seats, add your car to give others a ride! Please note that your name will be displayed on the website
+                if you are a driver or a passenger.
+            </p>
+        </div>
     </div>
 </div>
 {% block panel %} {% endblock %}
