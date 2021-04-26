@@ -280,11 +280,12 @@ events that are coming up in the next week. -->
 				let passInput = document.createElement("input");
 				passInput.value = car.passengers[ i ].passenger_name;
 				passInput.readOnly = true;
-				let deletePass = document.createElement( "button" );
-				deletePass.id = "delete-pass";
-				deletePass.innerHTML = "Delete";
-				console.log(car.passengers[i].passengerID);
-				let passengerID = car.passengers[i].passengerID;
+				//let deletePass = document.createElement( "button" );
+				//deletePass.id = "delete-pass";
+				//deletePass.innerHTML = "Delete";
+				//deletePass.style.disabled = true;
+				//console.log(car.passengers[i].passengerID);
+				//let passengerID = car.passengers[i].passengerID;
 				//deletePass.addEventListener('click', function(){
 				//	deletePassenger(passengerID);
 				//});
@@ -301,7 +302,7 @@ events that are coming up in the next week. -->
 				let breaker = document.createElement("br");
 				passDiv.append(labelInput);
 				passDiv.append(passInput);
-				passDiv.append(deletePass);
+				//passDiv.append(deletePass);
 				passDiv.append(breaker);
 				editPass.append(passDiv);
 			}
@@ -648,7 +649,7 @@ events that are coming up in the next week. -->
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
 			<form
-					action="/deletePassenger"
+					action="/editCar"
 					method="post">
 
 				<i
