@@ -42,6 +42,9 @@ IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 # CLUB_TABLE='club'
 # EVENT_TABLE='club_event'
 # ADMIN_TABLE='website_admin'
+# CAR_TABLE = 'rideShare_car'
+# PASSENGER_TABLE = 'rideShare_passenger'
+# TRACKING_TABLE = 'tracking'
 #for testing
 SERVER_NAME="http://localhost:5000"
 CLUB_TABLE ='testClub'
@@ -69,11 +72,11 @@ def addAdmin():
 
 def addManyaAdminInfo():
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT adminID from %s WHERE admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
-    adminID=cursor.fetchall()[0]['adminID']
+    cursor.execute('''SELECT web_adminID from %s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
+    adminID=cursor.fetchall()[0]['web_adminID']
     saltedPassword = "manyapassword" + salt
     password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-    cursor.execute('''UPDATE %s SET password=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
+    cursor.execute('''UPDATE %s SET password=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
     mysql.connection.commit()
 
 
@@ -193,7 +196,8 @@ def club_page():
 def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   return render_template("login.html",clubs=clubs,message=message)
+   stats=getStats()
+   return render_template("login.html",clubs=clubs,message=message,stats=stats)
 
 
 #Route when user clicks submit on login page
@@ -230,14 +234,18 @@ def do_login():
            return login_page("Incorrect password.")
    else:
        #check if admin
-       cursor.execute('''SELECT adminID, password FROM %s WHERE admin_email = %%s'''%(ADMIN_TABLE,),(user,))
+       cursor.execute('''SELECT web_adminID, password FROM %s WHERE web_admin_email = %%s'''%(ADMIN_TABLE,),(user,))
        result = cursor.fetchall()
        if len(result)==1:
             #salt and hash their inputted password
             saltedPassword = password + salt
             password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-            #if passwords matche
-            #if password == result[0]['password']:
+            #if passwords matches
+            if password == result[0]['password']:
+                session['admin_id']=result[0]['web_adminID']
+                return index()
+            else:
+                return login_page("Incorrect password.")
        else:
             return login_page(user+" is not associated with an account.")
 
@@ -245,8 +253,12 @@ def do_login():
 #Route when user clicks logout
 @app.route("/logout")
 def logout():
-   #remove session variable for clubID
-   session.pop('club_id',None)
+   #if club signed in
+   if 'club_id' in session:
+        session.pop('club_id',None)
+   #if admin signed in
+   else:
+        session.pop('admin_id',None)
    #reroute to home page
    return index()
 
@@ -259,7 +271,8 @@ def logout():
 def create_account(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   return render_template("create-account.html",clubs=clubs,message=message)
+   stats=getStats()
+   return render_template("create-account.html",clubs=clubs,message=message,stats=stats)
 
 
 #Route when user clicks submit on the create account page
@@ -270,9 +283,7 @@ def enter_account():
    #get form info
    club_email = request.form['clubEmail']
    club_name = request.form['club-name']
-#    admin_name = request.form['admin-name']
    about_info = request.form['club-description']
-#    admin_email = request.form['admin-email']
    password = request.form['password']
    club_email_display = request.form.get('club_email_display') != None
    #if email already associated with a club, display error and return
@@ -1226,7 +1237,8 @@ def verifyEmail():
 @app.route("/forgotPassword")
 def forgotPassword(message=""):
     clubs = getClubs()
-    return render_template("forgotPassword.html",clubs=clubs,message=message)
+    stats=getStats()
+    return render_template("forgotPassword.html",clubs=clubs,message=message,stats=stats)
 
 
 #When click reset password button in forgot password page
@@ -1276,7 +1288,8 @@ def resetPassword():
     #if passes, render a reset password page, pass in clubID
     if db_hash == hash:
         clubs = getClubs()
-        return render_template("resetPassword.html",clubs=clubs,clubID=clubID)
+        stats=getStats()
+        return render_template("resetPassword.html",clubs=clubs,clubID=clubID,stats=stats)
     else:
         return forgotPassword("Reset password via email failed")
 

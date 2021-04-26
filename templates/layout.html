@@ -41,7 +41,7 @@
                 {% endfor %}
             </div>
         </div>
-        {% if 'club_id' in session %}
+        {% if 'club_id' in session or 'admin_id' in session %}
             <a id="logout" , href="/logout"> Logout </a>
         {% else %}
             <a id="login" , href="/login"> Login </a>
