@@ -150,20 +150,19 @@ body {
   .modal-content {
     display: flex;
     flex-direction: row;
-    background-color: white;
+    background-color: #003249;
     margin: 8% auto;
     padding: 0px;
-    height: 80%;
-    width: 80%;
+    height: 60%;
+    width: 60%;
 
     .modal-stats {
       position: relative;
-      position: relative;
+      color: white;
+      background: #003249;
       width: 50%;
       height:100%;
-      background: white;
       margin-left: 10px;
-      margin-right: 10px;
       h5 {
         font-size: 24px;
         margin: 10px 10px 10px 10px;
@@ -174,11 +173,42 @@ body {
       display: flex;
       flex-direction: column;
       position: relative;
+      background: white;
       width: 50%;
       height:100%;
       background: white;
       margin-left: 10px;
-      margin-right: 10px;
+
+      form{
+        margin-left: 10px;
+      }
+
+      label {
+        margin-top: 5px;
+        padding-top: 5px;
+        width: 80%;
+      }
+
+      input {
+        border-radius: 6px;
+        padding: 8px;
+        width: 80%;
+        margin-bottom: 20px;
+      }
+
+      input[type = submit] {
+        width: 100px;
+        font-family: "Liberation sans";
+
+        &:hover {
+          background: darkgrey;
+        }
+      }
+
+      .fa-asterisk {
+        font-size: 0.5em;
+        width: 10px;
+      }
 
       h5 {
         font-size: 24px;
