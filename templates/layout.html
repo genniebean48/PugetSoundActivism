@@ -51,6 +51,21 @@
     <div class="admin-modal-content">
         <div class="modal-stats">
             <h5> Website Statistics </h5>
+            <p> &emsp; Current Stats: <br>
+                &emsp; &emsp; Current Total Clubs: {{stats['total_current_clubs']}}<br>
+                &emsp; &emsp; Current Total Events: {{stats['total_current_events']}}<br>
+                &emsp; &emsp; Current Total Cars: {{stats['total_current_cars']}}<br>
+                &emsp; &emsp; Current Total Passengers: {{stats['total_current_passengers']}}<br><br>
+            </p>
+            <p> &emsp; Overall Stats:<br>
+                &emsp; &emsp; Overall Total Clubs: {{stats['total_overall_clubs']}}<br>
+                &emsp; &emsp; Overall Total Events:  {{stats['total_overall_events']}}<br>
+                &emsp; &emsp; Overall Total Cars: {{stats['total_overall_cars']}}<br>
+                &emsp; &emsp; Overall Total Passengers: {{stats['total_overall_passengers']}}
+            </p>
+
+
+
         </div>
         <div id="modal-admin-description">
             <button
@@ -60,6 +75,7 @@
                         class="fa fa-times-circle fa-lg"
                         aria-hidden="true"></i>
             </button>
+
             <h5> Edit Admin </h5>
             <form action="/addCar" method="post">
                 <i class="fa fa-asterisk"
