@@ -6,6 +6,22 @@
     {% block css_file %} {% endblock %}
     <link rel="stylesheet/less" type="text/css" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.min.css') }}"/>
     <script src="{{ url_for('static', filename='less.js') }}"></script>
+    <script>
+        /* Javascript function that displays the website stats and allows you to change the admin. */
+        function stats(){
+            const modal = document.getElementById("admin-modal");
+            modal.style.display = "block";
+            const textHome = document.getElementById("txt-homepage");
+            textHome.style.display = "none";
+        }
+        /* Javascript function that hides the website stats and admin forms. */
+        function hideStats(){
+            const modal = document.getElementById( "admin-modal" );
+            modal.style.display = "none";
+            const textHome = document.getElementById("txt-homepage");
+            textHome.style.display = "flex";
+        }
+    </script>
     {% block title %} {% endblock %}
 </head>
 
@@ -14,7 +30,7 @@
     <li id="title"> ACTivism Hub</li>
     <div class="links">
         {% if 'admin_id' in session %}
-            <a id="webstats" onclick='alert("Here are the Stats: {{stats}}")'> Website Stats </a>
+        <a id="webstats" onclick="stats()"> Admin </a>
         {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">
@@ -30,6 +46,97 @@
         {% else %}
             <a id="login" , href="/login"> Login </a>
         {% endif %}
+    </div>
+</div>
+
+<div id="admin-modal">
+    <div class="admin-modal-content">
+        <div class="modal-stats">
+            <h5> Website Statistics </h5>
+            <p> &emsp; Current Stats: <br>
+                &emsp; &emsp; Current Total Clubs: {{stats['total_current_clubs']}}<br>
+                &emsp; &emsp; Current Total Events: {{stats['total_current_events']}}<br>
+                &emsp; &emsp; Current Total Cars: {{stats['total_current_cars']}}<br>
+                &emsp; &emsp; Current Total Passengers: {{stats['total_current_passengers']}}<br><br>
+            </p>
+            <p> &emsp; Overall Stats:<br>
+                &emsp; &emsp; Overall Total Clubs: {{stats['total_overall_clubs']}}<br>
+                &emsp; &emsp; Overall Total Events:  {{stats['total_overall_events']}}<br>
+                &emsp; &emsp; Overall Total Cars: {{stats['total_overall_cars']}}<br>
+                &emsp; &emsp; Overall Total Passengers: {{stats['total_overall_passengers']}}
+            </p>
+
+
+
+        </div>
+        <div id="modal-admin-description">
+            <button
+                    class="exit"
+                    onclick=hideStats()>
+                <i
+                        class="fa fa-times-circle fa-lg"
+                        aria-hidden="true"></i>
+            </button>
+
+            <h5> Edit Admin </h5>
+            <form action="/addCar" method="post">
+                <i class="fa fa-asterisk"
+                   aria-hidden="true"></i>
+                <label for="admin_email">Admin Name:</label>
+                <br>
+                <input
+                        type="text"
+                        id="admin_name"
+                        placeholder="Admin Name"
+                        maxLength="255"
+                        required>
+                <br>
+                <i class="fa fa-asterisk"
+                   aria-hidden="true"></i>
+                <label for="admin_email">Admin Email:</label>
+                <br>
+                <input
+                        type="text"
+                        id="admin_email"
+                        placeholder="Admin Email"
+                        maxLength="255"
+                        required>
+                <br>
+                <i class="fa fa-asterisk"
+                   aria-hidden="true"></i>
+                <label for="admin_password">Admin Password:</label>
+                <br>
+                <input
+                        type="text"
+                        id="admin_password"
+                        placeholder="Admin Password"
+                        maxLength="255"
+                        required>
+                <br>
+                <i class="fa fa-asterisk"
+                   aria-hidden="true"></i>
+                <label for="admin_email">New Admin Name:</label>
+                <br>
+                <input
+                        type="text"
+                        id="new_admin_name"
+                        placeholder="New Admin Name"
+                        maxLength="255"
+                        required>
+                <br>
+                <i class="fa fa-asterisk"
+                   aria-hidden="true"></i>
+                <label for="new_admin_email">New Admin Email:</label>
+                <br>
+                <input
+                        type="text"
+                        id="new_admin_email"
+                        placeholder="New Admin Email"
+                        maxLength="255"
+                        required>
+                <br>
+            </form>
+        </div>
     </div>
 </div>
 {% block panel %} {% endblock %}
