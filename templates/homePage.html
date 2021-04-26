@@ -310,21 +310,17 @@ events that are coming up in the next week. -->
 
 		editModal.append(editPass);
 		let departTime;
-		console.log(departTime);
 		if(car.depart_time.split(":")[0] < 10){
 			departTime = "0" + car.depart_time;
 		}else{
 			departTime = car.depart_time;
 		}
-
 		let returnTime;
-		console.log(returnTime);
 		if(car.return_time.split(":")[0] < 10){
 			returnTime = "0" + car.return_time;
 		}else{
 			returnTime = car.return_time;
 		}
-
 		let editDepartTime = document.getElementById("edit-depart_time");
 		editDepartTime.value = departTime;
 		let editReturnTime = document.getElementById("edit-return_time");
@@ -743,10 +739,10 @@ events that are coming up in the next week. -->
 						name="carID"
 						id="editCar-passengerID"/>
 
-<!--				<input-->
-<!--						type="submit"-->
-<!--						value="Edit Car"-->
-<!--						onclick="return verify(driver_email.value)"/>-->
+				<input
+						type="submit"
+						value="Edit Car"
+						onclick="return verify(driver_email.value)"/>
 			</form>
 		</div>
 	</div>
