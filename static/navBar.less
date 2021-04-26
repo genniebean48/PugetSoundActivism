@@ -153,7 +153,7 @@ body {
     background-color: #003249;
     margin: 8% auto;
     padding: 0px;
-    height: 60%;
+    height: 65%;
     width: 60%;
 
     .modal-stats {
@@ -178,6 +178,34 @@ body {
       height:100%;
       background: white;
       margin-left: 10px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+
+      /* width */
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      /* Track */
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 6px;
+      }
+
+      /* Handle */
+
+      &::-webkit-scrollbar-thumb {
+        background: darkgrey;
+        height: 20px;
+      }
+
+      /* Handle on hover */
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
 
       form{
         margin-left: 10px;
