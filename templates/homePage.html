@@ -301,16 +301,29 @@ events that are coming up in the next week. -->
 				let passInput = document.createElement("input");
 				passInput.value = car.passengers[ i ].passenger_name;
 				passInput.readOnly = true;
-				let deletePass = document.createElement( "button" );
-				deletePass.id = "delete-pass";
-				let passengerID = car.passengers[i].passengerID;
-				deletePass.onclick = function() { deletePassenger( passengerID ) };
-				deletePass.innerHTML = "Delete";
+				//let deletePass = document.createElement( "button" );
+				//deletePass.id = "delete-pass";
+				//deletePass.innerHTML = "Delete";
+				//deletePass.style.disabled = true;
+				//console.log(car.passengers[i].passengerID);
+				//let passengerID = car.passengers[i].passengerID;
+				//deletePass.addEventListener('click', function(){
+				//	deletePassenger(passengerID);
+				//});
+				//deletePass.onclick = function() {
+				//	console.log(car.passengers[i].passengerID);
+				//	hideRideShare();
+				//	//deletePassenger(passengerID);
+				//	//console.log(passengerID);
+				//	//let dltbtn = document.getElementById("dltPassID");
+				//	//dltbtn.value = car.passengers[i].passengerID;
+				//	////document.getElementById("dltPass").click();
+				//};
 				//passDiv.append(deletePass);
 				let breaker = document.createElement("br");
 				passDiv.append(labelInput);
 				passDiv.append(passInput);
-				passDiv.append(deletePass);
+				//passDiv.append(deletePass);
 				passDiv.append(breaker);
 				editPass.append(passDiv);
 			}
