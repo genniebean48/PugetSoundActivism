@@ -114,7 +114,7 @@ def getStats():
     cursor = mysql.connection.cursor()
 
     #get current totals
-    cursor.execute('''SELECT count(*) AS total_current_clubs FROM %s''' %(CLUB_TABLE,))
+    cursor.execute('''SELECT count(*) AS total_current_clubs FROM %s WHERE email_activated = 1''' %(CLUB_TABLE,))
     results = cursor.fetchall()[0]
     total_current_clubs = results['total_current_clubs']
 
