@@ -141,17 +141,21 @@ def getStats():
     #render homepage with stats
     #add to line 16 grabbing variable
 
-    stats = """Current Stats:""" #\nCurrent Total Clubs: %s """% (total_current_clubs)
-    #    Current Total Events: %s
-     #    Current Total Cars: %s
-     #    Current Total Passengers: %s
-     #
-     # Overall Stats:
-     #     Overall Total Clubs: %s
-     #     Overall Total Events: %s
-     #     Overall Total Cars: %s
-     #     Overall Total Passengers: %s"""
-     #     % (total_current_clubs, total_current_events, total_current_cars,total_current_passengers,total_overall_clubs,total_overall_events,total_overall_cars,total_overall_passengers)
+    stats = {"total_current_clubs":total_current_clubs, "total_current_events":total_current_events,"total_current_cars":total_current_cars,
+             "total_current_passengers":total_current_passengers,"total_overall_clubs":total_overall_clubs,"total_overall_events":total_overall_events,
+             "total_overall_cars":total_overall_cars,"total_overall_passengers":total_overall_passengers}
+
+    # Current Stats:\n
+    #     \tCurrent Total Clubs:        %s\n
+    #     \tCurrent Total Events:       %s\n
+    #     \tCurrent Total Cars:         %s\n
+    #     \tCurrent Total Passengers:   %s\n\n
+    #
+    #  Overall Stats:\n
+    #      \tOverall Total Clubs:       %s\n
+    #      \tOverall Total Events:      %s\n
+    #      \tOverall Total Cars:        %s\n
+    #      \tOverall Total Passengers:  %s'''
 
     return stats
 
@@ -642,11 +646,8 @@ def doDeleteCar(carID):
 #route when user clicks edit a car
 @app.route("/editCar",methods=["POST"])
 def editCar():
-
     #get which car
     carID = request.form['carID']
-    print("carID = " + str(carID))
-
 
     #get form info
     driver_name = request.form['driver_name']
@@ -655,8 +656,6 @@ def editCar():
     depart_time = request.form['depart_time']
     return_time = request.form['return_time']
     meeting_location = request.form['meeting_location']
-
-    print()
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
@@ -691,8 +690,6 @@ def editCar():
 
     #format depart_time and return_time  from SQL
     date = formatDateFromSql(date)
-    # depart_time_notString = time.strptime(depart_time, '%H:%M:%S')
-    # print(depart_time_notString)
     depart_time = formatTimeFromSql(depart_time)
 
     #Notify driver that car has been added
