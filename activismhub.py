@@ -138,24 +138,9 @@ def getStats():
     total_overall_cars = results['total_cars']
     total_overall_passengers = results['total_passengers']
 
-    #render homepage with stats
-    #add to line 16 grabbing variable
-
     stats = {"total_current_clubs":total_current_clubs, "total_current_events":total_current_events,"total_current_cars":total_current_cars,
              "total_current_passengers":total_current_passengers,"total_overall_clubs":total_overall_clubs,"total_overall_events":total_overall_events,
              "total_overall_cars":total_overall_cars,"total_overall_passengers":total_overall_passengers}
-
-    # Current Stats:\n
-    #     \tCurrent Total Clubs:        %s\n
-    #     \tCurrent Total Events:       %s\n
-    #     \tCurrent Total Cars:         %s\n
-    #     \tCurrent Total Passengers:   %s\n\n
-    #
-    #  Overall Stats:\n
-    #      \tOverall Total Clubs:       %s\n
-    #      \tOverall Total Events:      %s\n
-    #      \tOverall Total Cars:        %s\n
-    #      \tOverall Total Passengers:  %s'''
 
     return stats
 
