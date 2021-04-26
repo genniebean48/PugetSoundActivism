@@ -211,14 +211,6 @@ events that are coming up in the next week. -->
 	/* Javascript Function that deletes a car from the event. When the user clicks on the button, it will ask the user
 	* if they actually want to delete the car. If the user clicks "ok" then the function will run otherwise the ride share
 	* modal will be hidden and the user can start over. */
-	function deleteCar( carID ) {
-		let response = window.confirm( "Do you want to delete this car?" );
-		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the car
-			location.href = '/deleteCar?id=' + carID;
-		} else {
-			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			hideRideShare();
 	function deleteCar( carID, hasPassengers ) {
 		if( hasPassengers === 0 ) {
 		<!--	if the car has no passengers -->
@@ -345,26 +337,15 @@ events that are coming up in the next week. -->
 		editMeetLoca.value = car.meeting_location;
 	}
 
-
-	function editCarSubmit( carID ){
-		let response = window.confirm( "Do you want to edit this car?");
-		if( response === true ) {
-			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/editCar?id=' + carID;
-		} else {
-			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			hideRideShare();
-		}
-	}
-
 	/* Javascript Function that will take care of deleting a passenger from a car. In order to delete the passenger, the user
 	* will need to click on the delete passenger button in the editCar modal. The user will then be able to click on the ok button to
 	* delete the passenger or will click cancel and the rideshare modal will be hidden in order for the user to then start over. */
+
 	function deletePassenger( passengerID ){
 		let response = window.confirm( "Do you want to delete this passenger?");
 		if( response === true ) {
 			//if the user clicks ok and therefore wants to delete the passenger
-			location.href = '/deletePassenger()';
+			location.href = '/deletePassenger()?id=' + passengerID;
 		} else {
 			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
 			hideRideShare();

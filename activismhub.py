@@ -686,8 +686,6 @@ def editCar():
 
     #format depart_time and return_time  from SQL
     date = formatDateFromSql(date)
-    # depart_time_notString = time.strptime(depart_time, '%H:%M:%S')
-    # print(depart_time_notString)
     depart_time = formatTimeFromSql(depart_time)
 
     #Notify driver that car has been added
