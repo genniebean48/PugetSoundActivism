@@ -285,14 +285,14 @@ events that are coming up in the next week. -->
 		let editPass = document.createElement("div");
 		editPass.className = "edit-pass";
 		let hPass = document.createElement( "label" );
-		hPass.innerHTML = "Passengers:\n";
+		//hPass.innerHTML = "Passengers:\n";
 		hPass.className = "delete-passenger";
 		editPass.append(hPass);
 		editModal.append(hPass);
 		if( car.passengers.length === 0 ) {
-			hPass.innerHTML += ' reserve a seat by clicking the save seat button <br />';
-			let breaker = document.createElement("br");
-			hPass.append(breaker);
+			//hPass.innerHTML += ' reserve a seat by clicking the save seat button <br />';
+			//let breaker = document.createElement("br");
+			//hPass.append(breaker);
 		} else {
 			for( i = 0; i < car.passengers.length; i++ ) {
 				let passDiv = document.createElement("div");
@@ -745,14 +745,9 @@ events that are coming up in the next week. -->
 						id="editCar-carID"/>
 
 				<input
-						type="hidden"
-						name="carID"
-						id="editCar-passengerID"/>
-
-<!--				<input-->
-<!--						type="submit"-->
-<!--						value="Edit Car"-->
-<!--						onclick="return verify(driver_email.value)"/>-->
+						type="submit"
+						value="Edit Car"
+						onclick="return verify(driver_email.value)"/>
 			</form>
 		</div>
 	</div>
