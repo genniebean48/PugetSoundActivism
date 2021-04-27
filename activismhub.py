@@ -302,8 +302,8 @@ def enter_account():
 
 
    #get current time stamp
-   cursor.execute('''SELECT NOW() + 0''')
-   time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+   cursor.execute('''SELECT NOW()''')
+   time_last_edited = cursor.fetchall()[0]['NOW()']
 
    #Insert new account info into club table
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
@@ -368,8 +368,8 @@ def updateClub():
         club_image = cursor.fetchall()[0]['club_image']
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
 
     #Put new info in database
     cursor.execute('''UPDATE %s SET club_name=%%s,about_info=%%s,meet_time=%%s,meet_day=%%s,meet_location=%%s,
@@ -442,8 +442,8 @@ def addEvent():
     mysql.connection.commit()
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
     cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
@@ -538,8 +538,8 @@ def updateEvent():
     mysql.connection.commit()
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
     cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
@@ -1134,6 +1134,20 @@ def formatTimeFromSql(sqlTime):
         hours=hours-12
         ampm='PM'
     return str(hours)+":"+str(min)+" "+ampm
+
+#format last edited timestamp for display
+def formatLastEdited (time_last_edited):
+    time_last_edited = str(time_last_edited)
+    dateAndTime = time_last_edited.split(' ')
+    date = dateAndTime[0]
+    time = dateAndTime[1]
+
+    formattedDate = formatDateFromSql2(date)
+    formattedTime = formatTimeFromSql(time)
+
+    return {'formattedDate':formattedDate,'formattedTime':formattedTime}
+
+
 
 ########################################################################################################################
 ##########General Email Functions#######################################################################################
