@@ -181,6 +181,7 @@ def club_page():
    if info['meet_time']!=None:
        info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
    #Get list of dicts of clubs
+   #info['time_last_edited_formatted']=formatDateFromSql2(info['time_last_edited'])
    clubs = getClubs()
 
    stats = getStats()
@@ -1106,6 +1107,9 @@ def formatDateFromSql(sqlDate):
     month = sqlDate.month
     day = sqlDate.day
     return months[month-1]+" "+str(day)+", "+str(year)
+
+def formatDateFromSql2(date):
+    return str(date[4:6])+"/"+str(date[6:8])+"/"+str(date[0:4])
 
 
 #formats times
