@@ -184,7 +184,8 @@ def club_page():
 def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   return render_template("login.html",clubs=clubs,message=message)
+   stats = getStats()
+   return render_template("login.html",clubs=clubs,message=message, stats=stats)
 
 
 #Route when user clicks submit on login page
@@ -207,6 +208,7 @@ def do_login():
        #hash inputted password
        saltedPassword = password + salt
        password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+       print (password)
        #authentication
        if password == correct_password:
            if active ==1:
