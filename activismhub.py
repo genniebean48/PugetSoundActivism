@@ -42,6 +42,9 @@ IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 # CLUB_TABLE='club'
 # EVENT_TABLE='club_event'
 # ADMIN_TABLE='website_admin'
+# CAR_TABLE = 'rideShare_car'
+# PASSENGER_TABLE = 'rideShare_passenger'
+# TRACKING_TABLE = 'tracking'
 #for testing
 SERVER_NAME="http://localhost:5000"
 CLUB_TABLE ='testClub'
@@ -66,6 +69,15 @@ def addAdmin():
    cursor = mysql.connection.cursor()
    cursor.execute('''INSERT INTO website_admin (web_admin_name,web_admin_email) VALUES ("Manya","manyam686@gmail.com")''')
    mysql.connection.commit()
+
+def addManyaAdminInfo():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT web_adminID from %s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
+    adminID=cursor.fetchall()[0]['web_adminID']
+    saltedPassword = "manyapassword" + salt
+    password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+    cursor.execute('''UPDATE %s SET password=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
+    mysql.connection.commit()
 
 
 ########################################################################################################################
@@ -208,7 +220,6 @@ def do_login():
        #hash inputted password
        saltedPassword = password + salt
        password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-       print (password)
        #authentication
        if password == correct_password:
            if active ==1:
@@ -222,14 +233,32 @@ def do_login():
            #if password incorrect, reload login page
            return login_page("Incorrect password.")
    else:
-       return login_page(user+" is not associated with an account.")
+       #check if admin
+       cursor.execute('''SELECT web_adminID, password FROM %s WHERE web_admin_email = %%s'''%(ADMIN_TABLE,),(user,))
+       result = cursor.fetchall()
+       if len(result)==1:
+            #salt and hash their inputted password
+            saltedPassword = password + salt
+            password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+            #if passwords matches
+            if password == result[0]['password']:
+                session['admin_id']=result[0]['web_adminID']
+                return index()
+            else:
+                return login_page("Incorrect password.")
+       else:
+            return login_page(user+" is not associated with an account.")
 
 
 #Route when user clicks logout
 @app.route("/logout")
 def logout():
-   #remove session variable for clubID
-   session.pop('club_id',None)
+   #if club signed in
+   if 'club_id' in session:
+        session.pop('club_id',None)
+   #if admin signed in
+   else:
+        session.pop('admin_id',None)
    #reroute to home page
    return index()
 
@@ -242,7 +271,8 @@ def logout():
 def create_account(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   return render_template("create-account.html",clubs=clubs,message=message)
+   stats=getStats()
+   return render_template("create-account.html",clubs=clubs,message=message,stats=stats)
 
 
 #Route when user clicks submit on the create account page
@@ -253,9 +283,7 @@ def enter_account():
    #get form info
    club_email = request.form['clubEmail']
    club_name = request.form['club-name']
-#    admin_name = request.form['admin-name']
    about_info = request.form['club-description']
-#    admin_email = request.form['admin-email']
    password = request.form['password']
    club_email_display = request.form.get('club_email_display') != None
    #if email already associated with a club, display error and return
@@ -278,7 +306,7 @@ def enter_account():
 
    #Insert new account info into club table
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
-       time_last_edited) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
+       email_activated,time_last_edited) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,0,%%s)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
        club_email_display,activation_hash,time_last_edited))
 
    #send request for account to admin
@@ -501,7 +529,6 @@ def updateEvent():
     else:
         cursor.execute('''SELECT event_image FROM %s WHERE eventID=%%s'''%(EVENT_TABLE,),(eventID,))
         event_image = cursor.fetchall()[0]['event_image']
-
 
     #Update event
     cursor.execute('''UPDATE %s SET event_name=%%s,event_date=%%s,start_time=%%s,end_time=%%s,event_location=%%s,
@@ -1053,7 +1080,7 @@ def editCarPassText(event_name,time, date):
         Hello,
 
         A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for {event_name}.
-        Please visit ACTivism Hub and check that this still works with your schedule. 
+        Please visit ACTivism Hub and check that this still works with your schedule.
             
         Best,
         The ACTivism Hub Team
@@ -1147,14 +1174,14 @@ def verifyEmailText(email,hash):
     link=f"{SERVER_NAME}/verifyEmail?e={email}&h={hash}"
     html=f"""\
         <html>
-          <body>
-            <p>Hello,<br><br>
-               Welcome to ACTivism Hub!<br>
-               Please verify your email by clicking <a href={link}>here</a>.<br><br>
-               Best,<br>
-               The ACTivism Hub Team
-            </p>
-          </body>
+            <body>
+                <p>Hello,<br><br>
+                    Welcome to ACTivism Hub!<br>
+                    Please verify your email by clicking <a href={link}>here</a>.<br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
         </html>
         """
     text = f"""\
@@ -1209,7 +1236,8 @@ def verifyEmail():
 @app.route("/forgotPassword")
 def forgotPassword(message=""):
     clubs = getClubs()
-    return render_template("forgotPassword.html",clubs=clubs,message=message)
+    stats=getStats()
+    return render_template("forgotPassword.html",clubs=clubs,message=message,stats=stats)
 
 
 #When click reset password button in forgot password page
@@ -1219,18 +1247,22 @@ def preparePasswordReset():
    club_email=request.form['club_email']
    #Get clubID for that email
    cursor = mysql.connection.cursor()
-   cursor.execute('''SELECT clubID, activation_hash FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
+   cursor.execute('''SELECT clubID, activation_hash, club_approved FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
    result = cursor.fetchall()
    #if that email isn't in the database
    if len(result) == 0:
         return forgotPassword(club_email+" is not associated with an account.")
-   #Prepare text and send email
+   #check if club approved
    clubID=result[0]['clubID']
-   activation_hash = result[0]['activation_hash']
-   texts = resetPasswordText(club_email,activation_hash)
-   sendEmail(club_email,texts['html'],texts['text'],"Reset your password")
-   #TODO - where to return when email sent? Add pop up
-   return index("An email has been sent to "+club_email+" with a reset link.")
+   if result[0]['club_approved']:
+       #Prepare text and send email
+       activation_hash = result[0]['activation_hash']
+       texts = resetPasswordText(club_email,activation_hash)
+       sendEmail(club_email,texts['html'],texts['text'],"Reset your password")
+       #TODO - where to return when email sent? Add pop up
+       return index("An email has been sent to "+club_email+" with a reset link.")
+   else:
+      return forgotPassword(club_email+" has not yet been approved to make an account.")
 
 
 #route for link clicked in email
@@ -1255,7 +1287,8 @@ def resetPassword():
     #if passes, render a reset password page, pass in clubID
     if db_hash == hash:
         clubs = getClubs()
-        return render_template("resetPassword.html",clubs=clubs,clubID=clubID)
+        stats=getStats()
+        return render_template("resetPassword.html",clubs=clubs,clubID=clubID,stats=stats)
     else:
         return forgotPassword("Reset password via email failed")
 
@@ -1266,15 +1299,28 @@ def doPasswordReset():
     #get info from form
     password = request.form['password']
     clubID = request.form['clubID']
-    #hash password
-    saltedPassword = password + salt
-    password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-    #update password in database, set club to active if not already (this counts as email verification)
+
     cursor = mysql.connection.cursor()
-    cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(password,clubID))
-    mysql.connection.commit()
-    #render login page
-    return login_page("Password successfully reset.")
+
+    #check if club approved
+    cursor.execute('''SELECT club_approved,club_email FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+    result = cursor.fetchall()
+    #if no club with that id
+    if len(result)==0:
+        return forgotPassword(result[0]['club_email']+" is not associated with an account.")
+    #if club approved
+    club_approved=result[0]['club_approved']
+    if club_approved:
+        #hash password
+        saltedPassword = password + salt
+        password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+        #update password in database, set club to active if not already (this counts as email verification)
+        cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(password,clubID))
+        mysql.connection.commit()
+        #render login page
+        return login_page("Password successfully reset.")
+    else:
+        return login_page(result[0]['club_email']+" has not yet been approved to make an account.")
 
 
 #returns a dict with the html and plain text versions of a reset password email
@@ -1369,8 +1415,11 @@ def requestApprovalTexts(club_info):
 def approveClub():
     #get clubID
     clubID=request.args.get('id')
-    #get info for that club
+    #set as approved
     cursor = mysql.connection.cursor()
+    cursor.execute('''UPDATE %s SET club_approved=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+    mysql.connection.commit()
+    #get info for that club
     cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     club_info = cursor.fetchall()[0]
     #send verification email
@@ -1387,27 +1436,31 @@ def approveClub():
 
 @app.route("/denyClub")
 def denyClub():
-    #NOTE - add check for if club already approved?
     #get clubID
     clubID=request.args.get('id')
-    #get admin email
+    #check if club was already approved
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT web_admin_email FROM %s'''%(ADMIN_TABLE))
-    #NOTE - this assumes there is one, and only gets the first one - is this what we want??
-    admin_email=cursor.fetchall()[0]['web_admin_email']
     #get info for club
     cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     #NOTE- add check? Would only trigger if they approved club, the club deleted itself, then they clicked deny
     club_info = cursor.fetchall()[0]
-    #remove club from database
-    cursor.execute('''DELETE FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID))
-    cursor.connection.commit()
-    #send email to club informing them of denial
-    texts=clubDeniedTexts(admin_email)
-    sendEmail(club_info['club_email'],texts['html'],texts['text'],"Request to make club account denied")
-    #load home page with message that club was denied
-    return index(club_info['club_name']+'''\'s request to make an account was denied. An email has been sent to the club
-        to inform them of their denial.''')
+    club_approved=club_info['club_approved']
+    if not club_approved:
+        #get admin email
+        cursor.execute('''SELECT web_admin_email FROM %s'''%(ADMIN_TABLE))
+        #NOTE - this assumes there is one, and only gets the first one - is this what we want??
+        admin_email=cursor.fetchall()[0]['web_admin_email']
+        #remove club from database
+        cursor.execute('''DELETE FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID))
+        cursor.connection.commit()
+        #send email to club informing them of denial
+        texts=clubDeniedTexts(admin_email)
+        sendEmail(club_info['club_email'],texts['html'],texts['text'],"Request to make club account denied")
+        #load home page with message that club was denied
+        return index(club_info['club_name']+'''\'s request to make an account was denied. An email has been sent to the club
+            to inform them of their denial.''')
+    else:
+        return index("Denial failed. "+club_info['club_name']+" was previously approved.")
 
 
 #Prepares text for emails if club was denied an account

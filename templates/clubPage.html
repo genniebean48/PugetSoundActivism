@@ -296,7 +296,7 @@ times and places, and then finally the social media links with the icons. This p
           <p>{{info['club_email']}}</p>
           {% endif %} {% if info['facebook_link']!=None %}
           <a
-            href={{info['facebook_link']}},
+            href={{info['facebook_link']}}
             target="_blank">
             <i
               class="fa fa-facebook-official"
@@ -304,7 +304,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %} {% if info['instagram_link']!=None %}
           <a
-            href={{info['instagram_link']}},
+            href={{info['instagram_link']}}
             target="_blank">
             <i
               class="fa fa-instagram"
@@ -312,7 +312,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %} {% if info['twitter_link']!=None %}
           <a
-            href={{info['twitter_link']}},
+            href={{info['twitter_link']}}
             target="_blank">
             <i
               class="fa fa-twitter-square"
@@ -320,7 +320,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %} {% if info['website_link']!=None %}
           <a
-            href={{info['website_link']}},
+            href={{info['website_link']}}
             target="_blank">
             <i
               class="fa fa-external-link"
@@ -328,6 +328,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %}
         </ul>
+        <p id="date">Last Updated: 01/02/2021</p>
       </div>
     </div>
     <div id="add-event-panel">

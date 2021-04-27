@@ -29,7 +29,9 @@
     <img src="{{ url_for('static', filename='images/0OdLUp3z.jpg') }}"/>
     <li id="title"> ACTivism Hub</li>
     <div class="links">
+        {% if 'admin_id' in session %}
         <a id="webstats" onclick="stats()"> Admin </a>
+        {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">
             <a id="clubs"> Clubs </a>
@@ -39,7 +41,7 @@
                 {% endfor %}
             </div>
         </div>
-        {% if 'club_id' in session %}
+        {% if 'club_id' in session or 'admin_id' in session %}
             <a id="logout" , href="/logout"> Logout </a>
         {% else %}
             <a id="login" , href="/login"> Login </a>
