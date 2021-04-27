@@ -79,6 +79,24 @@ def addManyaAdminInfo():
     cursor.execute('''UPDATE %s SET password=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
     mysql.connection.commit()
 
+def fixActivatedApproved():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''UPDATE %s SET email_activated=1,club_approved=1'''%('club',))
+    mysql.connection.commit()
+
+def hashPasswords():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT password, clubID FROM %s'''%('club',))
+    results = cursor.fetchall()
+    for result in results:
+        saltedPassword = result['password'] + salt
+        password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+        cursor.execute('''UPDATE %s SET password=%%s WHERE clubID=%%s'''%('club',),(password,result['clubID']))
+        mysql.connection.commit()
+
+
+
+
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -1141,8 +1159,12 @@ def formatTimeFromSql(sqlTime):
 #Sends an email with the given html and plain text messages and subject to the given email
 #from activismhub@gmail.com
 def sendEmail(receiver_email,html_text,plain_text,subject):
-    sender_email='activismhub@gmail.com'
-    password = 'cscap7285!' #Need to figure out how to do this more securely
+#    sender_email='activismhub@gmail.com'
+#    password = 'cscap7285!' #Need to figure out how to do this more securely
+    smtp_server="webmail.pugetsound.edu"
+    port = 587
+    sender_email='smcgough@pugetsound.edu'
+    password='Cinealtas14'
 
     message = MIMEMultipart('alternative')
     message['Subject']=subject
@@ -1160,7 +1182,7 @@ def sendEmail(receiver_email,html_text,plain_text,subject):
 
     # Create secure connection with server and send email
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
         server.login(sender_email, password)
         server.sendmail(
             sender_email, receiver_email, message.as_string()
