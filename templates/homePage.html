@@ -280,8 +280,8 @@ events that are coming up in the next week. -->
 		editDriverName.value = car.driver_name;
 		let editDriverEmail = document.getElementById("edit-driver_email");
 		editDriverEmail.value = car.driver_email;
-		let editNumSeats = document.getElementById("edit-num_seats");
-		editNumSeats.value = car.num_seats_total;
+		//let editNumSeats = document.getElementById("edit-num_seats");
+		//editNumSeats.value = car.num_seats_total;
 		let editPass = document.createElement("div");
 		editPass.className = "edit-pass";
 
@@ -421,24 +421,21 @@ events that are coming up in the next week. -->
 			<h5>{{event['club_name']}}</h5>
 			<div class="specific-info">
 				<h5>
-					<i
-							class="fa fa-calendar"
-							aria-hidden="true"></i>
+					<i class="fa fa-calendar"
+					   aria-hidden="true"></i>
 					{{event['event_date_formatted']}}
 				</h5>
 				<h5>
-					<i
-							class="fa fa-clock-o"
-							aria-hidden="true"></i>
+					<i class="fa fa-clock-o"
+					   aria-hidden="true"></i>
 					{{event['start_time_formatted']}}-{{event['end_time_formatted']}}
 				</h5>
 			</div>
 
 			<div class="location-info">
 				<h5>
-					<i
-							class="fa fa-map-pin"
-							aria-hidden="true"></i>
+					<i class="fa fa-map-pin"
+					   aria-hidden="true"></i>
 					{{event['event_location']}}
 				</h5>
 				<button
@@ -660,6 +657,8 @@ events that are coming up in the next week. -->
 
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
+			<p> If you want to edit the number of seats in your car, we ask that you delete your car and
+			make a new one. Passengers will be notified that they need to find a new ride. </p>
 			<form
 					action="/editCar"
 					method="post">
@@ -692,17 +691,17 @@ events that are coming up in the next week. -->
 						required>
 				<br>
 
-				<i
-						class="fa fa-asterisk"
-						aria-hidden="true"></i>
-				<label for="num_seats">Number of Seats:</label>
-				<br>
-				<input
-						type="number"
-						id="edit-num_seats"
-						name="num_seats_total"
-						required>
-				<br>
+<!--				<i-->
+<!--						class="fa fa-asterisk"-->
+<!--						aria-hidden="true"></i>-->
+<!--				<label for="num_seats">Number of Seats:</label>-->
+<!--				<br>-->
+<!--				<input-->
+<!--						type="number"-->
+<!--						id="edit-num_seats"-->
+<!--						name="num_seats_total"-->
+<!--						required>-->
+<!--				<br>-->
 
 				<div id="passengersDel"></div>
 
