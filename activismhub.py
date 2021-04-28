@@ -300,10 +300,9 @@ def enter_account():
    #Create activation hash
    activation_hash = secrets.token_urlsafe()
 
-
    #get current time stamp
-   cursor.execute('''SELECT NOW() + 0''')
-   time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+   cursor.execute('''SELECT NOW()''')
+   time_last_edited = cursor.fetchall()[0]['NOW()']
 
    #Insert new account info into club table
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
@@ -368,8 +367,8 @@ def updateClub():
         club_image = cursor.fetchall()[0]['club_image']
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
 
     #Put new info in database
     cursor.execute('''UPDATE %s SET club_name=%%s,about_info=%%s,meet_time=%%s,meet_day=%%s,meet_location=%%s,
@@ -442,8 +441,8 @@ def addEvent():
     mysql.connection.commit()
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
     cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
@@ -499,6 +498,17 @@ def doDeleteEvent(eventID):
     cursor.execute('''DELETE FROM %s WHERE eventID = %%s'''%(EVENT_TABLE,),(eventID,))
     mysql.connection.commit()
 
+def deleteOldEvents():
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+
+    #get a list of all events in the past
+    cursor.execute('''SELECT * FROM %s WHERE event_date < NOW() '''%(EVENT_TABLE,))
+    results = cursor.fetchall()
+    for event in results:
+        eventID = event['eventID']
+        doDeleteEvent(eventID)
+
 #route when user clicks submit on edit event
 @app.route("/updateEvent",methods=["POST"])
 def updateEvent():
@@ -515,9 +525,14 @@ def updateEvent():
     end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event_description']
+    facebook_event_link = request.form['facebook_event_link']
+    event_virtual = request.form.get('event_virtual') != None
+
     #if optional fields empty, set as null
     if event_type == '':
         event_type = None
+    if facebook_event_link=='':
+        facebook_event_link = None
     #instantiate cursor
     cursor = mysql.connection.cursor()
     #get image from form
@@ -533,13 +548,13 @@ def updateEvent():
 
     #Update event
     cursor.execute('''UPDATE %s SET event_name=%%s,event_date=%%s,start_time=%%s,end_time=%%s,event_location=%%s,
-            event_description=%%s,event_type=%%s,event_image=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
-            event_date,start_time,end_time,event_location,event_description,event_type,event_image,eventID))
+            event_description=%%s,event_type=%%s,event_image=%%s,facebook_event_link=%%s,event_virtual=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
+            event_date,start_time,end_time,event_location,event_description,event_type,event_image,facebook_event_link,event_virtual,eventID))
     mysql.connection.commit()
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
     cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
@@ -1033,7 +1048,6 @@ def deletePassengerText(event_name,date,time):
         """
     return {'html':html,'text':text}
 
-
 #returns a dict with the html and plain text versions of editing car send to driver email
 def editCarDriverText(event_name,date,time):
     html=f"""\
@@ -1085,7 +1099,6 @@ def editCarPassText(event_name,time, date):
         """
     return {'html':html,'text':text}
 
-
 ########################################################################################################################
 ##### Helper functions #################################################################################################
 
@@ -1134,6 +1147,16 @@ def formatTimeFromSql(sqlTime):
         hours=hours-12
         ampm='PM'
     return str(hours)+":"+str(min)+" "+ampm
+
+def formatLastEdited(lastEdited):
+    dateAndTime = lastEdited.split(' ')
+    date = dateAndTime[0]
+    time = dateAndTime[1]
+
+    formattedTme = formatTimeFromSql(time)
+    formattedDate = formatDateFromSql2(date)
+
+    return {'formattedDate':formattedDate, 'formattedTme':formattedTme}
 
 ########################################################################################################################
 ##########General Email Functions#######################################################################################
