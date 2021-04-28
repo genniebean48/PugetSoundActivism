@@ -1148,15 +1148,19 @@ def formatTimeFromSql(sqlTime):
         ampm='PM'
     return str(hours)+":"+str(min)+" "+ampm
 
-def formatLastEdited(lastEdited):
-    dateAndTime = lastEdited.split(' ')
+#format last edited timestamp for display
+def formatLastEdited (time_last_edited):
+    time_last_edited = str(time_last_edited)
+    dateAndTime = time_last_edited.split(' ')
     date = dateAndTime[0]
     time = dateAndTime[1]
 
-    formattedTme = formatTimeFromSql(time)
     formattedDate = formatDateFromSql2(date)
+    formattedTime = formatTimeFromSql(time)
 
-    return {'formattedDate':formattedDate, 'formattedTme':formattedTme}
+    return {'formattedDate':formattedDate,'formattedTime':formattedTime}
+
+
 
 ########################################################################################################################
 ##########General Email Functions#######################################################################################
