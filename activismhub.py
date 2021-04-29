@@ -60,7 +60,7 @@ salt = '1kn0wy0ulov3m3'
 
 def printClubs():
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT * FROM %s'''%CLUB_TABLE)
+    cursor.execute('''SELECT * FROM %s'''%(CLUB_TABLE,))
     result = cursor.fetchall()
     for club in result:
         print(club)
@@ -78,6 +78,38 @@ def addManyaAdminInfo():
     password = hashlib.sha256(saltedPassword.encode()).hexdigest()
     cursor.execute('''UPDATE %s SET password=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
     mysql.connection.commit()
+
+def fixActivatedApproved():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''UPDATE %s SET email_activated=1,club_approved=1'''%('club',))
+    mysql.connection.commit()
+
+def hashPasswords():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT password, clubID FROM %s'''%('club',))
+    results = cursor.fetchall()
+    for result in results:
+        saltedPassword = result['password'] + salt
+        password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+        cursor.execute('''UPDATE %s SET password=%%s WHERE clubID=%%s'''%('club',),(password,result['clubID']))
+        mysql.connection.commit()
+
+def addManyaAdminHash():
+    activation_hash = secrets.token_urlsafe()
+    cursor = mysql.connection.cursor()
+    cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,),(activation_hash,))
+    mysql.connection.commit()
+
+# def setManyaCurrentAdmin():
+#     cursor = mysql.connection.cursor()
+#     cursor.execute('''UPDATE %s SET curr_admin=1 WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
+#     mysql.connection.commit()
+#     cursor.execute('''DELETE FROM %s WHERE club_email="smcgough@pugetsound.edu"'''%(CLUB_TABLE,))
+#     mysql.connection.commit()
+
+
+
+
 
 
 ########################################################################################################################
@@ -116,6 +148,7 @@ def index(message=""):
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
 
    stats = getStats()
+   printClubs()
    #render homepage
    return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats)
 
@@ -182,6 +215,11 @@ def club_page():
        info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
    #Get list of dicts of clubs
    #info['time_last_edited_formatted']=formatDateFromSql2(info['time_last_edited'])
+   #check if club name ends in s
+   if info['club_name'][-1:]=='s':
+        info['end_s']=True
+   else:
+        info['end_s']=False
    clubs = getClubs()
 
    stats = getStats()
@@ -300,7 +338,6 @@ def enter_account():
    #Create activation hash
    activation_hash = secrets.token_urlsafe()
 
-
    #get current time stamp
    cursor.execute('''SELECT NOW()''')
    time_last_edited = cursor.fetchall()[0]['NOW()']
@@ -309,7 +346,7 @@ def enter_account():
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
        email_activated,time_last_edited) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,0,%%s)'''%(CLUB_TABLE,),(club_name,about_info,club_email,password,
        club_email_display,activation_hash,time_last_edited))
-
+   mysql.connection.commit()
    #send request for account to admin
    cursor.execute('''SELECT clubID FROM %s WHERE club_name=%%s AND club_email=%%s'''%(CLUB_TABLE,),(club_name,club_email))
    clubID=cursor.fetchall()[0]['clubID']
@@ -341,6 +378,8 @@ def updateClub():
     twitter_link = request.form['twitter_link']
     website_link = request.form['website_link']
     club_email_display = request.form.get('club_email_display') != None
+    club_email = request.form['club_email']
+    old_club_email = request.form['old_club_email']
     #for optional fields, if empty set to none
     if meet_time == '':
             meet_time = None
@@ -381,6 +420,16 @@ def updateClub():
     #Update all of that club's events to possibly new club name
     cursor.execute('''UPDATE %s SET club_name = %%s WHERE clubID = %%s'''%(EVENT_TABLE,),(club_name,clubID))
     mysql.connection.commit()
+    #if email changed, send verification email
+    if club_email != old_club_email:
+        #change activation hash
+        activation_hash = secrets.token_urlsafe()
+        cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(activation_hash,clubID))
+        mysql.connection.commit()
+        #send verification email
+        texts=verifyEmailText(club_email,activation_hash)
+        sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
+        print("sent verification email to new email address")
     #reroute to club page
     return redirect(f"/clubPage?q={clubID}")
 
@@ -422,7 +471,8 @@ def addEvent():
     end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event-description']
-    facebook_event_link = request.form['facebook_link']
+    facebook_event_link = request.form['facebook_event_link']
+    event_virtual = request.form.get('event_virtual') != None
 
     #if optional fields empty, set as null
     if event_type == '':
@@ -434,11 +484,10 @@ def addEvent():
     #get club name
     cursor.execute('''SELECT club_name FROM %s where clubID = %%s'''%(CLUB_TABLE,),(clubID,))
     club_name=cursor.fetchall()[0]['club_name']
-
     #put new event in table NOTE - does not include image
     cursor.execute('''INSERT INTO %s(event_name,club_name,clubID,event_date,start_time,end_time,event_location,
-            event_description,event_type,facebook_event_link) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,
-            club_name,clubID,event_date,start_time,end_time,event_location,event_description,event_type,facebook_event_link))
+            event_description,event_type,facebook_event_link,event_virtual) VALUES(%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,
+            club_name,clubID,event_date,start_time,end_time,event_location,event_description,event_type,facebook_event_link,event_virtual))
     mysql.connection.commit()
 
     #update time stamp
@@ -499,6 +548,17 @@ def doDeleteEvent(eventID):
     cursor.execute('''DELETE FROM %s WHERE eventID = %%s'''%(EVENT_TABLE,),(eventID,))
     mysql.connection.commit()
 
+def deleteOldEvents():
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+
+    #get a list of all events in the past
+    cursor.execute('''SELECT * FROM %s WHERE event_date < NOW() '''%(EVENT_TABLE,))
+    results = cursor.fetchall()
+    for event in results:
+        eventID = event['eventID']
+        doDeleteEvent(eventID)
+
 #route when user clicks submit on edit event
 @app.route("/updateEvent",methods=["POST"])
 def updateEvent():
@@ -515,9 +575,14 @@ def updateEvent():
     end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event_description']
+    facebook_event_link = request.form['facebook_event_link']
+    event_virtual = request.form.get('event_virtual') != None
+
     #if optional fields empty, set as null
     if event_type == '':
         event_type = None
+    if facebook_event_link=='':
+        facebook_event_link = None
     #instantiate cursor
     cursor = mysql.connection.cursor()
     #get image from form
@@ -533,8 +598,8 @@ def updateEvent():
 
     #Update event
     cursor.execute('''UPDATE %s SET event_name=%%s,event_date=%%s,start_time=%%s,end_time=%%s,event_location=%%s,
-            event_description=%%s,event_type=%%s,event_image=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
-            event_date,start_time,end_time,event_location,event_description,event_type,event_image,eventID))
+            event_description=%%s,event_type=%%s,event_image=%%s,facebook_event_link=%%s,event_virtual=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
+            event_date,start_time,end_time,event_location,event_description,event_type,event_image,facebook_event_link,event_virtual,eventID))
     mysql.connection.commit()
 
     #update time stamp
@@ -1033,7 +1098,6 @@ def deletePassengerText(event_name,date,time):
         """
     return {'html':html,'text':text}
 
-
 #returns a dict with the html and plain text versions of editing car send to driver email
 def editCarDriverText(event_name,date,time):
     html=f"""\
@@ -1084,7 +1148,6 @@ def editCarPassText(event_name,time, date):
         The ACTivism Hub Team
         """
     return {'html':html,'text':text}
-
 
 ########################################################################################################################
 ##### Helper functions #################################################################################################
@@ -1155,8 +1218,14 @@ def formatLastEdited (time_last_edited):
 #Sends an email with the given html and plain text messages and subject to the given email
 #from activismhub@gmail.com
 def sendEmail(receiver_email,html_text,plain_text,subject):
-    sender_email='activismhub@gmail.com'
-    password = 'cscap7285!' #Need to figure out how to do this more securely
+#     sender_email='activismhub@gmail.com'
+#     password = 'cscap7285!' #Need to figure out how to do this more securely
+#     smtp_server="smtp.gmail.com"
+#     port=465
+    smtp_server="webmail.pugetsound.edu"
+    port = 587
+    sender_email='activismhub@pugetsound.edu'
+    password='Capstone2021!'
 
     message = MIMEMultipart('alternative')
     message['Subject']=subject
@@ -1172,13 +1241,17 @@ def sendEmail(receiver_email,html_text,plain_text,subject):
     message.attach(part1) #plain text version, email client will render if html fails
     message.attach(part2) #html version, email client will try to render first
 
-    # Create secure connection with server and send email
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(
-            sender_email, receiver_email, message.as_string()
-        )
+#     # Create secure connection with server and send email
+#     context = ssl.create_default_context()
+#     with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+#         server.login(sender_email, password)
+#         server.sendmail(
+#             sender_email, receiver_email, message.as_string()
+#         )
+    mailserver = smtplib.SMTP(smtp_server,port)
+    mailserver.starttls()
+    mailserver.login(sender_email,password)
+    mailserver.sendmail(sender_email,receiver_email,message.as_string())
 
 
 ########################################################################################################################
@@ -1225,7 +1298,26 @@ def verifyEmail():
     r = cursor.fetchall()
     #if no account with that email
     if len(r) == 0:
-        return create_account(club_email+" is not associated with an account.")
+        #check if valid admin
+        cursor.execute('''SELECT web_adminID, activation_hash, email_activated FROM %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        r2 = cursor.fetchall()
+        #if not valid admin email
+        if len(r2) == 0:
+            return create_account(club_email+" is not associated with an account.")
+        #if valid admin
+        clubID=r2[0]['web_adminID']
+        db_hash = r2[0]['activation_hash']
+        active = r2[0]['email_activated']
+        #check if hash matches what we have stored for this email and account isn't active
+        if active == 1:
+            return login_page(club_email+" has already been verified.")
+        if db_hash != hash:
+            return login_page("Email verification failed.")
+        #activate admin account
+        cursor.execute('''UPDATE %s SET email_activated=1, web_admin_email=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(club_email,clubID))
+        mysql.connection.commit()
+        #reroute to login page
+        return login_page("Email verification successful.")
     #else get ID, hash, activation status
     results = r[0]
     clubID=results['clubID']
@@ -1236,9 +1328,8 @@ def verifyEmail():
         return login_page(club_email+" has already been verified.")
     if db_hash != hash:
         return create_account("Email verification failed.")
-        #how to reroute here?? With popup
     #activate club
-    cursor.execute('''UPDATE %s SET email_activated=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+    cursor.execute('''UPDATE %s SET email_activated=1, club_email=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(club_email,clubID))
     mysql.connection.commit()
     #reroute to login page
     return login_page("Email verification successful.")
@@ -1266,7 +1357,19 @@ def preparePasswordReset():
    result = cursor.fetchall()
    #if that email isn't in the database
    if len(result) == 0:
-        return forgotPassword(club_email+" is not associated with an account.")
+        #check if admin
+        cursor.execute('''SELECT activation_hash FROM %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        result2 = cursor.fetchall()
+        #if not an admin email either
+        if len(result2) == 0:
+            return forgotPassword(club_email+" is not associated with an account.")
+        #if a real admin email
+        else:
+            activation_hash = result2[0]['activation_hash']
+            texts = resetPasswordText(club_email,activation_hash)
+            sendEmail(club_email,texts['html'],texts['text'],"Reset your password")
+            return index("An email has been sent to "+club_email+" with a reset link.")
+
    #check if club approved
    clubID=result[0]['clubID']
    if result[0]['club_approved']:
@@ -1293,7 +1396,22 @@ def resetPassword():
     results = cursor.fetchall()
     #if no account with that email
     if len(results)==0:
-        return create_account(club_email+" is not associated with an account.")
+        #check if admin
+        cursor.execute('''SELECT web_adminID, activation_hash from %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        results2 = cursor.fetchall()
+        #if not a valid admin email either
+        if len(results2) == 0:
+            return create_account(club_email+" is not associated with an account.")
+        #if admin, check if hashes match
+        else:
+            activation_hash=results2[0]['activation_hash']
+            adminID = results2[0]['web_adminID']
+            if hash == activation_hash:
+                clubs = getClubs()
+                stats=getStats()
+                return render_template("resetPassword.html",clubs=clubs,clubID=adminID,stats=stats)
+            else:
+                return forgotPassword("Reset password via email failed")
     #else get clubID and hash for that email
     results=results[0]
     clubID=results['clubID']
@@ -1322,7 +1440,21 @@ def doPasswordReset():
     result = cursor.fetchall()
     #if no club with that id
     if len(result)==0:
-        return forgotPassword(result[0]['club_email']+" is not associated with an account.")
+        #check if valid admin
+        cursor.execute('''SELECT web_admin_email FROM %s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(clubID,))
+        result2 = cursor.fetchall()
+        #if not valid admin
+        if len(result2)==0:
+            return forgotPassword("This account does not exist.")
+        #if valid admin
+        saltedPassword = password + salt
+        password = hashlib.sha256(saltedPassword.encode()).hexdigest()
+        #update password in database, set club to active if not already (this counts as email verification)
+        cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,clubID))
+        mysql.connection.commit()
+        #render login page
+        return login_page("Password successfully reset.")
+
     #if club approved
     club_approved=result[0]['club_approved']
     if club_approved:
@@ -1373,7 +1505,7 @@ def resetPasswordText(email,hash):
 def requestApproval(clubID):
     #get admin email
     cursor=mysql.connection.cursor()
-    cursor.execute('''SELECT web_admin_email FROM %s'''%(ADMIN_TABLE))
+    cursor.execute('''SELECT web_admin_email FROM %s WHERE curr_admin=1'''%(ADMIN_TABLE))
     #NOTE - this assumes there is one, and only gets the first one - is this what we want??
     admin_email=cursor.fetchall()[0]['web_admin_email']
     #get club info
@@ -1435,6 +1567,7 @@ def approveClub():
     cursor.execute('''UPDATE %s SET club_approved=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     mysql.connection.commit()
     #get info for that club
+    print("clubID:"+str(clubID))
     cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     club_info = cursor.fetchall()[0]
     #send verification email
