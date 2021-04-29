@@ -269,6 +269,12 @@ times and places, and then finally the social media links with the icons. This p
         Edit Profile
       </button>
       {% endif %}
+      {% if 'admin_id' in session %}
+      <button
+              onclick="deleteClub()">
+        Delete Club
+      </button>
+      {% endif %}
       <h3>{{info['club_name']}}</h3>
     </div>
     <div id="club-profile-logistics">
@@ -359,7 +365,7 @@ times and places, and then finally the social media links with the icons. This p
           {% endif %}
         </ul>
 <!--       TODO: TIMESTAMP HERE-->
-<!--        <p id="date">{format} </p>-->
+        <p id="date">Last Updated: {{info['time_last_edited']}} </p>
       </div>
     </div>
     <div id="add-event-panel">
