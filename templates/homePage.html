@@ -163,6 +163,20 @@ events that are coming up in the next week. -->
 		modal.style.display = "none";
 	}
 
+	/* Javascript Function that hides the rideshare modal forms and returns to the description when any of the form
+	* exit buttons are clicked. This means that when the rideshare button is clicked again, all that has to happen is call the
+	* showRideShare button. */
+	function hideRideForm() {
+		let description = document.getElementById( "modal-seats-description" );
+		let addCar = document.getElementById( "modal-seats-addCar" );
+		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let editCar = document.getElementById( "modal-seats-editCar" );
+		addCar.style.display = "none";
+		resSeat.style.display = "none";
+		editCar.style.display = "none";
+		description.style.display = "flex";
+	}
+
 	/* Javascript Function that adds a car for the event. It toggles the right side so that the addCar
 	* form shows up on the right side. It will prompt the user to enter the driver's name, email, as well as
 	* how many seats they have, their departing time and return time. */
@@ -506,7 +520,7 @@ events that are coming up in the next week. -->
 		<div id="modal-seats-addCar">
 			<button
 					class="exit"
-					onclick=hideRideShare()>
+					onclick=hideRideForm()>
 				<i
 						class="fa fa-times-circle fa-lg"
 						aria-hidden="true"></i>
@@ -607,7 +621,7 @@ events that are coming up in the next week. -->
 		<div id="modal-seats-resSeat">
 			<button
 					class="exit"
-					onclick=hideRideShare()>
+					onclick=hideRideForm()>
 				<i
 						class="fa fa-times-circle fa-lg"
 						aria-hidden="true"></i>
@@ -660,7 +674,7 @@ events that are coming up in the next week. -->
 		<div id="modal-seats-editCar">
 			<button
 					class="exit"
-					onclick=hideRideShare()>
+					onclick=hideRideForm()>
 				<i
 						class="fa fa-times-circle fa-lg"
 						aria-hidden="true"></i>
