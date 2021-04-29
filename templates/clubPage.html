@@ -156,7 +156,7 @@ times and places, and then finally the social media links with the icons. This p
 </script>{% endblock %}
 
 {% block title %}
-<title>Actvism Hub</title>{% endblock %}
+<title>ACTivism Hub</title>{% endblock %}
 
 {% block panel %}
 <div class="club-panel">
@@ -215,7 +215,7 @@ times and places, and then finally the social media links with the icons. This p
           {{event['event_location']}}
         </h5>
         {% if event['event_type'] != None %}
-        <h5>{{event['event_type']}}</h5>
+        <h5>Event Type: {{event['event_type']}}</h5>
         {% endif %}
         <p>{{event['event_description']}}</p>
       </div>
@@ -364,6 +364,7 @@ times and places, and then finally the social media links with the icons. This p
           </label><br>
           <input
             type="file"
+            accept="image/*"
             class="nonrequired"
             name="event_image"
             placeholder="Event Image"
@@ -500,6 +501,7 @@ times and places, and then finally the social media links with the icons. This p
           <input
             class="nonrequired"
             type="file"
+            accept="image/*"
             name="event_image"
             placeholder="Event Image"
             id="edit-event-img">
@@ -647,6 +649,7 @@ times and places, and then finally the social media links with the icons. This p
         <input
           class="nonrequired"
           type="file"
+          accept="image/*"
           id="profile-image"
           name="club_image"
           placeholder="Profile Image"

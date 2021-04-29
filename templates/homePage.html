@@ -11,7 +11,7 @@ events that are coming up in the next week. -->
 		rel="stylesheet/less"/>{% endblock %}
 
 {% block title %}
-<title>Actvism Hub</title>
+<title>ACTivism Hub</title>
 <script>
 
 	/* Javascript Function to make sure that the inputted email is @pugetsound.edu as well as a
@@ -78,7 +78,7 @@ events that are coming up in the next week. -->
 					alert( "There are no seats available in this car. Please select a different car or request a car by pressing the 'Request Car' button" );
 				}
 			};
-			reserveSeatButton.innerHTML = "Save Seat";
+			reserveSeatButton.innerHTML = "Claim Seat";
 			div2.appendChild( reserveSeatButton );
 		}
 		let deleteCarButton = document.createElement( "button" );
@@ -320,6 +320,10 @@ events that are coming up in the next week. -->
 			let passTitle = document.createElement("h3");
 			passTitle.innerHTML = "Manage Passengers";
 			passDiv.append(passTitle);
+			let passDes = document.createElement("p");
+			passDes.innerHTML = "Please do not delete passengers besides yourself from this car.";
+			passDiv.append(passDes);
+
 			let dltPass = document.getElementById("deletebtn");
 			dltPass.style.display = "none";
 			for( i = 0; i < car.passengers.length; i++ ) {
@@ -381,8 +385,8 @@ events that are coming up in the next week. -->
 <div class="slideshow-container">
 	<div id="txt-homepage">
 		<h3>Our Mission</h3>
-		<p>ACTivism Hub aims to elevate the voices of Puget Sound activism oriented clubs as well as provide them with a cohesive platform to share club programming. Through event postings and club
-			profiles, students have access to event information such as times, places, resources and details in a centralized location.
+		<p>ACTivism Hub aims to elevate the voices of Puget Sound activism oriented clubs as well as provide them with a cohesive platform to share club programming. Through event postings, club
+			profiles, and a rideshare feature, activism events become more accessible for the Puget Sound community.
 		</p>
 	</div>
 	<div class="mySlides fade">
@@ -448,7 +452,7 @@ events that are coming up in the next week. -->
 				</button>
 			</div>
 			{% if event['event_type'] != None %}
-			<h5>{{event['event_type']}}</h5>
+			<h5>Event Type: {{event['event_type']}}</h5>
 			{% endif %}
 			<p>{{event['event_description']}}</p>
 		</div>
@@ -486,13 +490,13 @@ events that are coming up in the next week. -->
 						aria-hidden="true"></i>
 			</button>
 			<h5> Rideshare Feature </h5>
-			<p> Welcome to ridesharing on the ACTivism Hub! The feature helps coordinate carpooling
-				to events! As a driver, you can add, edit, and delete your cars. As a passenger, you
-				can reserve seats and delete reservations by clicking on the ‘Edit’ button. As both a
-				driver and a passenger, you’ll receive a confirmation email if you do any of the possible
-				actions. If there aren’t any cars for this event and you need a ride, request a car
-				and we’ll let the club owner know! The Rideshare feature is only available on the
-				homepage, not on individual club pages.
+			<p> Welcome to Ridesharing on the ACTivism Hub! This feature helps coordinate carpooling
+				to events. As a driver, you can add, edit, and delete your car. As a passenger, you
+				can claim a seat and delete your reservation by clicking on the 'Edit' button. As both a
+				driver and a passenger, you’ll receive a confirmation email if you do any of the above
+				actions. If there are no open seats for this event and you need a ride, request a car by clicking on
+				the 'Request Car' button and we’ll let the club owner know. Be aware that the Rideshare feature is
+				only accessible from the homepage, not individual club pages.
 			</p>
 			<p> * Please note that your name will be displayed on the website if you add yourself as a driver or a passenger.
 			</p>
@@ -606,7 +610,7 @@ events that are coming up in the next week. -->
 						class="fa fa-times-circle fa-lg"
 						aria-hidden="true"></i>
 			</button>
-			<h3>Reserve a Seat</h3>
+			<h3>Claim a Seat</h3>
 			<p>* indicates required field</p>
 			<form
 					action="/addPassenger"
@@ -647,7 +651,7 @@ events that are coming up in the next week. -->
 
 				<input
 						type="submit"
-						value="Reserve Seat"
+						value="Claim Seat"
 						onclick="return verify(passenger_email.value)"/>
 			</form>
 		</div>
@@ -662,7 +666,7 @@ events that are coming up in the next week. -->
 
 			<h3>Edit Car</h3>
 			<p>* indicates required field</p>
-			<p> If you want to edit the number of seats in your car, we ask that you delete your car and
+			<p> Please only edit this car if you are the driver. If you want to edit the number of seats in your car, we ask that you delete your car and
 			make a new one. Passengers will be notified that they need to find a new ride. </p>
 			<form
 					action="/editCar"
