@@ -14,9 +14,11 @@ times and places, and then finally the social media links with the icons. This p
   * all of the club information will turn into an Edit Club form and the user will be able to edit the club name, the
   * about information, the meeting day, meeting times, meeting location, facebook link, instagram link, twitter link,
   * as well as the website link and whether or not they want their club email to be displayed. */
-  function editClub( club_name, about_info, meet_day, meet_time, meet_location, facebook_link, instagram_link, twitter_link, website_link, club_email_display ) {
+  function editClub( club_name, about_info, meet_day, meet_time, meet_location, facebook_link, instagram_link, twitter_link, website_link, club_email_display, club_email ) {
     document.getElementById( "club_name" ).value = club_name;
     document.getElementById( "about_info" ).value = about_info;
+    document.getElementById( "club_email" ).value = club_email;
+    document.getElementById( "old_club_email" ).value = club_email;
     if( meet_day != "None" ) {
       document.getElementById( "meet_day" ).value = meet_day;
     }
@@ -168,7 +170,11 @@ times and places, and then finally the social media links with the icons. This p
 <div class="club-panel">
   <div class="upcoming-events">
     <div class="header">
-      <h3>{{info['club_name']}}'s Events</h3>
+      {% if info['end_s'] %}
+          <h3>{{info['club_name']}}' Events</h3>
+      {% else %}
+          <h3>{{info['club_name']}}'s Events</h3>
+      {% endif %}
       {% if 'club_id' in session and session['club_id']==info['clubID'] %}
       <button onclick=addEvents()>Add Event</button>
       {% endif %}
@@ -241,7 +247,7 @@ times and places, and then finally the social media links with the icons. This p
         onclick="editClub(`{{info['club_name']}}`,`{{info['about_info']}}`,`{{info['meet_day']}}`,
                 `{{info['meet_time']}}`,`{{info['meet_location']}}`,`{{info['facebook_link']}}`,
                 `{{info['instagram_link']}}`,`{{info['twitter_link']}}`,`{{info['website_link']}}`,
-                `{{info['club_email_display']}}`)">
+                `{{info['club_email_display']}}`,`{{info['club_email']}}`)">
         Edit Profile
       </button>
       {% endif %}
@@ -427,7 +433,7 @@ times and places, and then finally the social media links with the icons. This p
                   type="checkbox"
                   id="eventVirtual2"
                   name="event_virtual">
-          <label for="eventVirtual2">Is your event virtual?</label><br>
+          <label for="eventVirtual2">This event is virtual</label><br>
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -450,6 +456,7 @@ times and places, and then finally the social media links with the icons. This p
                   class="nonrequired"
                   type="url"
                   id="event-facebook2"
+                  name="facebook_event_link"
                   placeholder="Event Facebook Link"
                   size="255">
           <br>
@@ -560,7 +567,7 @@ times and places, and then finally the social media links with the icons. This p
                   type="checkbox"
                   id="eventVirtual"
                   name="event_virtual">
-          <label for="eventVirtual">Is your event virtual?</label><br>
+          <label for="eventVirtual">This event is virtual</label><br>
           <i
             class="fa fa-asterisk"
             aria-hidden="true"></i>
@@ -639,6 +646,20 @@ times and places, and then finally the social media links with the icons. This p
           maxlength="45"
           required>
         <br>
+        <i
+                class="fa fa-asterisk"
+                aria-hidden="true"></i>
+        <label for="club_email">Club Email:</label>
+        <br>
+        <input
+                type="text"
+                id="club_email"
+                name="club_email"
+                placeholder="Club Email"
+                maxlength="45"
+                required>
+        <br>
+        <input type="hidden" id="old_club_email" name="old_club_email">
         <input
           type="checkbox"
           id="clubShowEmail"

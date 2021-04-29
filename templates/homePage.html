@@ -438,6 +438,7 @@ events that are coming up in the next week. -->
 					   aria-hidden="true"></i>
 					{{event['event_location']}}
 				</h5>
+				{% if not event['event_virtual'] %}
 				<button
 						id="ride-share"
 						onclick="showRideShare({{event['eventID']}},{{event['cars']}})">
@@ -446,6 +447,7 @@ events that are coming up in the next week. -->
 							aria-hidden="true"></i>
 					Rideshare
 				</button>
+				{% endif %}
 			</div>
 			{% if event['event_type'] != None %}
 			<h5>{{event['event_type']}}</h5>
