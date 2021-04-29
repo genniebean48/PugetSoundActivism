@@ -161,6 +161,24 @@ times and places, and then finally the social media links with the icons. This p
     }
   }
 
+  /* Javascript function that verifies the email to make sure that it is @pugetsound and also makes sure that it
+  * is a valid email address. In addition, this function also makes sure that the passwords that the user input into the
+  * first field matches the confirm password as well. */
+  function verify( email ) {
+    const emailSplit = email.split( "@" );
+      if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
+        alert( "email must be a valid University of Puget Sound address." );
+        return false;
+      } else {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if( re.test( email.toLowerCase() ) == false ) {
+          alert( "email must be a valid University of Puget Sound address." );
+        } else {
+          return true;
+        }
+      }
+  }
+
 </script>{% endblock %}
 
 {% block title %}
@@ -340,7 +358,8 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %}
         </ul>
-<!--        <p id="date">Last Updated: </p>-->
+<!--       TODO: TIMESTAMP HERE-->
+<!--        <p id="date">{format} </p>-->
       </div>
     </div>
     <div id="add-event-panel">
@@ -653,6 +672,7 @@ times and places, and then finally the social media links with the icons. This p
                 aria-hidden="true"></i>
         <label for="club_email">Club Email:</label>
         <br>
+        <p>** Note that if you change your club email here, you will need to re-verify your email and then use the new email for login purposes.</p>
         <input
                 type="text"
                 id="club_email"
@@ -789,7 +809,8 @@ times and places, and then finally the social media links with the icons. This p
         <br>
         <input
           type="submit"
-          value="Edit Club"/>
+          value="Edit Club"
+          onclick = "return verify(club_email.value)"/>
 
       </form>
     </div>

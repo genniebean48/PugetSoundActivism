@@ -8,11 +8,13 @@
     <script src="{{ url_for('static', filename='less.js') }}"></script>
     <script>
         /* Javascript function that displays the website stats and allows you to change the admin. */
-        function stats(){
+        function stats(admin_name, admin_email){
             const modal = document.getElementById("admin-modal");
             modal.style.display = "block";
             const textHome = document.getElementById("txt-homepage");
             textHome.style.display = "none";
+            document.getElementById( "admin_name" ).value = admin_name;
+            document.getElementById("admin_email").value = admin_email;
         }
         /* Javascript function that hides the website stats and admin forms. */
         function hideStats(){
@@ -30,7 +32,7 @@
     <li id="title"> ACTivism Hub</li>
     <div class="links">
         {% if 'admin_id' in session %}
-        <a id="webstats" onclick="stats()"> Admin </a>
+        <a id="webstats" onclick="stats(`{{admin['admin_name'}}`, `{{admin['admin_email']}}`)"> Admin </a>
         {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">
@@ -78,11 +80,11 @@
                         aria-hidden="true"></i>
             </button>
 
-            <h5> Edit Admin </h5>
+            <h5> Change Admin </h5>
             <form action="/addCar" method="post">
                 <i class="fa fa-asterisk"
                    aria-hidden="true"></i>
-                <label for="admin_email">Admin Name:</label>
+                <label for="admin_name">Admin Name:</label>
                 <br>
                 <input
                         type="text"
@@ -102,39 +104,9 @@
                         maxLength="255"
                         required>
                 <br>
-                <i class="fa fa-asterisk"
-                   aria-hidden="true"></i>
-                <label for="admin_password">Admin Password:</label>
-                <br>
                 <input
-                        type="text"
-                        id="admin_password"
-                        placeholder="Admin Password"
-                        maxLength="255"
-                        required>
-                <br>
-                <i class="fa fa-asterisk"
-                   aria-hidden="true"></i>
-                <label for="admin_email">New Admin Name:</label>
-                <br>
-                <input
-                        type="text"
-                        id="new_admin_name"
-                        placeholder="New Admin Name"
-                        maxLength="255"
-                        required>
-                <br>
-                <i class="fa fa-asterisk"
-                   aria-hidden="true"></i>
-                <label for="new_admin_email">New Admin Email:</label>
-                <br>
-                <input
-                        type="text"
-                        id="new_admin_email"
-                        placeholder="New Admin Email"
-                        maxLength="255"
-                        required>
-                <br>
+                    type="submit"
+                    value="Change Admin">
             </form>
         </div>
     </div>
