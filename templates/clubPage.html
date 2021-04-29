@@ -93,7 +93,7 @@ times and places, and then finally the social media links with the icons. This p
   /* Javascript function that will allow the user (if signed in) to edit Events that they have already put into the system.
   * When the form pops up on the right side, the user will be able to edit the event name, the event date, the start time, the
   * end time, the event location, the event type, and event description. */
-  function editEvent( event_name, event_date, start_time, end_time, event_location, event_type, event_description, eventID ) {
+  function editEvent( event_name, event_date, start_time, end_time, event_location, event_type, event_description, event_virtual, facebook_event_link,eventID ) {
     document.getElementById( "edit-event_name" ).value = event_name;
     document.getElementById( "edit-event_date" ).value = event_date;
     document.getElementById( "edit-start_time" ).value = start_time;
@@ -103,6 +103,12 @@ times and places, and then finally the social media links with the icons. This p
       document.getElementById( "edit-event-type" ).value = event_type;
     }
     document.getElementById( "edit-event-description" ).value = event_description;
+    if( event_virtual == 1 ) {
+      document.getElementById( "eventVirtual" ).checked = true;
+    }
+    if( facebook_event_link != "None" ) {
+      document.getElementById( "event-facebook" ).value = facebook_event_link;
+    }
     document.getElementById( "edit-eventID" ).value = eventID;
     let title = document.getElementById( "club-profile-logistics" );
     let events = document.getElementById( "club-profile-title" );
@@ -181,8 +187,8 @@ times and places, and then finally the social media links with the icons. This p
           id="edit-btn"
           onclick="editEvent(`{{event['event_name']}}`,`{{event['event_date']}}`,
                             `{{event['start_time']}}`,`{{event['end_time']}}`,`{{event['event_location']}}`,
-                            `{{event['event_type']}}`,`{{event['event_description']}}`,
-                            `{{event['eventID']}}`)">Edit
+                            `{{event['event_type']}}`,`{{event['event_description']}}`,`{{event['event_virtual']}}`,
+                            `{{event['facebook_event_link']}}`,`{{event['eventID']}}`)">Edit
         </button>
         <button
           id="delete-btn"
@@ -296,7 +302,7 @@ times and places, and then finally the social media links with the icons. This p
           <p>{{info['club_email']}}</p>
           {% endif %} {% if info['facebook_link']!=None %}
           <a
-            href={{info['facebook_link']}},
+            href={{info['facebook_link']}}
             target="_blank">
             <i
               class="fa fa-facebook-official"
@@ -304,7 +310,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %} {% if info['instagram_link']!=None %}
           <a
-            href={{info['instagram_link']}},
+            href={{info['instagram_link']}}
             target="_blank">
             <i
               class="fa fa-instagram"
@@ -312,7 +318,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %} {% if info['twitter_link']!=None %}
           <a
-            href={{info['twitter_link']}},
+            href={{info['twitter_link']}}
             target="_blank">
             <i
               class="fa fa-twitter-square"
@@ -320,7 +326,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %} {% if info['website_link']!=None %}
           <a
-            href={{info['website_link']}},
+            href={{info['website_link']}}
             target="_blank">
             <i
               class="fa fa-external-link"
@@ -328,6 +334,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %}
         </ul>
+<!--        <p id="date">Last Updated: </p>-->
       </div>
     </div>
     <div id="add-event-panel">
@@ -576,6 +583,7 @@ times and places, and then finally the social media links with the icons. This p
                   class="nonrequired"
                   type="url"
                   id="event-facebook"
+                  name="facebook_event_link"
                   placeholder="Event Facebook Link"
                   size="255">
           <br>

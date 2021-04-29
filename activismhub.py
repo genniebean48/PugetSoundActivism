@@ -199,6 +199,7 @@ def club_page():
    if info['meet_time']!=None:
        info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
    #Get list of dicts of clubs
+   #info['time_last_edited_formatted']=formatDateFromSql2(info['time_last_edited'])
    clubs = getClubs()
 
    stats = getStats()
@@ -214,8 +215,8 @@ def club_page():
 def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   stats=getStats()
-   return render_template("login.html",clubs=clubs,message=message,stats=stats)
+   stats = getStats()
+   return render_template("login.html",clubs=clubs,message=message, stats=stats)
 
 
 #Route when user clicks submit on login page
@@ -317,10 +318,9 @@ def enter_account():
    #Create activation hash
    activation_hash = secrets.token_urlsafe()
 
-
    #get current time stamp
-   cursor.execute('''SELECT NOW() + 0''')
-   time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+   cursor.execute('''SELECT NOW()''')
+   time_last_edited = cursor.fetchall()[0]['NOW()']
 
    #Insert new account info into club table
    cursor.execute('''INSERT INTO %s(club_name,about_info,club_email,password,club_email_display,activation_hash,
@@ -385,8 +385,8 @@ def updateClub():
         club_image = cursor.fetchall()[0]['club_image']
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
 
     #Put new info in database
     cursor.execute('''UPDATE %s SET club_name=%%s,about_info=%%s,meet_time=%%s,meet_day=%%s,meet_location=%%s,
@@ -459,8 +459,8 @@ def addEvent():
     mysql.connection.commit()
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
     cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
@@ -516,6 +516,17 @@ def doDeleteEvent(eventID):
     cursor.execute('''DELETE FROM %s WHERE eventID = %%s'''%(EVENT_TABLE,),(eventID,))
     mysql.connection.commit()
 
+def deleteOldEvents():
+    #instantiate cursor
+    cursor = mysql.connection.cursor()
+
+    #get a list of all events in the past
+    cursor.execute('''SELECT * FROM %s WHERE event_date < NOW() '''%(EVENT_TABLE,))
+    results = cursor.fetchall()
+    for event in results:
+        eventID = event['eventID']
+        doDeleteEvent(eventID)
+
 #route when user clicks submit on edit event
 @app.route("/updateEvent",methods=["POST"])
 def updateEvent():
@@ -532,9 +543,14 @@ def updateEvent():
     end_time = request.form['end_time']
     event_location = request.form['event_location']
     event_description = request.form['event_description']
+    facebook_event_link = request.form['facebook_event_link']
+    event_virtual = request.form.get('event_virtual') != None
+
     #if optional fields empty, set as null
     if event_type == '':
         event_type = None
+    if facebook_event_link=='':
+        facebook_event_link = None
     #instantiate cursor
     cursor = mysql.connection.cursor()
     #get image from form
@@ -548,16 +564,15 @@ def updateEvent():
         cursor.execute('''SELECT event_image FROM %s WHERE eventID=%%s'''%(EVENT_TABLE,),(eventID,))
         event_image = cursor.fetchall()[0]['event_image']
 
-
     #Update event
     cursor.execute('''UPDATE %s SET event_name=%%s,event_date=%%s,start_time=%%s,end_time=%%s,event_location=%%s,
-            event_description=%%s,event_type=%%s,event_image=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
-            event_date,start_time,end_time,event_location,event_description,event_type,event_image,eventID))
+            event_description=%%s,event_type=%%s,event_image=%%s,facebook_event_link=%%s,event_virtual=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
+            event_date,start_time,end_time,event_location,event_description,event_type,event_image,facebook_event_link,event_virtual,eventID))
     mysql.connection.commit()
 
     #update time stamp
-    cursor.execute('''SELECT NOW() + 0''')
-    time_last_edited = cursor.fetchall()[0]['NOW() + 0']
+    cursor.execute('''SELECT NOW()''')
+    time_last_edited = cursor.fetchall()[0]['NOW()']
     cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
@@ -836,11 +851,8 @@ def addPassenger():
 #route when user clicks to delete a single passenger
 @app.route("/deletePassenger")
 def deletePassenger():
-    print("i made it!!")
     #Get passengerID
     passengerID = request.args.get("id")
-
-    print("passengerID =" + str(passengerID))
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
@@ -1054,7 +1066,6 @@ def deletePassengerText(event_name,date,time):
         """
     return {'html':html,'text':text}
 
-
 #returns a dict with the html and plain text versions of editing car send to driver email
 def editCarDriverText(event_name,date,time):
     html=f"""\
@@ -1106,7 +1117,6 @@ def editCarPassText(event_name,time, date):
         """
     return {'html':html,'text':text}
 
-
 ########################################################################################################################
 ##### Helper functions #################################################################################################
 
@@ -1125,6 +1135,9 @@ def formatDateFromSql(sqlDate):
     month = sqlDate.month
     day = sqlDate.day
     return months[month-1]+" "+str(day)+", "+str(year)
+
+def formatDateFromSql2(date):
+    return str(date[4:6])+"/"+str(date[6:8])+"/"+str(date[0:4])
 
 
 #formats times
@@ -1152,6 +1165,20 @@ def formatTimeFromSql(sqlTime):
         hours=hours-12
         ampm='PM'
     return str(hours)+":"+str(min)+" "+ampm
+
+#format last edited timestamp for display
+def formatLastEdited (time_last_edited):
+    time_last_edited = str(time_last_edited)
+    dateAndTime = time_last_edited.split(' ')
+    date = dateAndTime[0]
+    time = dateAndTime[1]
+
+    formattedDate = formatDateFromSql2(date)
+    formattedTime = formatTimeFromSql(time)
+
+    return {'formattedDate':formattedDate,'formattedTime':formattedTime}
+
+
 
 ########################################################################################################################
 ##########General Email Functions#######################################################################################
@@ -1322,6 +1349,9 @@ def doPasswordReset():
     #get info from form
     password = request.form['password']
     clubID = request.form['clubID']
+
+    cursor = mysql.connection.cursor()
+
     #check if club approved
     cursor.execute('''SELECT club_approved,club_email FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     result = cursor.fetchall()
@@ -1335,7 +1365,6 @@ def doPasswordReset():
         saltedPassword = password + salt
         password = hashlib.sha256(saltedPassword.encode()).hexdigest()
         #update password in database, set club to active if not already (this counts as email verification)
-        cursor = mysql.connection.cursor()
         cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(password,clubID))
         mysql.connection.commit()
         #render login page
