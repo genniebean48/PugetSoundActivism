@@ -32,7 +32,7 @@
     <li id="title"> ACTivism Hub</li>
     <div class="links">
         {% if 'admin_id' in session %}
-        <a id="webstats" onclick="stats(`{{admin['admin_name'}}`, `{{admin['admin_email']}}`)"> Admin </a>
+        <a id="webstats" onclick="stats()"> Admin </a>
         {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">
