@@ -67,16 +67,16 @@ def printClubs():
 
 def addAdmin():
    cursor = mysql.connection.cursor()
-   cursor.execute('''INSERT INTO website_admin (web_admin_name,web_admin_email) VALUES ("Manya","manyam686@gmail.com")''')
+   cursor.execute('''INSERT INTO website_admin (admin_name,admin_email) VALUES ("Manya","manyam686@gmail.com")''')
    mysql.connection.commit()
 
 def addManyaAdminInfo():
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT web_adminID from %s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
-    adminID=cursor.fetchall()[0]['web_adminID']
+    cursor.execute('''SELECT adminID from %s WHERE admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
+    adminID=cursor.fetchall()[0]['adminID']
     saltedPassword = "manyapassword" + salt
     password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-    cursor.execute('''UPDATE %s SET password=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
+    cursor.execute('''UPDATE %s SET password=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
     mysql.connection.commit()
 
 def fixActivatedApproved():
@@ -97,12 +97,12 @@ def hashPasswords():
 def addManyaAdminHash():
     activation_hash = secrets.token_urlsafe()
     cursor = mysql.connection.cursor()
-    cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,),(activation_hash,))
+    cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,),(activation_hash,))
     mysql.connection.commit()
 
 # def setManyaCurrentAdmin():
 #     cursor = mysql.connection.cursor()
-#     cursor.execute('''UPDATE %s SET curr_admin=1 WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
+#     cursor.execute('''UPDATE %s SET curr_admin=1 WHERE admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
 #     mysql.connection.commit()
 #     cursor.execute('''DELETE FROM %s WHERE club_email="smcgough@pugetsound.edu"'''%(CLUB_TABLE,))
 #     mysql.connection.commit()
@@ -148,7 +148,7 @@ def index(message=""):
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
 
    stats = getStats()
-   printClubs()
+   # printClubs()
    #render homepage
    return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats)
 
@@ -273,7 +273,7 @@ def do_login():
            return login_page("Incorrect password.")
    else:
        #check if admin
-       cursor.execute('''SELECT web_adminID, password FROM %s WHERE web_admin_email = %%s'''%(ADMIN_TABLE,),(user,))
+       cursor.execute('''SELECT adminID, password FROM %s WHERE admin_email = %%s'''%(ADMIN_TABLE,),(user,))
        result = cursor.fetchall()
        if len(result)==1:
             #salt and hash their inputted password
@@ -281,7 +281,7 @@ def do_login():
             password = hashlib.sha256(saltedPassword.encode()).hexdigest()
             #if passwords matches
             if password == result[0]['password']:
-                session['admin_id']=result[0]['web_adminID']
+                session['admin_id']=result[0]['adminID']
                 return index()
             else:
                 return login_page("Incorrect password.")
@@ -540,24 +540,29 @@ def doDeleteEvent(eventID):
     #get a list of all cars associated with this event, go through each car and delete cars and passengers
     cursor.execute('''SELECT carID FROM %s where eventID = %%s'''%(CAR_TABLE,),(eventID,))
     results = cursor.fetchall()
-    for car in results:
-        carID = car['carID']
-        doDeleteCar(carID)
+    if len(results) > 0:
+        for car in results:
+            carID = car['carID']
+            doDeleteCar(carID)
 
     #delete event from database
     cursor.execute('''DELETE FROM %s WHERE eventID = %%s'''%(EVENT_TABLE,),(eventID,))
     mysql.connection.commit()
 
+#route when admin clicks to delete all old events on club page
+@app.route("/deleteOldEvents")
 def deleteOldEvents():
     #instantiate cursor
     cursor = mysql.connection.cursor()
-
     #get a list of all events in the past
     cursor.execute('''SELECT * FROM %s WHERE event_date < NOW() '''%(EVENT_TABLE,))
     results = cursor.fetchall()
-    for event in results:
-        eventID = event['eventID']
-        doDeleteEvent(eventID)
+    if len(results) > 0:
+        for event in results:
+            eventID = event['eventID']
+            doDeleteEvent(eventID)
+
+    return index()
 
 #route when user clicks submit on edit event
 @app.route("/updateEvent",methods=["POST"])
@@ -710,10 +715,11 @@ def doDeleteCar(carID):
     cursor.execute('''SELECT passenger_email FROM %s WHERE carID = %%s''' % (PASSENGER_TABLE,),(carID,))
     results = cursor.fetchall()
     subject = 'Car No Longer Available'
-    for passenger in results:
-        passenger_email = passenger['passenger_email']
-        texts = deleteCarPassText(event_name,depart_time,date)
-        sendEmail(passenger_email,texts['html'],texts['text'],subject)
+    if len(results) > 0:
+        for passenger in results:
+            passenger_email = passenger['passenger_email']
+            texts = deleteCarPassText(event_name,depart_time,date)
+            sendEmail(passenger_email,texts['html'],texts['text'],subject)
 
     #delete car and all passengers in car
     cursor.execute('''DELETE FROM %s where carID = %%s''' %(CAR_TABLE,),(carID,))
@@ -743,23 +749,14 @@ def editCar():
     # get num_seats taken
     cursor.execute('''SELECT num_seats_taken, num_seats_available FROM %s WHERE carID=%%s'''%(CAR_TABLE,),(carID,))
     results = cursor.fetchall()[0]
-    num_seats_taken = results['num_seats_taken']
-    num_seats_available = results['num_seats_available']
-
-    if num_seats_taken > num_seats_total:
-        # show an error and go back to unedited form?
-        print("still gotta do this")
-    else:
-        # otherwise reset number of seat available to total - taken
-        num_seats_available = num_seats_total - num_seats_taken
 
     #get eventID using carID
     cursor.execute('''SELECT eventID FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
     eventID = cursor.fetchall()[0]['eventID']
 
     #Update car
-    cursor.execute('''UPDATE %s SET driver_name=%%s,driver_email=%%s,num_seats_total=%%s,num_seats_available=%%s,depart_time=%%s,return_time=%%s,
-            meeting_location=%%s WHERE carID = %%s'''%(CAR_TABLE,),(driver_name,driver_email,num_seats_total,num_seats_available, depart_time,return_time,meeting_location,carID))
+    cursor.execute('''UPDATE %s SET driver_name=%%s,driver_email=%%s,depart_time=%%s,return_time=%%s,
+            meeting_location=%%s WHERE carID = %%s'''%(CAR_TABLE,),(driver_name,driver_email,depart_time,return_time,meeting_location,carID))
     mysql.connection.commit()
 
     #get event_name and date using eventID
@@ -795,8 +792,6 @@ def editCar():
 def requestCar():
     #get eventID for requested car
     eventID = request.args.get("id")
-
-    print("eventID = " + str(eventID))
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
@@ -1299,13 +1294,13 @@ def verifyEmail():
     #if no account with that email
     if len(r) == 0:
         #check if valid admin
-        cursor.execute('''SELECT web_adminID, activation_hash, email_activated FROM %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        cursor.execute('''SELECT adminID, activation_hash, email_activated FROM %s WHERE admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
         r2 = cursor.fetchall()
         #if not valid admin email
         if len(r2) == 0:
             return create_account(club_email+" is not associated with an account.")
         #if valid admin
-        clubID=r2[0]['web_adminID']
+        clubID=r2[0]['adminID']
         db_hash = r2[0]['activation_hash']
         active = r2[0]['email_activated']
         #check if hash matches what we have stored for this email and account isn't active
@@ -1314,7 +1309,7 @@ def verifyEmail():
         if db_hash != hash:
             return login_page("Email verification failed.")
         #activate admin account
-        cursor.execute('''UPDATE %s SET email_activated=1, web_admin_email=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(club_email,clubID))
+        cursor.execute('''UPDATE %s SET email_activated=1, admin_email=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(club_email,clubID))
         mysql.connection.commit()
         #reroute to login page
         return login_page("Email verification successful.")
@@ -1358,7 +1353,7 @@ def preparePasswordReset():
    #if that email isn't in the database
    if len(result) == 0:
         #check if admin
-        cursor.execute('''SELECT activation_hash FROM %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        cursor.execute('''SELECT activation_hash FROM %s WHERE admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
         result2 = cursor.fetchall()
         #if not an admin email either
         if len(result2) == 0:
@@ -1397,7 +1392,7 @@ def resetPassword():
     #if no account with that email
     if len(results)==0:
         #check if admin
-        cursor.execute('''SELECT web_adminID, activation_hash from %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        cursor.execute('''SELECT adminID, activation_hash from %s WHERE admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
         results2 = cursor.fetchall()
         #if not a valid admin email either
         if len(results2) == 0:
@@ -1405,7 +1400,7 @@ def resetPassword():
         #if admin, check if hashes match
         else:
             activation_hash=results2[0]['activation_hash']
-            adminID = results2[0]['web_adminID']
+            adminID = results2[0]['adminID']
             if hash == activation_hash:
                 clubs = getClubs()
                 stats=getStats()
@@ -1441,7 +1436,7 @@ def doPasswordReset():
     #if no club with that id
     if len(result)==0:
         #check if valid admin
-        cursor.execute('''SELECT web_admin_email FROM %s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(clubID,))
+        cursor.execute('''SELECT admin_email FROM %s WHERE adminID=%%s'''%(ADMIN_TABLE,),(clubID,))
         result2 = cursor.fetchall()
         #if not valid admin
         if len(result2)==0:
@@ -1450,7 +1445,7 @@ def doPasswordReset():
         saltedPassword = password + salt
         password = hashlib.sha256(saltedPassword.encode()).hexdigest()
         #update password in database, set club to active if not already (this counts as email verification)
-        cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,clubID))
+        cursor.execute('''UPDATE %s SET password=%%s,email_activated=1 WHERE adminID=%%s'''%(ADMIN_TABLE,),(password,clubID))
         mysql.connection.commit()
         #render login page
         return login_page("Password successfully reset.")
@@ -1505,9 +1500,9 @@ def resetPasswordText(email,hash):
 def requestApproval(clubID):
     #get admin email
     cursor=mysql.connection.cursor()
-    cursor.execute('''SELECT web_admin_email FROM %s WHERE curr_admin=1'''%(ADMIN_TABLE))
+    cursor.execute('''SELECT admin_email FROM %s WHERE curr_admin=1'''%(ADMIN_TABLE))
     #NOTE - this assumes there is one, and only gets the first one - is this what we want??
-    admin_email=cursor.fetchall()[0]['web_admin_email']
+    admin_email=cursor.fetchall()[0]['admin_email']
     #get club info
     cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     #Will only be called right after inserting a club, there will be an account
@@ -1567,7 +1562,7 @@ def approveClub():
     cursor.execute('''UPDATE %s SET club_approved=1 WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     mysql.connection.commit()
     #get info for that club
-    print("clubID:"+str(clubID))
+    # print("clubID:"+str(clubID))
     cursor.execute('''SELECT * FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
     club_info = cursor.fetchall()[0]
     #send verification email
@@ -1595,9 +1590,9 @@ def denyClub():
     club_approved=club_info['club_approved']
     if not club_approved:
         #get admin email
-        cursor.execute('''SELECT web_admin_email FROM %s'''%(ADMIN_TABLE))
+        cursor.execute('''SELECT admin_email FROM %s'''%(ADMIN_TABLE))
         #NOTE - this assumes there is one, and only gets the first one - is this what we want??
-        admin_email=cursor.fetchall()[0]['web_admin_email']
+        admin_email=cursor.fetchall()[0]['admin_email']
         #remove club from database
         cursor.execute('''DELETE FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID))
         cursor.connection.commit()
@@ -1638,6 +1633,21 @@ def clubDeniedTexts(admin_email):
         """
 
     return {'html':html,'text':text}
+
+
+########################################################################################################################
+########## Admin #################################################################################################
+def getAdmin():
+    cursor = mysql.connection.cursor()
+
+    #get current admin info
+    cursor.execute('''SELECT admin_name, admin_email FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
+    results = cursor.fetchall()[0]
+    admin_name = results['admin_name']
+    admin_email = results['admin_email']
+
+    admin = {'admin_name':admin_name,'admin_email':admin_email}
+    return admin
 
 
 
