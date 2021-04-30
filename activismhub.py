@@ -108,9 +108,17 @@ def addManyaAdminHash():
 #     mysql.connection.commit()
 
 
+def getAdmin():
+    cursor = mysql.connection.cursor()
 
+    #get current admin info
+    cursor.execute('''SELECT admin_name, admin_email FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
+    results = cursor.fetchall()[0]
+    admin_name = results['admin_name']
+    admin_email = results['admin_email']
 
-
+    admin = {'admin_name':admin_name,'admin_email':admin_email}
+    return admin
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -148,9 +156,10 @@ def index(message=""):
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
 
    stats = getStats()
+   admin = getAdmin()
    # printClubs()
    #render homepage
-   return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats)
+   return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #gets stats
@@ -223,8 +232,9 @@ def club_page():
    clubs = getClubs()
 
    stats = getStats()
+   admin = getAdmin()
 
-   return render_template("clubPage.html",info=info,events=events,clubs=clubs,stats=stats)
+   return render_template("clubPage.html",info=info,events=events,clubs=clubs,stats=stats,admin=admin)
 
 
 ########################################################################################################################
@@ -236,7 +246,8 @@ def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
    stats = getStats()
-   return render_template("login.html",clubs=clubs,message=message, stats=stats)
+   admin = getAdmin()
+   return render_template("login.html",clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #Route when user clicks submit on login page
@@ -310,8 +321,9 @@ def logout():
 def create_account(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   stats=getStats()
-   return render_template("create-account.html",clubs=clubs,message=message,stats=stats)
+   stats = getStats()
+   admin = getAdmin()
+   return render_template("create-account.html",clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #Route when user clicks submit on the create account page
@@ -1337,8 +1349,9 @@ def verifyEmail():
 @app.route("/forgotPassword")
 def forgotPassword(message=""):
     clubs = getClubs()
-    stats=getStats()
-    return render_template("forgotPassword.html",clubs=clubs,message=message,stats=stats)
+    stats = getStats()
+    admin = getAdmin()
+    return render_template("forgotPassword.html",clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #When click reset password button in forgot password page
@@ -1403,8 +1416,9 @@ def resetPassword():
             adminID = results2[0]['adminID']
             if hash == activation_hash:
                 clubs = getClubs()
-                stats=getStats()
-                return render_template("resetPassword.html",clubs=clubs,clubID=adminID,stats=stats)
+                stats = getStats()
+                admin = getAdmin()
+                return render_template("resetPassword.html",clubs=clubs,clubID=adminID,stats=stats,admin=admin)
             else:
                 return forgotPassword("Reset password via email failed")
     #else get clubID and hash for that email
@@ -1415,8 +1429,9 @@ def resetPassword():
     #if passes, render a reset password page, pass in clubID
     if db_hash == hash:
         clubs = getClubs()
-        stats=getStats()
-        return render_template("resetPassword.html",clubs=clubs,clubID=clubID,stats=stats)
+        stats = getStats()
+        admin = getAdmin()
+        return render_template("resetPassword.html",clubs=clubs,clubID=clubID,stats=stats,admin=admin)
     else:
         return forgotPassword("Reset password via email failed")
 
@@ -1633,25 +1648,6 @@ def clubDeniedTexts(admin_email):
         """
 
     return {'html':html,'text':text}
-
-
-########################################################################################################################
-########## Admin #################################################################################################
-def getAdmin():
-    cursor = mysql.connection.cursor()
-
-    #get current admin info
-    cursor.execute('''SELECT admin_name, admin_email FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
-    results = cursor.fetchall()[0]
-    admin_name = results['admin_name']
-    admin_email = results['admin_email']
-
-    admin = {'admin_name':admin_name,'admin_email':admin_email}
-    return admin
-
-
-
-
 
 
 

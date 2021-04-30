@@ -13,8 +13,6 @@
             modal.style.display = "block";
             const textHome = document.getElementById("txt-homepage");
             textHome.style.display = "none";
-            document.getElementById( "admin_name" ).value = admin_name;
-            document.getElementById("admin_email").value = admin_email;
         }
         /* Javascript function that hides the website stats and admin forms. */
         function hideStats(){
@@ -109,6 +107,7 @@
                         type="text"
                         id="admin_name"
                         name="admin_name"
+                        value={{admin['admin_name']}}
                         placeholder="Admin Name"
                         maxLength="255"
                         required>
@@ -122,6 +121,7 @@
                         type="text"
                         id="admin_email"
                         name = "admin_email"
+                        value={{admin['admin_email']}}
                         placeholder="Admin Email"
                         maxLength="255"
                         required>
