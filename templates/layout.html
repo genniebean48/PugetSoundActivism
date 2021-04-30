@@ -23,6 +23,17 @@
             const textHome = document.getElementById("txt-homepage");
             textHome.style.display = "flex";
         }
+
+        function deleteOldEventsJS(){
+            let response = window.confirm( "Do you want to delete all old events?");
+            if( response === true ) {
+                //if the user clicks ok and therefore wants to delete the passenger
+                location.href = '/deleteOldEvents';
+            } else {
+                //otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
+                hideStats();
+            }
+        }
     </script>
     {% block title %} {% endblock %}
 </head>
@@ -59,7 +70,7 @@
                 &emsp; &emsp; Current Total Clubs: {{stats['total_current_clubs']}}<br>
                 &emsp; &emsp; Current Total Events: {{stats['total_current_events']}}<br>
                 &emsp; &emsp; Current Total Cars: {{stats['total_current_cars']}}<br>
-                &emsp; &emsp; Current Total Passengers: {{stats['total_current_passengers']}}<br><br>
+                &emsp; &emsp; Current Total Passengers: {{stats['total_current_passengers']}}<br>
             </p>
             <p> &emsp; Overall Stats:<br>
                 &emsp; &emsp; Overall Total Clubs: {{stats['total_overall_clubs']}}<br>
@@ -68,13 +79,13 @@
                 &emsp; &emsp; Overall Total Passengers: {{stats['total_overall_passengers']}}
             </p>
 
-            <br>
-            <br>
-
-            <p id="deleteEvents">By clicking on this button, you can clear old events from our database. Please do this periodically so that event data can continue to transfer smoothly.</p>
+            <p> By clicking the button below, you clear all old events from the database. Please do this periodically so event data can continue to transfer smoothly.</p>
             <input
-                type="submit"
-                value="Delete Past Events"/>
+                   type="submit"
+                   id="deleteEvents"
+                   onclick = deleteOldEventsJS()
+                   value="Delete Old Events"/>
+
 
         </div>
         <div id="modal-admin-description">
@@ -95,9 +106,11 @@
                 <input
                         type="text"
                         id="admin_name"
+                        name="admin_name"
                         placeholder="Admin Name"
                         maxLength="255"
                         required>
+
                 <br>
                 <i class="fa fa-asterisk"
                    aria-hidden="true"></i>
@@ -106,9 +119,11 @@
                 <input
                         type="text"
                         id="admin_email"
+                        name = "admin_email"
                         placeholder="Admin Email"
                         maxLength="255"
                         required>
+
                 <br>
                 <input
                     type="submit"
