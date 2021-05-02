@@ -97,7 +97,7 @@
             </button>
 
             <h5> Change Admin </h5>
-            <form action="/addCar" method="post">
+            <form action="/changeAdmin" method="post">
                 <i class="fa fa-asterisk"
                    aria-hidden="true"></i>
                 <label for="admin_name">Admin Name:</label>
@@ -126,6 +126,8 @@
                         required>
 
                 <br>
+                <input type="hidden" name="old_admin_email" value={{admin['admin_email']}}>
+                <input type="hidden" name="adminID" value="{{admin['adminID']}}">
                 <input
                     type="submit"
                     value="Change Admin">
