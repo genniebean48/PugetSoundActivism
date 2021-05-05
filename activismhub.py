@@ -108,9 +108,12 @@ def addManyaAdminHash():
 #     mysql.connection.commit()
 
 
+def getAdmin():
+    cursor = mysql.connection.cursor()
 
-
-
+    #get current admin info
+    cursor.execute('''SELECT * FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
+    return cursor.fetchall()[0]
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -148,9 +151,10 @@ def index(message=""):
         event['end_time_formatted']=formatTimeFromSql(event['end_time'])
 
    stats = getStats()
+   admin = getAdmin()
    # printClubs()
    #render homepage
-   return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats)
+   return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #gets stats
@@ -223,8 +227,9 @@ def club_page():
    clubs = getClubs()
 
    stats = getStats()
+   admin = getAdmin()
 
-   return render_template("clubPage.html",info=info,events=events,clubs=clubs,stats=stats)
+   return render_template("clubPage.html",info=info,events=events,clubs=clubs,stats=stats,admin=admin)
 
 
 ########################################################################################################################
@@ -236,7 +241,8 @@ def login_page(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
    stats = getStats()
-   return render_template("login.html",clubs=clubs,message=message, stats=stats)
+   admin = getAdmin()
+   return render_template("login.html",clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #Route when user clicks submit on login page
@@ -310,8 +316,9 @@ def logout():
 def create_account(message=""):
    #sample list of dicts of clubs
    clubs = getClubs()
-   stats=getStats()
-   return render_template("create-account.html",clubs=clubs,message=message,stats=stats)
+   stats = getStats()
+   admin = getAdmin()
+   return render_template("create-account.html",clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #Route when user clicks submit on the create account page
@@ -427,7 +434,7 @@ def updateClub():
         cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(activation_hash,clubID))
         mysql.connection.commit()
         #send verification email
-        texts=verifyEmailText(club_email,activation_hash)
+        texts=verifyEmailText(old_club_email,activation_hash)
         sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
         print("sent verification email to new email address")
     #reroute to club page
@@ -1303,14 +1310,15 @@ def verifyEmail():
         clubID=r2[0]['adminID']
         db_hash = r2[0]['activation_hash']
         active = r2[0]['email_activated']
-        #check if hash matches what we have stored for this email and account isn't active
-        if active == 1:
-            return login_page(club_email+" has already been verified.")
+        #check if hash matches what we have stored for this email
         if db_hash != hash:
             return login_page("Email verification failed.")
         #activate admin account
         cursor.execute('''UPDATE %s SET email_activated=1, admin_email=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(club_email,clubID))
         mysql.connection.commit()
+        #email old admin with success message
+        texts = adminChangeSuccessTexts(club_email)
+        sendEmail(old_admin,texts['html'],texts['text'],"Admin change success")
         #reroute to login page
         return login_page("Email verification successful.")
     #else get ID, hash, activation status
@@ -1337,8 +1345,9 @@ def verifyEmail():
 @app.route("/forgotPassword")
 def forgotPassword(message=""):
     clubs = getClubs()
-    stats=getStats()
-    return render_template("forgotPassword.html",clubs=clubs,message=message,stats=stats)
+    stats = getStats()
+    admin = getAdmin()
+    return render_template("forgotPassword.html",clubs=clubs,message=message,stats=stats,admin=admin)
 
 
 #When click reset password button in forgot password page
@@ -1403,8 +1412,9 @@ def resetPassword():
             adminID = results2[0]['adminID']
             if hash == activation_hash:
                 clubs = getClubs()
-                stats=getStats()
-                return render_template("resetPassword.html",clubs=clubs,clubID=adminID,stats=stats)
+                stats = getStats()
+                admin = getAdmin()
+                return render_template("resetPassword.html",clubs=clubs,clubID=adminID,stats=stats,admin=admin)
             else:
                 return forgotPassword("Reset password via email failed")
     #else get clubID and hash for that email
@@ -1415,8 +1425,9 @@ def resetPassword():
     #if passes, render a reset password page, pass in clubID
     if db_hash == hash:
         clubs = getClubs()
-        stats=getStats()
-        return render_template("resetPassword.html",clubs=clubs,clubID=clubID,stats=stats)
+        stats = getStats()
+        admin = getAdmin()
+        return render_template("resetPassword.html",clubs=clubs,clubID=clubID,stats=stats,admin=admin)
     else:
         return forgotPassword("Reset password via email failed")
 
@@ -1636,18 +1647,85 @@ def clubDeniedTexts(admin_email):
 
 
 ########################################################################################################################
-########## Admin #################################################################################################
-def getAdmin():
-    cursor = mysql.connection.cursor()
+########## Admin #######################################################################################################
 
-    #get current admin info
-    cursor.execute('''SELECT admin_name, admin_email FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
-    results = cursor.fetchall()[0]
-    admin_name = results['admin_name']
-    admin_email = results['admin_email']
+@app.route("/changeAdmin",methods=["POST"])
+def changeAdmin():
+    admin_name=request.form['admin_name']
+    admin_email = request.form['admin_email']
+    old_admin_email = request.form['old_admin_email']
+    adminID = request.form['adminID']
+    cursor=mysql.connection.cursor()
+    cursor.execute('''UPDATE %s SET admin_name=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(admin_name,adminID))
+    mysql.connection.commit()
+    if admin_email != old_admin_email:
+        cursor.execute('''SELECT activation_hash FROM %s WHERE adminID=%%s'''%(ADMIN_TABLE,),(adminID,))
+        activation_hash=cursor.fetchall()[0]['activation_hash']
+        texts = verifyAdminEmailText(admin_email,activation_hash)
+        sendEmail(admin_email,texts['html'],texts['text'],"Verify new admin email")
+        return index("An email has been sent to "+admin_email+" to verify the admin change.")
+    return index("Admin name has been successfully changed.")
 
-    admin = {'admin_name':admin_name,'admin_email':admin_email}
-    return admin
+
+def verifyAdminEmailText(email,hash):
+    link=f"{SERVER_NAME}/verifyEmail?e={email}&h={hash}"
+    html=f"""\
+        <html>
+            <body>
+                <p>Hello,<br><br>
+                    You have been set as the new admin for ACTivism Hub.<br>
+                    If this has been done by mistake, please disregard this message.<br>
+                    If not, please verify your email by clicking <a href={link}>here</a>.<br>
+                    Once you have verified your email, you can login with your email and the<br>
+                    previous administrator's password, or reset your password by clicking<br>
+                    "forgot password" on the login page.<br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
+        </html>
+        """
+    text = f"""\
+        Hello,
+
+        You have been set as the new admin for ACTivism Hub.
+        If this has been done by mistake, please disregard this message.
+        If not, please verify your email by clicking the link below.
+        Once you have verified your email, you can login with your email and the
+        previous administrator's password, or reset your password by clicking
+        "forgot password" on the login page.
+
+        Best,
+        The ACTivism Hub Team
+
+        {link}
+        """
+    return {'html':html,'text':text}
+
+
+
+def adminChangeSuccessTexts(new_admin):
+    html=f'''\
+        <html>
+            <body>
+                <p>Hello,<br><br>
+                    The system administrator has been successfully changed to {new_admin}.<br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
+        </html>
+        '''
+    text = f'''\
+        Hello,
+
+        The system administrator has been successfully changed to {new_admin}.
+
+        Best,
+        The ACTivism Hub Team
+        '''
+    return {'html':html,'text':text}
+
 
 
 

@@ -13,8 +13,6 @@
             modal.style.display = "block";
             const textHome = document.getElementById("txt-homepage");
             textHome.style.display = "none";
-            document.getElementById( "admin_name" ).value = admin_name;
-            document.getElementById("admin_email").value = admin_email;
         }
         /* Javascript function that hides the website stats and admin forms. */
         function hideStats(){
@@ -79,7 +77,6 @@
                 &emsp; &emsp; Overall Total Passengers: {{stats['total_overall_passengers']}}
             </p>
 
-            <br>
             <h5> Delete Old Events </h5>
             <p id="deleteDes"> By clicking the button below, you clear all old events from the database. Please do this periodically so event data can continue to transfer smoothly.</p>
             <input
@@ -100,7 +97,7 @@
             </button>
 
             <h5> Change Admin </h5>
-            <form action="/addCar" method="post">
+            <form action="/changeAdmin" method="post">
                 <i class="fa fa-asterisk"
                    aria-hidden="true"></i>
                 <label for="admin_name">Admin Name:</label>
@@ -109,6 +106,7 @@
                         type="text"
                         id="admin_name"
                         name="admin_name"
+                        value={{admin['admin_name']}}
                         placeholder="Admin Name"
                         maxLength="255"
                         required>
@@ -122,11 +120,14 @@
                         type="text"
                         id="admin_email"
                         name = "admin_email"
+                        value={{admin['admin_email']}}
                         placeholder="Admin Email"
                         maxLength="255"
                         required>
 
                 <br>
+                <input type="hidden" name="old_admin_email" value={{admin['admin_email']}}>
+                <input type="hidden" name="adminID" value="{{admin['adminID']}}">
                 <input
                     type="submit"
                     value="Change Admin">
