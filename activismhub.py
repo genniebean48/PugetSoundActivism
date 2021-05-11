@@ -112,13 +112,8 @@ def getAdmin():
     cursor = mysql.connection.cursor()
 
     #get current admin info
-    cursor.execute('''SELECT admin_name, admin_email FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
-    results = cursor.fetchall()[0]
-    admin_name = results['admin_name']
-    admin_email = results['admin_email']
-
-    admin = {'admin_name':admin_name,'admin_email':admin_email}
-    return admin
+    cursor.execute('''SELECT * FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
+    return cursor.fetchall()[0]
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -439,7 +434,7 @@ def updateClub():
         cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(activation_hash,clubID))
         mysql.connection.commit()
         #send verification email
-        texts=verifyEmailText(club_email,activation_hash)
+        texts=verifyEmailText(old_club_email,activation_hash)
         sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
         print("sent verification email to new email address")
     #reroute to club page
@@ -1315,14 +1310,15 @@ def verifyEmail():
         clubID=r2[0]['adminID']
         db_hash = r2[0]['activation_hash']
         active = r2[0]['email_activated']
-        #check if hash matches what we have stored for this email and account isn't active
-        if active == 1:
-            return login_page(club_email+" has already been verified.")
+        #check if hash matches what we have stored for this email
         if db_hash != hash:
             return login_page("Email verification failed.")
         #activate admin account
         cursor.execute('''UPDATE %s SET email_activated=1, admin_email=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(club_email,clubID))
         mysql.connection.commit()
+        #email old admin with success message
+        texts = adminChangeSuccessTexts(club_email)
+        sendEmail(old_admin,texts['html'],texts['text'],"Admin change success")
         #reroute to login page
         return login_page("Email verification successful.")
     #else get ID, hash, activation status
@@ -1648,6 +1644,92 @@ def clubDeniedTexts(admin_email):
         """
 
     return {'html':html,'text':text}
+
+
+########################################################################################################################
+########## Admin #######################################################################################################
+
+@app.route("/changeAdmin",methods=["POST"])
+def changeAdmin():
+    admin_name=request.form['admin_name']
+    admin_email = request.form['admin_email']
+    old_admin_email = request.form['old_admin_email']
+    adminID = request.form['adminID']
+    cursor=mysql.connection.cursor()
+    cursor.execute('''UPDATE %s SET admin_name=%%s WHERE adminID=%%s'''%(ADMIN_TABLE,),(admin_name,adminID))
+    mysql.connection.commit()
+    if admin_email != old_admin_email:
+        cursor.execute('''SELECT activation_hash FROM %s WHERE adminID=%%s'''%(ADMIN_TABLE,),(adminID,))
+        activation_hash=cursor.fetchall()[0]['activation_hash']
+        texts = verifyAdminEmailText(admin_email,activation_hash)
+        sendEmail(admin_email,texts['html'],texts['text'],"Verify new admin email")
+        return index("An email has been sent to "+admin_email+" to verify the admin change.")
+    return index("Admin name has been successfully changed.")
+
+
+def verifyAdminEmailText(email,hash):
+    link=f"{SERVER_NAME}/verifyEmail?e={email}&h={hash}"
+    html=f"""\
+        <html>
+            <body>
+                <p>Hello,<br><br>
+                    You have been set as the new admin for ACTivism Hub.<br>
+                    If this has been done by mistake, please disregard this message.<br>
+                    If not, please verify your email by clicking <a href={link}>here</a>.<br>
+                    Once you have verified your email, you can login with your email and the<br>
+                    previous administrator's password, or reset your password by clicking<br>
+                    "forgot password" on the login page.<br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
+        </html>
+        """
+    text = f"""\
+        Hello,
+
+        You have been set as the new admin for ACTivism Hub.
+        If this has been done by mistake, please disregard this message.
+        If not, please verify your email by clicking the link below.
+        Once you have verified your email, you can login with your email and the
+        previous administrator's password, or reset your password by clicking
+        "forgot password" on the login page.
+
+        Best,
+        The ACTivism Hub Team
+
+        {link}
+        """
+    return {'html':html,'text':text}
+
+
+
+def adminChangeSuccessTexts(new_admin):
+    html=f'''\
+        <html>
+            <body>
+                <p>Hello,<br><br>
+                    The system administrator has been successfully changed to {new_admin}.<br><br>
+                    Best,<br>
+                    The ACTivism Hub Team
+                </p>
+            </body>
+        </html>
+        '''
+    text = f'''\
+        Hello,
+
+        The system administrator has been successfully changed to {new_admin}.
+
+        Best,
+        The ACTivism Hub Team
+        '''
+    return {'html':html,'text':text}
+
+
+
+
+
 
 
 
