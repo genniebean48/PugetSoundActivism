@@ -509,8 +509,8 @@ def addEvent():
     mysql.connection.commit()
 
     #increment total events for tracking
-    # cursor.execute('''UPDATE %s SET total_events = total_events + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-    # mysql.connection.commit()
+    cursor.execute('''UPDATE %s SET total_events = total_events + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    mysql.connection.commit()
 
     #Get image from form
     image = request.files['event_image']
@@ -655,8 +655,8 @@ def addCar():
     mysql.connection.commit()
 
     #increment total overall cars for tracking
-    # cursor.execute('''UPDATE %s SET total_cars = total_cars + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-    # mysql.connection.commit()
+    cursor.execute('''UPDATE %s SET total_cars = total_cars + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    mysql.connection.commit()
 
     #get carID from just inserted car
     cursor.execute('''SELECT last_insert_id()''')
@@ -854,8 +854,8 @@ def addPassenger():
     mysql.connection.commit()
 
     #increment total passengers for tracking
-    # cursor.execute('''UPDATE %s SET total_passengers = total_passengers + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-    # mysql.connection.commit()
+    cursor.execute('''UPDATE %s SET total_passengers = total_passengers + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    mysql.connection.commit()
 
     # Get eventID,depart_time,driver_email using carID
     cursor.execute('''SELECT eventID,depart_time,driver_email FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
@@ -1585,8 +1585,8 @@ def approveClub():
     sendEmail(club_info['club_email'],texts['html'],texts['text'],"Verify your email")
 
     #increment total clubs for tracking
-    # cursor.execute('''UPDATE %s SET total_clubs = total_club + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
-    # cursor.connection.commit()
+    cursor.execute('''UPDATE %s SET total_clubs = total_club + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+    cursor.connection.commit()
 
     #load home page with message that club was approved
     return index(club_info['club_name']+" successfully approved. An email has been sent to the club to verify their email.")
