@@ -115,6 +115,21 @@ def getAdmin():
     cursor.execute('''SELECT * FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
     return cursor.fetchall()[0]
 
+def checkTimeStamps():
+    cursor = mysql.connection.cursor()
+    cursor.execute('''SELECT time_last_edited FROM testClub''')
+    results=cursor.fetchall()
+    print("Test club times:")
+    for result in results:
+        print(result['time_last_edited'])
+        print(type(result['time_last_edited']))
+    cursor.execute('''SELECT time_last_edited FROM club''')
+    results=cursor.fetchall()
+    print("Club times:")
+    for result in results:
+        print(result['time_last_edited'])
+        print(type(result['time_last_edited']))
+
 ########################################################################################################################
 ##### Main pages #######################################################################################################
 
@@ -153,6 +168,7 @@ def index(message=""):
    stats = getStats()
    admin = getAdmin()
    # printClubs()
+   checkTimeStamps()
    #render homepage
    return render_template("homePage.html",events=events,clubs=clubs,message=message,stats=stats,admin=admin)
 
@@ -745,7 +761,7 @@ def editCar():
     #get form info
     driver_name = request.form['driver_name']
     driver_email = request.form['driver_email']
-    num_seats_total = int(request.form['num_seats_total'])
+    #num_seats_total = int(request.form['num_seats_total'])
     depart_time = request.form['depart_time']
     return_time = request.form['return_time']
     meeting_location = request.form['meeting_location']
@@ -753,9 +769,9 @@ def editCar():
     #instantiate cursor
     cursor = mysql.connection.cursor()
 
-    # get num_seats taken
-    cursor.execute('''SELECT num_seats_taken, num_seats_available FROM %s WHERE carID=%%s'''%(CAR_TABLE,),(carID,))
-    results = cursor.fetchall()[0]
+#     # get num_seats taken
+#     cursor.execute('''SELECT num_seats_taken, num_seats_available FROM %s WHERE carID=%%s'''%(CAR_TABLE,),(carID,))
+#     results = cursor.fetchall()[0]
 
     #get eventID using carID
     cursor.execute('''SELECT eventID FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
@@ -940,7 +956,9 @@ def addCarDriverText(event_name,date,time):
         <html>
           <body>
             <p>Hello,<br><br>
-               You have successfully added a car for the {event_name} event leaving on {date} at {time}.<br><br>
+               You have successfully added a car for {event_name} leaving on {date} at {time}.<br>
+               If this was a mistake or you no longer are able to drive, please modify or delete your car<br>
+               on the ACTivism Hub homepage.<br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -950,7 +968,9 @@ def addCarDriverText(event_name,date,time):
     text = f"""\
         Hello,
 
-        You have successfully added a car for the {event_name} event leaving on {date} at {time}.
+        You have successfully added a car for {event_name} leaving on {date} at {time}.
+        If this was a mistake or you no longer are able to drive, please modify or delete your car
+        on the ACTivism Hub homepage.
 
         Best,
         The ACTivism Hub Team
@@ -986,7 +1006,8 @@ def addPassengerText(event_name,date,time):
         <html>
           <body>
             <p>Hello,<br><br>
-               You have been added to a car for {event_name} leaving on {date} at {time}.<br><br>
+               You have been successfully added to a car for {event_name} leaving on {date} at {time}.<br>
+               If you no longer plan to attend, please remove yourself from this car on the ACTivism Hub homepage.<br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -997,6 +1018,7 @@ def addPassengerText(event_name,date,time):
         Hello,
 
         You have been added to a car for {event_name} leaving on {date} at {time}.
+        If you no longer plan to attend, please remove yourself from this car on the ACTivism Hub homepage.
 
         Best,
         The ACTivism Hub Team
@@ -1047,7 +1069,8 @@ def deleteCarDriverText(event_name,date,time):
     text = f"""\
         Hello,
 
-        Your car for {event_name} leaving on {date} at {time} has been deleted. If this was a mistake, please return to ACTivism Hub and add your car again.
+        Your car for {event_name} leaving on {date} at {time} has been deleted.
+        If this was a mistake, please return to ACTivism Hub and add your car again.
 
         Best,
         The ACTivism Hub Team
@@ -1060,7 +1083,7 @@ def carRequestText(club_name, event_name,date):
         <html>
           <body>
             <p>Hello {club_name},<br><br>
-               There has been a car request made for the {event_name} event on {date}. <br><br>
+               Someone has requested a ride for {event_name} on {date}. <br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -1070,7 +1093,7 @@ def carRequestText(club_name, event_name,date):
     text = f"""\
         Hello {club_name},
 
-        There has been a car request made for the {event_name} event leaving on {date}.
+        Someone has requested a ride for the {event_name} leaving on {date}.
 
         Best,
         The ACTivism Hub Team
@@ -1083,7 +1106,8 @@ def deletePassengerText(event_name,date,time):
         <html>
           <body>
             <p>Hello,<br><br>
-               You have been successfully deleted from your car for {event_name} leaving on {date} at {time}.<br><br>
+               You have been successfully deleted from your car for {event_name} leaving on {date} at {time}.<br>
+               If this was a mistake, please visit the ACTivism Hub homepage and add yourself to another car.<br><br>
                Best,<br>
                The ACTivism Hub Team
             </p>
@@ -1093,7 +1117,8 @@ def deletePassengerText(event_name,date,time):
     text = f"""\
         Hello,
 
-        You have been successfully deleted from your car for {event_name} leaving on {date} at {time}.<br><br>
+        You have been successfully deleted from your car for {event_name} leaving on {date} at {time}.
+        If this was a mistake, please visit the ACTivism Hub homepage and add yourself to another car.
 
         Best,
         The ACTivism Hub Team
@@ -1119,7 +1144,7 @@ def editCarDriverText(event_name,date,time):
         Hello,
 
         Your car has successfully been edited. It is scheduled to leave on {date} at {time} for {event_name}.
-        If this was a mistake, please return to ACTivism Hub and change your car details.<br><br>
+        If this was a mistake, please return to ACTivism Hub and change your car details.
                
         Best,
         The ACTivism Hub Team
@@ -1132,7 +1157,8 @@ def editCarPassText(event_name,time, date):
         <html>
           <body>
             <p>Hello,<br><br>
-               A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for {event_name}.
+               A car you reserved has been edited and some details may have been changed.<br>
+               It is now leaving on {date} at {time} for {event_name}.<br>
                Please visit ACTivism Hub and check that this still works with your schedule. <br><br>
                Best,<br>
                The ACTivism Hub Team
@@ -1143,7 +1169,8 @@ def editCarPassText(event_name,time, date):
     text = f"""\
         Hello,
 
-        A car you reserved has been edited and some details may have been changed. It is now leaving on {date} at {time} for {event_name}.
+        A car you reserved has been edited and some details may have been changed.
+        It is now leaving on {date} at {time} for {event_name}.
         Please visit ACTivism Hub and check that this still works with your schedule.
             
         Best,
