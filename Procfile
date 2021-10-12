@@ -1,1 +1,1 @@
-web: gunicorn app:activismhub
+web: gunicorn activismhub:app
