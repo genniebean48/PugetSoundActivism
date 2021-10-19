@@ -43,21 +43,21 @@ IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 
 #Set tables - Change for running in server or localhost if club access is an issue
 #for actually running
-# SERVER_NAME="http://activism-hub.pugetsound.edu"
-# CLUB_TABLE='club'
-# EVENT_TABLE='club_event'
-# ADMIN_TABLE='website_admin'
-# CAR_TABLE = 'rideShare_car'
-# PASSENGER_TABLE = 'rideShare_passenger'
-# TRACKING_TABLE = 'tracking'
-#for testing
-SERVER_NAME="http://localhost:5000"
-CLUB_TABLE ='testClub'
-EVENT_TABLE ='testClub_event'
-ADMIN_TABLE ='website_admin'
-CAR_TABLE = 'testRideShare_car'
-PASSENGER_TABLE = 'testRideShare_passenger'
+SERVER_NAME="https://activismhub.herokuapp.com"
+CLUB_TABLE='club'
+EVENT_TABLE='club_event'
+ADMIN_TABLE='website_admin'
+CAR_TABLE = 'rideShare_car'
+PASSENGER_TABLE = 'rideShare_passenger'
 TRACKING_TABLE = 'tracking'
+#for testing
+# SERVER_NAME="http://localhost:5000"
+# CLUB_TABLE ='testClub'
+# EVENT_TABLE ='testClub_event'
+# ADMIN_TABLE ='website_admin'
+# CAR_TABLE = 'testRideShare_car'
+# PASSENGER_TABLE = 'testRideShare_passenger'
+# TRACKING_TABLE = 'tracking'
 
 #salt for password hashing
 salt = '1kn0wy0ulov3m3'
