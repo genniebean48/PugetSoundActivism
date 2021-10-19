@@ -118,11 +118,15 @@ def getAdmin():
 
     #get current admin info
     cursor.execute('''SELECT * FROM %s WHERE curr_admin = 1''' %(ADMIN_TABLE,))
-    return cursor.fetchall()[0]
+    admin = cursor.fetchall()
+    if len(admin)>0:
+        return admin[0]
+    else:
+        return {'web_adminID':0,'web_admin_name':'None','web_admin_email':'None',}
 
 def checkTimeStamps():
     cursor = mysql.connection.cursor()
-    cursor.execute('''SELECT time_last_edited FROM testClub''')
+    cursor.execute('''SELECT time_last_edited FROM club''')
     results=cursor.fetchall()
     print("Test club times:")
     for result in results:
@@ -202,11 +206,18 @@ def getStats():
 
     #get overall totals
     cursor.execute('''SELECT * FROM %s WHERE trackingID = 1''' %(TRACKING_TABLE,))
-    results = cursor.fetchall()[0]
-    total_overall_clubs = results['total_clubs']
-    total_overall_events = results['total_events']
-    total_overall_cars = results['total_cars']
-    total_overall_passengers = results['total_passengers']
+    results = cursor.fetchall()
+    if len(results)>0:
+        results = results[0]
+        total_overall_clubs = results['total_clubs']
+        total_overall_events = results['total_events']
+        total_overall_cars = results['total_cars']
+        total_overall_passengers = results['total_passengers']
+    else:
+        total_overall_clubs = 0
+        total_overall_events = 0
+        total_overall_cars = 0
+        total_overall_passengers = 0
 
     stats = {"total_current_clubs":total_current_clubs, "total_current_events":total_current_events,"total_current_cars":total_current_cars,
              "total_current_passengers":total_current_passengers,"total_overall_clubs":total_overall_clubs,"total_overall_events":total_overall_events,

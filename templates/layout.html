@@ -106,7 +106,7 @@
                         type="text"
                         id="admin_name"
                         name="admin_name"
-                        value={{admin['admin_name']}}
+                        value={{admin['web_admin_name']}}
                         placeholder="Admin Name"
                         maxLength="255"
                         required>
@@ -120,14 +120,14 @@
                         type="text"
                         id="admin_email"
                         name = "admin_email"
-                        value={{admin['admin_email']}}
+                        value={{admin['web_admin_email']}}
                         placeholder="Admin Email"
                         maxLength="255"
                         required>
 
                 <br>
-                <input type="hidden" name="old_admin_email" value={{admin['admin_email']}}>
-                <input type="hidden" name="adminID" value="{{admin['adminID']}}">
+                <input type="hidden" name="old_admin_email" value={{admin['web_admin_email']}}>
+                <input type="hidden" name="adminID" value="{{admin['web_adminID']}}">
                 <input
                     type="submit"
                     value="Change Admin">
