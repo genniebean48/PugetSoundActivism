@@ -24,10 +24,15 @@ app.secret_key = b'1234567'
 mysql = MySQL(app)
 
 #Configure MySQL
-app.config['MYSQL_HOST'] = 'activism-hub'
-app.config['MYSQL_USER'] = 'dba'
-app.config['MYSQL_PASSWORD'] = 'Password321$'
-app.config['MYSQL_DB'] = 'remote_activismHub'
+# app.config['MYSQL_HOST'] = 'activism-hub'
+# app.config['MYSQL_USER'] = 'dba'
+# app.config['MYSQL_PASSWORD'] = 'Password321$'
+# app.config['MYSQL_DB'] = 'remote_activismHub'
+# app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead of default tuples
+app.config['MYSQL_HOST'] = 'us-cdbr-east-04.cleardb.com'
+app.config['MYSQL_USER'] = 'b23619ece5cddb'
+app.config['MYSQL_PASSWORD'] = '5872b43e'
+app.config['MYSQL_DB'] = 'heroku_3a423214d0c6425'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead of default tuples
 
 #Set start path for images - Change for whether running in server or on localhost
