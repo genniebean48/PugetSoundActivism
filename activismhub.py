@@ -47,8 +47,8 @@ SERVER_NAME="https://activismhub.herokuapp.com"
 CLUB_TABLE='club'
 EVENT_TABLE='club_event'
 ADMIN_TABLE='website_admin'
-CAR_TABLE = 'rideShare_car'
-PASSENGER_TABLE = 'rideShare_passenger'
+CAR_TABLE = 'rideshare_car'
+PASSENGER_TABLE = 'rideshare_passenger'
 TRACKING_TABLE = 'tracking'
 #for testing
 # SERVER_NAME="http://localhost:5000"
