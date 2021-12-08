@@ -179,12 +179,19 @@ times and places, and then finally the social media links with the icons. This p
       }
   }
 
+  function displayMessage( message ) {
+      if( message != "" ) {
+	      window.alert( message );
+	  }
+  }
+
 </script>{% endblock %}
 
 {% block title %}
 <title>ACTivism Hub</title>{% endblock %}
 
 {% block panel %}
+<body onload="displayMessage('{{message}}')">
 <div class="club-panel">
   <div class="upcoming-events">
     <div class="header">
@@ -823,4 +830,6 @@ times and places, and then finally the social media links with the icons. This p
       </form>
     </div>
   </div>
-</div>{% endblock %}
+</div>
+</body>
+{% endblock %}
