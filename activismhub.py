@@ -508,7 +508,7 @@ def addEvent():
     #put new event in table
     cursor.execute('''INSERT INTO %s(event_name,club_name,clubID,event_date,start_time,end_time,event_location,
             event_description,event_type,facebook_event_link,event_virtual) VALUES(%%s,%%s,%%s,%%s,%%s,
-            %%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,club_name,clubID,event_date,start_time,end_time,
+            %%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,club_name,clubID,event_date,start_time,end_time,
             event_location,event_description,event_type,facebook_event_link,event_virtual))
     mysql.connection.commit()
     #Update club time last active
