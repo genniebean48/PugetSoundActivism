@@ -507,9 +507,12 @@ def addEvent():
     time_last_edited = cursor.fetchall()[0]['NOW()']
     #put new event in table
     cursor.execute('''INSERT INTO %s(event_name,club_name,clubID,event_date,start_time,end_time,event_location,
-            event_description,event_type,facebook_event_link,event_virtual,time_last_edited) VALUES(%%s,%%s,%%s,%%s,%%s,
+            event_description,event_type,facebook_event_link,event_virtual) VALUES(%%s,%%s,%%s,%%s,%%s,
             %%s,%%s,%%s,%%s,%%s,%%s,%%s)'''%(EVENT_TABLE,),(event_name,club_name,clubID,event_date,start_time,end_time,
-            event_location,event_description,event_type,facebook_event_link,event_virtual,time_last_edited))
+            event_location,event_description,event_type,facebook_event_link,event_virtual))
+    mysql.connection.commit()
+    #Update club time last active
+    cursor.execute('''UPDATE %s SET time_last_edited=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(time_last_edited,clubID))
     mysql.connection.commit()
 
     #increment total events for tracking
