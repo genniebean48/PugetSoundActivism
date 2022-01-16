@@ -152,10 +152,12 @@ events that are coming up in the next week. -->
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
 		let editCar = document.getElementById( "modal-seats-editCar" );
+		let reqCar = document.getElementById( "modal-seats-requestCar" );
 		let txtHome = document.getElementById("txt-homepage");
 		addCar.style.display = "none";
 		resSeat.style.display = "none";
 		editCar.style.display = "none";
+		reqCar.style.display = "none";
 		description.style.display = "flex";
 		txtHome.style.display = "flex"
 
@@ -171,9 +173,11 @@ events that are coming up in the next week. -->
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
 		let editCar = document.getElementById( "modal-seats-editCar" );
+		let reqCar = document.getElementById( "modal-seats-requestCar" );
 		addCar.style.display = "none";
 		resSeat.style.display = "none";
 		editCar.style.display = "none";
+		reqCar.style.display = "none";
 		description.style.display = "flex";
 	}
 
@@ -185,17 +189,20 @@ events that are coming up in the next week. -->
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
 		let editCar = document.getElementById( "modal-seats-editCar" );
+		let reqCar = document.getElementById( "modal-seats-requestCar" );
 		document.getElementById( "addCar-eventID" ).value = eventID;
 
 		if( window.getComputedStyle( addCar ).display === "none" ) {
 			description.style.display = "none";
 			resSeat.style.display = "none";
 			editCar.style.display = "none";
+			reqCar.style.display = "none";
 			addCar.style.display = "inline-block";
 		} else {
 			addCar.style.display = "none";
 			resSeat.style.display = "none";
 			editCar.style.display = "none";
+			reqCar.style.display = "none";
 			description.style.display = "flex";
 		}
 	}
@@ -208,16 +215,19 @@ events that are coming up in the next week. -->
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
 		let editCar = document.getElementById( "modal-seats-editCar" );
+		let reqCar = document.getElementById( "modal-seats-requestCar" );
 		document.getElementById( "reserveSeat-carID" ).value = carID;
 		if( window.getComputedStyle( resSeat ).display === "none" ) {
 			description.style.display = "none";
 			addCar.style.display = "none";
 			editCar.style.display = "none";
+			reqCar.style.display = "none";
 			resSeat.style.display = "inline-block";
 		} else {
 			addCar.style.display = "none";
 			resSeat.style.display = "none";
 			editCar.style.display = "none";
+			reqCar.style.display = "none";
 			description.style.display = "flex";
 		}
 	}
@@ -248,21 +258,48 @@ events that are coming up in the next week. -->
 		}
 	}
 
-	/* Javascript Function that requests a car for the event. In order to request the car the user has to click the button, and then
-	* click "ok" from the drop down menu. Then the club who is running the event will get an email saying that someone has requested a car
-	* in order to go to the event. If the user decides not to request a car they can click cancel and then the function will not run and the
-	* rideshare modal will just be hidden. */
-	function requestCar( eventID ) {
-		let response = window.confirm( "Do you want to request a car for this event?" );
-		if( response === true ) {
-			//if the user clicks ok and therefore wants to request the car
-			location.href = '/requestCar?id=' + eventID;
+<!--	/* Javascript Function that requests a car for the event. In order to request the car the user has to click the button, and then-->
+<!--	* click "ok" from the drop down menu. Then the club who is running the event will get an email saying that someone has requested a car-->
+<!--	* in order to go to the event. If the user decides not to request a car they can click cancel and then the function will not run and the-->
+<!--	* rideshare modal will just be hidden. */-->
+<!--	function requestCar( eventID ) {-->
+<!--		let response = window.confirm( "Do you want to request a car for this event?" );-->
+<!--		if( response === true ) {-->
+<!--			//if the user clicks ok and therefore wants to request the car-->
+<!--			location.href = '/requestCar?id=' + eventID;-->
 
+<!--		} else {-->
+<!--			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function-->
+<!--			hideRideShare();-->
+<!--		}-->
+<!--	}-->
+
+
+	/* Javascript Function that requests a car for the event. It toggles the right side so that the
+	* request car form is showing, and will prompt the user to enter their
+	* name as well as their email. They will get a confirmation email, and when there is a seat available, they will be added to that car. */
+	function requestCar( eventID ) {
+		let description = document.getElementById( "modal-seats-description" );
+		let addCar = document.getElementById( "modal-seats-addCar" );
+		let resSeat = document.getElementById( "modal-seats-resSeat" );
+		let editCar = document.getElementById( "modal-seats-editCar" );
+		let reqCar = document.getElementById( "modal-seats-requestCar" );
+		document.getElementById( "requestCar-eventID" ).value = eventID;
+		if( window.getComputedStyle( reqCar ).display === "none" ) {
+			description.style.display = "none";
+			addCar.style.display = "none";
+			editCar.style.display = "none";
+			reqCar.style.display = "inline-block";
+			resSeat.style.display = "none";
 		} else {
-			//otherwise the user clicked cancel and we should go back to club profile view by calling hideRideShare function
-			hideRideShare();
+			addCar.style.display = "none";
+			resSeat.style.display = "none";
+			editCar.style.display = "none";
+			reqCar.style.display = "none";
+			description.style.display = "flex";
 		}
 	}
+
 
 	/* Javascript Function that edits the car. When the button is clicked the form will appear on the right side of the ride share modal.
 	* Once the edit car button is clicked then the user will be able to edit the driver's name, the driver's email the depart time, return time
@@ -272,17 +309,20 @@ events that are coming up in the next week. -->
 		let addCar = document.getElementById( "modal-seats-addCar" );
 		let resSeat = document.getElementById( "modal-seats-resSeat" );
 		let editCar = document.getElementById( "modal-seats-editCar" );
+		let reqCar = document.getElementById( "modal-seats-requestCar" );
 		document.getElementById( "editCar-carID" ).value = carID;
 
 		if( window.getComputedStyle( editCar ).display === "none" ) {
 			description.style.display = "none";
 			resSeat.style.display = "none";
 			addCar.style.display = "none";
+			reqCar.style.display = "none";
 			editCar.style.display = "inline-block"
 		} else {
 			addCar.style.display = "none";
 			resSeat.style.display = "none";
-			editCar.style.display = "none"
+			editCar.style.display = "none";
+			reqCar.style.display = "none";
 			description.style.display = "flex";
 		}
 
@@ -765,6 +805,61 @@ events that are coming up in the next week. -->
 							id="deletebtn"
 							type="submit"/>
 			</div>
+		</div>
+		<div id="modal-seats-requestCar">
+			<button
+					class="exit"
+					onclick=hideRideForm()>
+				<i
+						class="fa fa-times-circle fa-lg"
+						aria-hidden="true"></i>
+			</button>
+			<h3>Request a Car</h3>
+			<p>When you submit this form, you will be added to a wait list, and then to the next seat that becomes available.</p>
+			<br>
+			<p>* indicates required field</p>
+			<form
+					action="/requestCar"
+					method="post">
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="passenger_name">Passenger's Name:</label>
+				<br>
+				<input
+						type="text"
+						id="request_passenger_name"
+						name="passenger_name"
+						placeholder="Passenger's Name"
+						maxLength="255"
+						required>
+				<br>
+
+				<i
+						class="fa fa-asterisk"
+						aria-hidden="true"></i>
+				<label for="passenger_email">Passenger's Email:</label>
+				<br>
+				<input
+						type="text"
+						id="request_passenger_email"
+						name="passenger_email"
+						placeholder="Passenger's Email"
+						maxLength="255"
+						required>
+				<br>
+
+				<input
+						type="hidden"
+						name="eventID"
+						id="requestCar-eventID"/>
+
+				<input
+						type="submit"
+						value="Request Car"
+						onclick="return verify(passenger_email.value)"/>
+			</form>
 		</div>
 	</div>
 </div>

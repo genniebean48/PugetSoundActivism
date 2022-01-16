@@ -51,6 +51,7 @@ ADMIN_TABLE='website_admin'
 CAR_TABLE = 'rideshare_car'
 PASSENGER_TABLE = 'rideshare_passenger'
 TRACKING_TABLE = 'tracking'
+CAR_REQUEST_TABLE = 'car_request'
 #for testing
 # SERVER_NAME="http://localhost:5000"
 # CLUB_TABLE ='testClub'
@@ -692,6 +693,68 @@ def addCar():
     cursor.execute('''UPDATE %s SET total_cars = total_cars + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
     mysql.connection.commit()
 
+    #If there are car requests for this event, add them to car
+    cursor.execute('''SELECT * FROM %s WHERE eventID=%%s AND completed=%%s'''%(CAR_REQUEST_TABLE,),(eventID,False))
+    carRequests = cursor.fetchall()
+    while len(carRequests)>0:
+        carRequest = carRequests[0]
+        #Atomically check if request has already been added to a car
+        cursor.execute('''UPDATE %s SET completed = IF(completed, completed, %%s) WHERE requestID=%%s'''%
+            (CAR_REQUEST_TABLE,),(True,carRequest['requestID']))
+        mysql.connection.commit()
+        cursor.execute('''SELECT ROW_COUNT()''')
+        if cursor.fetchall()[0]!=0:
+            #Atomically check that their is an available seat and decrement available seats by 1
+            cursor.execute('''UPDATE %s SET num_seats_available = IF(num_seats_available > 0, num_seats_available - 1,
+                num_seats_available) WHERE carID = %%s'''%(CAR_TABLE,),(carID,))
+            mysql.connection.commit()
+            #If there was a seat available
+            cursor.execute('''SELECT ROW_COUNT()''')
+            if cursor.fetchall()[0]!=0:
+                #Delete from car request table
+                cursor.execute('''DELETE FROM %s WHERE requestID=%%s'''%(CAR_REQUEST_TABLE,),(carRequest['requestID'],))
+                mysql.connection.commit()
+                #add passenger
+                cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,carID) VALUES (%%s,%%s,%%s)'''%(PASSENGER_TABLE,),
+                    (carRequest['passenger_name'],carRequest['passenger_email'],carID))
+                mysql.connection.commit()
+
+                #increment total passengers for tracking
+                cursor.execute('''UPDATE %s SET total_passengers = total_passengers + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
+                mysql.connection.commit()
+
+                # Get eventID,depart_time,driver_email using carID
+                cursor.execute('''SELECT eventID,depart_time,return_time,driver_email,meeting_location FROM %s WHERE carID = %%s''' %(CAR_TABLE,),(carID,))
+                results = cursor.fetchall()[0]
+                eventID = results['eventID']
+                depart_time = results['depart_time']
+                return_time = results['return_time']
+                driver_email = results['driver_email']
+                meeting_location=results['meeting_location']
+
+                #get event_name and date using eventID
+                cursor.execute('''SELECT event_name, event_date FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
+                results = cursor.fetchall()[0]
+                event_name = results['event_name']
+                date = results['event_date']
+
+                #format date and time from SQL
+                date = formatDateFromSql(date)
+                depart_time = formatTimeFromSql(depart_time)
+                return_time = formatTimeFromSql(return_time)
+
+                #Notify passenger that they've been added to the car
+                texts = addPassengerText(event_name,date,depart_time,return_time,meeting_location)
+                subject = 'Successfully Added to a Car!'
+                sendEmail(carRequest['passenger_email'],texts['html'],texts['text'],subject)
+            else:
+                cursor.execute('''UPDATE %s SET completed=False WHERE requestID=%%s'''%(CAR_REQUEST_TABLE,),(carRequest['requestID'],))
+                mysql.connection.commit()
+                break
+        #Re-query to see if more requests
+        cursor.execute('''SELECT * FROM %s WHERE eventID=%%s AND completed=%%s'''%(CAR_REQUEST_TABLE,),(eventID,False))
+        carRequests = cursor.fetchall()
+
     #reroute to home page
     return index()
 
@@ -802,35 +865,57 @@ def editCar():
     #reroute to home page
     return index()
 
-
+#OLD
 #route when user clicks request a car
-@app.route("/requestCar")
+# @app.route("/requestCar")
+# def requestCar():
+#     #get eventID for requested car
+#     eventID = request.args.get("id")
+#
+#     #instantiate cursor
+#     cursor = mysql.connection.cursor()
+#     #get event info and clubID
+#     cursor.execute('''SELECT event_name, event_date,clubID FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
+#     results = cursor.fetchall()[0]
+#     event_name = results['event_name']
+#     date = results['event_date']
+#     clubID = results['clubID']
+#
+#     #get club_name and club_email using clubID
+#     cursor.execute('''SELECT club_name,club_email FROM %s WHERE clubID = %%s''' %(CLUB_TABLE,),(clubID,))
+#     results = cursor.fetchall()[0]
+#     club_name = results['club_name']
+#     club_email = results['club_email']
+#
+#     #Notify club that someone has requested a car for an event
+#     texts = carRequestText(club_name,event_name,date)
+#     subject = 'Car Requested for Your Event'
+#     sendEmail(club_email,texts['html'],texts['text'],subject)
+#
+#     #reroute to home page
+#     return index("Car successfully requested!")
+
+
+#New request car
+@app.route("/requestCar",methods=['POST'])
 def requestCar():
-    #get eventID for requested car
-    eventID = request.args.get("id")
+    #Get which event
+    eventID = request.form['eventID']
+
+    #get form info
+    passenger_name = request.form['passenger_name']
+    passenger_email = request.form['passenger_email']
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
-    #get event info and clubID
-    cursor.execute('''SELECT event_name, event_date,clubID FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
-    results = cursor.fetchall()[0]
-    event_name = results['event_name']
-    date = results['event_date']
-    clubID = results['clubID']
-
-    #get club_name and club_email using clubID
-    cursor.execute('''SELECT club_name,club_email FROM %s WHERE clubID = %%s''' %(CLUB_TABLE,),(clubID,))
-    results = cursor.fetchall()[0]
-    club_name = results['club_name']
-    club_email = results['club_email']
-
-    #Notify club that someone has requested a car for an event
-    texts = carRequestText(club_name,event_name,date)
-    subject = 'Car Requested for Your Event'
-    sendEmail(club_email,texts['html'],texts['text'],subject)
+    #Add car request to database
+    cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,eventID,completed) VALUES(%%s,%%s,%%s,%%s)'''
+        %(CAR_REQUEST_TABLE,),(passenger_name,passenger_email,eventID,False))
+    mysql.connection.commit()
 
     #reroute to home page
-    return index("Car successfully requested!")
+    return index("You will be added to the next available car! A confirmation email will be sent to the address provided with car details at that time.")
+
 
 
 #route when user clicks submit on reserving a seat
