@@ -1261,7 +1261,7 @@ def sendEmail(receiver_email,html_text,plain_text,subject):
     smtp_server="webmail.pugetsound.edu"
     port = 587
     sender_email='activismhub@pugetsound.edu'
-    password='Capstone2021!'
+    password='CSCapstone2021'
 
     message = MIMEMultipart('alternative')
     message['Subject']=subject
