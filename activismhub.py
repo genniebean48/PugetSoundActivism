@@ -372,7 +372,7 @@ def updateClub():
         #send verification email
         texts=verifyEmailText(clubID,activation_hash,0,club_email)
         sendEmail(club_email,texts['html'],texts['text'],"Verify your email")
-        return club_page("An email has been sent to "+club_email+" with a verification link.")
+        return index("An email has been sent to "+club_email+" with a verification link.")
     #reroute to club page
     return redirect(f"/clubPage?q={clubID}")
 
