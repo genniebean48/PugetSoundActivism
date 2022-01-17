@@ -1260,7 +1260,7 @@ def verifyEmail():
     isAdmin = int(request.args.get("a"))
     club_email = request.args.get("e")
     # If a club account
-    if not a:
+    if not isAdmin:
         #get hash from database
         cursor = mysql.connection.cursor()
         cursor.execute('''SELECT activation_hash FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
