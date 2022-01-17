@@ -503,6 +503,16 @@ events that are coming up in the next week. -->
 			{% if event['event_type'] != None %}
 			<h5>Event Type: {{event['event_type']}}</h5>
 			{% endif %}
+			{% if event['facebook_event_link'] != None %}
+			<a
+					href={{event['facebook_event_link']}}
+					target="_blank">
+				<i
+						class="fa fa-facebook-official"
+						aria-hidden="true"></i>
+			</a>
+			<!--        <h5>Facebook Event: {{event['facebook_event_link']}}</h5>-->
+			{% endif %}
 			<p>{{event['event_description']}}</p>
 		</div>
 	</div>

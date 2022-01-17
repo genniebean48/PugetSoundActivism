@@ -255,7 +255,14 @@ times and places, and then finally the social media links with the icons. This p
         <h5>Event Type: {{event['event_type']}}</h5>
         {% endif %}
         {% if event['facebook_event_link'] != None %}
-        <h5>Facebook Link: {{event['facebook_event_link']}}</h5>
+        <a
+                href={{event['facebook_event_link']}}
+                target="_blank">
+          <i
+                  class="fa fa-facebook-official"
+                  aria-hidden="true"></i>
+        </a>
+<!--        <h5>Facebook Event: {{event['facebook_event_link']}}</h5>-->
         {% endif %}
         <p>{{event['event_description']}}</p>
       </div>
