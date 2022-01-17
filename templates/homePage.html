@@ -18,7 +18,7 @@ events that are coming up in the next week. -->
 	* valid email address that can be used. */
 	function verify( email ) {
 		const emailSplit = email.split( "@" );
-		if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
+		if( emailSplit[ 1 ] !== "pugetsound.edu" && emailSplit[ 1 ] !== "alumni.pugetsound.edu") {
 			alert( "Email must be a valid University of Puget Sound address." );
 			return false;
 		} else {
@@ -543,9 +543,12 @@ events that are coming up in the next week. -->
 				to events. As a driver, you can add, edit, and delete your car. As a passenger, you
 				can claim a seat and delete your reservation by clicking on the 'Edit' button. As both a
 				driver and a passenger, you’ll receive a confirmation email if you do any of the above
-				actions. If there are no open seats for this event and you need a ride, request a car by clicking on
-				the 'Request Car' button and we’ll let the club owner know. Be aware that the Rideshare feature is
-				only accessible from the homepage, not individual club pages.
+				actions. If there are no open seats for this event and you need a ride, click
+				the 'Request Car' button and fill out the required fields. When a car is added with available
+				seats, you will automatically be added as a passenger and receive a confirmation email. You will
+				not be automatically added if a space opens up in an existing car, so you may want to check back
+				manually if you aren't notified that you've been added to a car.
+				Note that the Rideshare feature is only accessible from the homepage, not individual club pages.
 			</p>
 			<p> * Please note that your name will be displayed on the website if you add yourself as a driver or a passenger.
 			</p>
@@ -815,7 +818,7 @@ events that are coming up in the next week. -->
 						aria-hidden="true"></i>
 			</button>
 			<h3>Request a Car</h3>
-			<p>When you submit this form, you will be added to a wait list, and then to the next seat that becomes available.</p>
+			<p>Fill out this form to be automatically added as a passenger when a new car is added with available seats!</p>
 			<br>
 			<p>* indicates required field</p>
 			<form

@@ -1,6 +1,6 @@
-# ACTivism Hub Web App application layer filename
+# ACTivism Hub Web App application layer
 # Manya Mutschler-Aldine
-# Last edited:
+# Last edited: 1/16/2022
 # This file handles routing, SQL queries, and data manipulation
 # If running on a local machine, both flask and flask-mysqldb must be installed (on CL: pip install flask,
 # pip install flask--mysqldb) - see instructions.txt for more details on how to run
@@ -25,25 +25,16 @@ app.secret_key = b'1234567'
 mysql = MySQL(app)
 
 #Configure MySQL
-# app.config['MYSQL_HOST'] = 'activism-hub'
-# app.config['MYSQL_USER'] = 'dba'
-# app.config['MYSQL_PASSWORD'] = 'Password321$'
-# app.config['MYSQL_DB'] = 'remote_activismHub'
-# app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead of default tuples
 app.config['MYSQL_HOST'] = 'us-cdbr-east-04.cleardb.com'
 app.config['MYSQL_USER'] = 'b23619ece5cddb'
 app.config['MYSQL_PASSWORD'] = '5872b43e'
 app.config['MYSQL_DB'] = 'heroku_3a423214d0c6425'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead of default tuples
 
-#Set start path for images - Change for whether running in server or on localhost
-#for server
-# IMAGE_PATH='/var/www/ActivismHub/PugetSoundActivism/static'
-#for localhost
+#Set start path for images
 IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 
-#Set tables - Change for running in server or localhost if club access is an issue
-#for actually running
+#Set tables
 SERVER_NAME="https://activismhub.herokuapp.com"
 CLUB_TABLE='club'
 EVENT_TABLE='club_event'
@@ -52,82 +43,13 @@ CAR_TABLE = 'rideshare_car'
 PASSENGER_TABLE = 'rideshare_passenger'
 TRACKING_TABLE = 'tracking'
 CAR_REQUEST_TABLE = 'car_request'
-#for testing
-# SERVER_NAME="http://localhost:5000"
-# CLUB_TABLE ='testClub'
-# EVENT_TABLE ='testClub_event'
-# ADMIN_TABLE ='website_admin'
-# CAR_TABLE = 'testRideShare_car'
-# PASSENGER_TABLE = 'testRideShare_passenger'
-# TRACKING_TABLE = 'tracking'
 
 #salt for password hashing
 salt = '1kn0wy0ulov3m3'
 
+#Password for email
+EMAIL_PASSWORD='CSCapstone2021'
 
-# def printClubs():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''SELECT * FROM %s'''%(CLUB_TABLE,))
-#     result = cursor.fetchall()
-#     for club in result:
-#         print(club)
-#
-# def addAdmin():
-#    cursor = mysql.connection.cursor()
-#    cursor.execute('''INSERT INTO website_admin (web_admin_name,web_admin_email,curr_admin,email_activated) VALUES ("Manya","manyam686@gmail.com",1,1)''')
-#    mysql.connection.commit()
-#
-# def addManyaAdminInfo():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''SELECT web_adminID from %s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
-#     adminID=cursor.fetchall()[0]['web_adminID']
-#     saltedPassword = "manyapassword" + salt
-#     password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-#     cursor.execute('''UPDATE %s SET password=%%s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(password,adminID,))
-#     mysql.connection.commit()
-#
-# def fixActivatedApproved():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''UPDATE %s SET email_activated=1,club_approved=1'''%('club',))
-#     mysql.connection.commit()
-#
-# def hashPasswords():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''SELECT password, clubID FROM %s'''%('club',))
-#     results = cursor.fetchall()
-#     for result in results:
-#         saltedPassword = result['password'] + salt
-#         password = hashlib.sha256(saltedPassword.encode()).hexdigest()
-#         cursor.execute('''UPDATE %s SET password=%%s WHERE clubID=%%s'''%('club',),(password,result['clubID']))
-#         mysql.connection.commit()
-#
-# def addManyaAdminHash():
-#     activation_hash = secrets.token_urlsafe()
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE web_admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,),(activation_hash,))
-#     mysql.connection.commit()
-
-# def setManyaCurrentAdmin():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''UPDATE %s SET curr_admin=1 WHERE admin_email="manyam686@gmail.com"'''%(ADMIN_TABLE,))
-#     mysql.connection.commit()
-#     cursor.execute('''DELETE FROM %s WHERE club_email="smcgough@pugetsound.edu"'''%(CLUB_TABLE,))
-#     mysql.connection.commit()
-#
-# def checkTimeStamps():
-#     cursor = mysql.connection.cursor()
-#     cursor.execute('''SELECT time_last_edited FROM club''')
-#     results=cursor.fetchall()
-#     print("Test club times:")
-#     for result in results:
-#         print(result['time_last_edited'])
-#         print(type(result['time_last_edited']))
-#     cursor.execute('''SELECT time_last_edited FROM club''')
-#     results=cursor.fetchall()
-#     print("Club times:")
-#     for result in results:
-#         print(result['time_last_edited'])
-#         print(type(result['time_last_edited']))
 
 ########################################################################################################################
 ##### Main pages #######################################################################################################
@@ -201,6 +123,10 @@ def club_page(message=""):
    #add formatted meet time
    if info['meet_time']!=None:
        info['meet_time_formatted']=formatTimeFromSql(info['meet_time'])
+
+   #add formatted last edited time
+   if info['time_last_edited']!=None:
+       info['time_last_edited_formatted']=str(info['time_last_edited'])
 
    #check if club name ends in s
    if info['club_name'][-1:]=='s':
@@ -699,18 +625,16 @@ def addCar():
     while len(carRequests)>0:
         carRequest = carRequests[0]
         #Atomically check if request has already been added to a car
-        cursor.execute('''UPDATE %s SET completed = IF(completed, completed, %%s) WHERE requestID=%%s'''%
-            (CAR_REQUEST_TABLE,),(True,carRequest['requestID']))
+        cursor.execute('''UPDATE %s SET completed = IF(completed, completed, True) WHERE requestID=%%s'''%
+            (CAR_REQUEST_TABLE,),(carRequest['requestID'],))
         mysql.connection.commit()
-        cursor.execute('''SELECT ROW_COUNT()''')
-        if cursor.fetchall()[0]!=0:
+        if cursor.rowcount!=0:
             #Atomically check that their is an available seat and decrement available seats by 1
             cursor.execute('''UPDATE %s SET num_seats_available = IF(num_seats_available > 0, num_seats_available - 1,
                 num_seats_available) WHERE carID = %%s'''%(CAR_TABLE,),(carID,))
             mysql.connection.commit()
             #If there was a seat available
-            cursor.execute('''SELECT ROW_COUNT()''')
-            if cursor.fetchall()[0]!=0:
+            if cursor.rowcount!=0:
                 #Delete from car request table
                 cursor.execute('''DELETE FROM %s WHERE requestID=%%s'''%(CAR_REQUEST_TABLE,),(carRequest['requestID'],))
                 mysql.connection.commit()
@@ -865,38 +789,9 @@ def editCar():
     #reroute to home page
     return index()
 
-#OLD
-#route when user clicks request a car
-# @app.route("/requestCar")
-# def requestCar():
-#     #get eventID for requested car
-#     eventID = request.args.get("id")
-#
-#     #instantiate cursor
-#     cursor = mysql.connection.cursor()
-#     #get event info and clubID
-#     cursor.execute('''SELECT event_name, event_date,clubID FROM %s WHERE eventID = %%s''' %(EVENT_TABLE,),(eventID,))
-#     results = cursor.fetchall()[0]
-#     event_name = results['event_name']
-#     date = results['event_date']
-#     clubID = results['clubID']
-#
-#     #get club_name and club_email using clubID
-#     cursor.execute('''SELECT club_name,club_email FROM %s WHERE clubID = %%s''' %(CLUB_TABLE,),(clubID,))
-#     results = cursor.fetchall()[0]
-#     club_name = results['club_name']
-#     club_email = results['club_email']
-#
-#     #Notify club that someone has requested a car for an event
-#     texts = carRequestText(club_name,event_name,date)
-#     subject = 'Car Requested for Your Event'
-#     sendEmail(club_email,texts['html'],texts['text'],subject)
-#
-#     #reroute to home page
-#     return index("Car successfully requested!")
 
-
-#New request car
+#Route when someone clicks submit on the request car form
+#Adds the requester to a wait list
 @app.route("/requestCar",methods=['POST'])
 def requestCar():
     #Get which event
@@ -914,7 +809,7 @@ def requestCar():
     mysql.connection.commit()
 
     #reroute to home page
-    return index("You will be added to the next available car! A confirmation email will be sent to the address provided with car details at that time.")
+    return index("Request form submitted! When a new car is added, you will automatically be added as a passenger and receive a confirmation email.")
 
 
 
@@ -936,8 +831,7 @@ def addPassenger():
         num_seats_available) WHERE carID = %%s'''%(CAR_TABLE,),(carID,))
     mysql.connection.commit()
     #If there was a seat available
-    cursor.execute('''SELECT ROW_COUNT()''')
-    if cursor.fetchall()[0]!=0:
+    if cursor.rowcount!=0:
         #add passenger
         cursor.execute('''INSERT INTO %s(passenger_name,passenger_email,carID) VALUES (%%s,%%s,%%s)'''%(PASSENGER_TABLE,),
             (passenger_name,passenger_email,carID))
@@ -966,11 +860,6 @@ def addPassenger():
         date = formatDateFromSql(date)
         depart_time = formatTimeFromSql(depart_time)
         return_time = formatTimeFromSql(return_time)
-
-#         #Notify driver that someone has added themselves to their car
-#         texts = addPassengerDriverText(event_name,date,depart_time)
-#         subject = 'New Passenger Added to Your Car!'
-#         sendEmail(driver_email,texts['html'],texts['text'],subject)
 
         #Notify passenger that they've been added to the car
         texts = addPassengerText(event_name,date,depart_time,return_time,meeting_location)
@@ -1059,30 +948,6 @@ def addCarDriverText(event_name,date,depart_time,return_time,meeting_location):
         The ACTivism Hub Team
         """
     return {'html':html,'text':text}
-
-
-# #returns a dict with the html and plain text versions of adding passenger email
-# def addPassengerDriverText(event_name,date,time):
-#     html=f"""\
-#         <html>
-#           <body>
-#             <p>Hello,<br><br>
-#                A new person has been added to your car for {event_name} leaving on {date} at {time}.<br><br>
-#                Best,<br>
-#                The ACTivism Hub Team
-#             </p>
-#           </body>
-#         </html>
-#         """
-#     text = f"""\
-#         Hello,
-#
-#         A new person has been added to your car for {event_name} leaving on {date} at {time}.
-#
-#         Best,
-#         The ACTivism Hub Team
-#         """
-#     return {'html':html,'text':text}
 
 
 #returns a dict with the html and plain text version of confirmation email to added passenger
@@ -1293,9 +1158,6 @@ def formatDateFromSql(sqlDate):
     day = sqlDate.day
     return months[month-1]+" "+str(day)+", "+str(year)
 
-# def formatDateFromSql2(date):
-#     return str(date[4:6])+"/"+str(date[6:8])+"/"+str(date[0:4])
-
 
 #formats times
 def formatTimeFromSql(sqlTime):
@@ -1323,18 +1185,6 @@ def formatTimeFromSql(sqlTime):
         ampm='PM'
     return str(hours)+":"+str(min)+" "+ampm
 
-# #format last edited timestamp for display
-# def formatLastEdited (time_last_edited):
-#     time_last_edited = str(time_last_edited)
-#     dateAndTime = time_last_edited.split(' ')
-#     date = dateAndTime[0]
-#     time = dateAndTime[1]
-#
-#     formattedDate = formatDateFromSql2(date)
-#     formattedTime = formatTimeFromSql(time)
-#
-#     return {'formattedDate':formattedDate,'formattedTime':formattedTime}
-
 
 
 ########################################################################################################################
@@ -1346,7 +1196,7 @@ def sendEmail(receiver_email,html_text,plain_text,subject):
     smtp_server="webmail.pugetsound.edu"
     port = 587
     sender_email='activismhub@pugetsound.edu'
-    password='CSCapstone2021'
+    password=EMAIL_PASSWORD
 
     message = MIMEMultipart('alternative')
     message['Subject']=subject

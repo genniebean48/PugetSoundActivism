@@ -166,7 +166,7 @@ times and places, and then finally the social media links with the icons. This p
   * first field matches the confirm password as well. */
   function verify( email ) {
     const emailSplit = email.split( "@" );
-      if( emailSplit[ 1 ] !== "pugetsound.edu" ) {
+      if( emailSplit[ 1 ] !== "pugetsound.edu" && emailSplit[ 1 ] !== "alumni.pugetsound.edu") {
         alert( "email must be a valid University of Puget Sound address." );
         return false;
       } else {
@@ -374,7 +374,7 @@ times and places, and then finally the social media links with the icons. This p
           </a>
           {% endif %}
         </ul>
-        <p id="date">Last Updated: {{info['time_last_edited']}} </p>
+        <p id="date">Last Updated: {{info['time_last_edited_formatted']}} </p>
       </div>
     </div>
     <div id="add-event-panel">
@@ -701,7 +701,7 @@ times and places, and then finally the social media links with the icons. This p
           type="checkbox"
           id="clubShowEmail"
           name="club_email_display"
-          checked>
+          >
         <label for="clubShowEmail">Display email on club profile</label>
         <br>
         <label
