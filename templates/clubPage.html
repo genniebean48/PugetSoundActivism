@@ -161,6 +161,19 @@ times and places, and then finally the social media links with the icons. This p
     }
   }
 
+  /* Javascript Function that deletes an event and all cars and passengers for it. */
+  function deleteEvent(eventID) {
+    let response = window.confirm( "Do you want to delete your event?" );
+    if( response === true ) {
+      //if the user clicks ok and therefore wants to delete the event
+      let url = '/deleteEvent?q=' + String(eventID);
+      location.href = url;
+    } else {
+      //otherwise the user clicked cancel and we should go back to club profile view by calling exit() function
+      exit();
+    }
+  }
+
   /* Javascript function that verifies the email to make sure that it is @pugetsound and also makes sure that it
   * is a valid email address. In addition, this function also makes sure that the passwords that the user input into the
   * first field matches the confirm password as well. */
@@ -223,7 +236,9 @@ times and places, and then finally the social media links with the icons. This p
         </button>
         <button
           id="delete-btn"
-          onclick="location.href='/deleteEvent?q={{event['eventID']}}'">
+            onclick="deleteEvent({{event['eventID']}})">
+<!--          onclick="location.href='/deleteEvent?q={{event['eventID']}}'">-->
+
           <i
             class="fa fa-times-circle"
             aria-hidden="true"></i>
