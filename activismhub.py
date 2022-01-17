@@ -294,7 +294,7 @@ def enter_account():
 
    #reroute to home page
    return index('''An email has been sent to the website admin to review your request for an account. Once you are
-        approved, an email will be sent to '''+club_email+ " with an verification link.")
+        approved, an email will be sent to '''+club_email+ " with a verification link.")
 
 
 #Route when user clicks submit on edit club page
