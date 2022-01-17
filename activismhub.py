@@ -35,7 +35,7 @@ app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead
 IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 
 #Set tables
-SERVER_NAME="www.pugetsoundactivism.com"
+SERVER_NAME="http://pugetsoundactivism.com"
 CLUB_TABLE='club'
 EVENT_TABLE='club_event'
 ADMIN_TABLE='website_admin'
