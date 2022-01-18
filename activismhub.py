@@ -1530,7 +1530,7 @@ def approveClub():
     cursor.connection.commit()
 
     #load home page with message that club was approved
-    return index(club_info['club_name']+" successfully approved. An email has been sent to the club to verify their email.")
+    return index("Club successfully approved. An email has been sent to the club to verify their email.")
 
 
 # Route if admin clicks deny in email sent when club requests an account
@@ -1555,8 +1555,7 @@ def denyClub():
         texts=clubDeniedTexts(admin_email)
         sendEmail(club_info['club_email'],texts['html'],texts['text'],"Request to make club account denied")
         #load home page with message that club was denied
-        return index(club_info['club_name']+'''\'s request to make an account was denied. An email has been sent to the club
-            to inform them of their denial.''')
+        return index("Account request denied. An email has been sent to the club to inform them of their denial.")
     else:
         return index("Denial failed. "+club_info['club_name']+" was previously approved.")
 
