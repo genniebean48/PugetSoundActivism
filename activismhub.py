@@ -297,8 +297,7 @@ def enter_account():
    requestApproval(clubID)
 
    #reroute to home page
-   return index('''An email has been sent to the website admin to review your request for an account. Once you are
-        approved, an email will be sent to '''+club_email+ " with a verification link.")
+   return index("An email has been sent to the website admin to review your request for an account. Once you are approved, an email will be sent to "+club_email+ " with a verification link.")
 
 
 #Route when user clicks submit on edit club page
@@ -369,7 +368,7 @@ def updateClub():
         emailInUseAdmin = len(cursor.fetchall())>0
         if emailInUseAdmin:
             return index("The email "+club_email+" is already in use as an admin account.")
-            
+
         #change activation hash
         activation_hash = secrets.token_urlsafe()
         cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(activation_hash,clubID))
@@ -1550,7 +1549,7 @@ def denyClub():
         cursor.execute('''SELECT web_admin_email FROM %s WHERE curr_admin=1'''%(ADMIN_TABLE))
         admin_email=cursor.fetchall()[0]['web_admin_email']
         #remove club from database
-        cursor.execute('''DELETE FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID))
+        cursor.execute('''DELETE FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
         cursor.connection.commit()
         #send email to club informing them of denial
         texts=clubDeniedTexts(admin_email)
