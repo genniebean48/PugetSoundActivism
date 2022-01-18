@@ -9,9 +9,9 @@
 ########################################################################################################################
 ##### Initial setup ####################################################################################################
 
-from flask import Flask, request, render_template, session, redirect, jsonify
+from flask import Flask, request, render_template, session, redirect, jsonify, url_for
 from flask_mysqldb import MySQL
-import os, datetime, secrets, json, time
+import os, datetime, secrets, json, time, boto3
 from werkzeug.utils import secure_filename
 import smtplib, ssl, hashlib
 from email.mime.text import MIMEText
@@ -336,16 +336,17 @@ def updateClub():
     if website_link == '':
             website_link = None
 
-    #Get image from form
-    image = request.files['club_image']
-    #if image inputted, save and make path
-    if image.filename != '':
-        club_image = "club_image_"+str(clubID)+"_"+secure_filename(image.filename)
-        image.save(os.path.join(IMAGE_PATH,'clubImages',club_image))
-    #if no image inputted, set image as what was in the database
-    else:
-        cursor.execute('''SELECT club_image FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
-        club_image = cursor.fetchall()[0]['club_image']
+# commented out for s3
+#     #Get image from form
+#     image = request.files['club_image']
+#     #if image inputted, save and make path
+#     if image.filename != '':
+#         club_image = "club_image_"+str(clubID)+"_"+secure_filename(image.filename)
+#         image.save(os.path.join(IMAGE_PATH,'clubImages',club_image))
+#     #if no image inputted, set image as what was in the database
+#     else:
+#         cursor.execute('''SELECT club_image FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
+#         club_image = cursor.fetchall()[0]['club_image']
 
     #update time stamp
     cursor.execute('''SELECT NOW()''')
@@ -1754,6 +1755,33 @@ def getStats():
              "total_overall_cars":total_overall_cars,"total_overall_passengers":total_overall_passengers}
 
     return stats
+
+######## s3 functions ##################################################################################################
+
+@app.route('/sign_s3/')
+def sign_s3():
+  S3_BUCKET = os.environ.get('S3_BUCKET')
+
+  file_name = request.args.get('file_name')
+  file_type = request.args.get('file_type')
+
+  s3 = boto3.client('s3')
+
+  presigned_post = s3.generate_presigned_post(
+    Bucket = S3_BUCKET,
+    Key = file_name,
+    Fields = {"acl": "public-read", "Content-Type": file_type},
+    Conditions = [
+      {"acl": "public-read"},
+      {"Content-Type": file_type}
+    ],
+    ExpiresIn = 3600
+  )
+
+  return json.dumps({
+    'data': presigned_post,
+    'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+  })
 
 
 
