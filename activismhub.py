@@ -263,12 +263,16 @@ def enter_account():
    password = request.form['password']
    club_email_display = request.form.get('club_email_display') != None
 
-   #if email already associated with a club, rerender create account page with error message
+   #if email already associated with a club or admin, rerender create account page with error message
    cursor.execute('''SELECT clubID FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
    emailExists = len(cursor.fetchall())>0
    if emailExists:
         message = "There is already an account using "+club_email+"."
         return create_account(message)
+   cursor.execute('''SELECT web_adminID FROM %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+   emailInUseAdmin = len(cursor.fetchall())>0
+   if emailInUseAdmin:
+        return create_account("The email "+club_email+" is already in use as an admin account.")
 
    #hash password
    saltedPassword = password + salt
@@ -1593,6 +1597,12 @@ def changeAdmin():
     mysql.connection.commit()
     # If they changed the admin email, verify new email
     if admin_email != old_admin_email:
+        #Make sure new admin email not already in use for a club account
+        cursor.execute('''SELECT clubID FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(admin_email,))
+        emailInUse = len(cursor.fetchall())>0
+        if emailInUse:
+            return index("The email "+admin_email+" is already in use for a club account.")
+
         cursor.execute('''SELECT activation_hash FROM %s WHERE web_adminID=%%s'''%(ADMIN_TABLE,),(adminID,))
         # Change activation hash??
         activation_hash=cursor.fetchall()[0]['activation_hash']
