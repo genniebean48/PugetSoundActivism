@@ -446,27 +446,15 @@ events that are coming up in the next week. -->
 				src="../static/images/DSC_0584Crop.jpeg"
 				style="width:100%">
 	</div>
-<!--	<div class="mySlides fade">-->
-<!--		<img-->
-<!--				src="../static/images/ups_walkout_2021_pic1_crop.jpg"-->
-<!--				style="width:100%">-->
-<!--	</div>-->
-<!--	<div class="mySlides fade">-->
-<!--		<img-->
-<!--				src="../static/images/ups_blm_protest_2020_pic2.jpg"-->
-<!--				style="width:100%">-->
-<!--	</div>-->
+
 </div>
 <br>
 <div class="upcoming-events">
 	<h3>Upcoming Events</h3>
 	{% for event in events %}
 	<div class="events">
-		{% if event['event_image']==None %}
 		<img src="../static/images/default_image.jpg"/>
-		{% else %}
-		<img src="../static/eventImages/{{event['event_image']}}"/>
-		{% endif %}
+
 		<div class="profile-info">
 			<h4>{{event['event_name']}}</h4>
 			<h5>{{event['club_name']}}</h5>

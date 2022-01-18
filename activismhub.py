@@ -9,9 +9,9 @@
 ########################################################################################################################
 ##### Initial setup ####################################################################################################
 
-from flask import Flask, request, render_template, session, redirect, jsonify, url_for
+from flask import Flask, request, render_template, session, redirect, jsonify
 from flask_mysqldb import MySQL
-import os, datetime, secrets, json, time, boto3
+import os, datetime, secrets, json, time
 from werkzeug.utils import secure_filename
 import smtplib, ssl, hashlib
 from email.mime.text import MIMEText
@@ -196,7 +196,7 @@ def do_login():
    # If email not associated with a club account
    else:
        #check if admin
-       cursor.execute('''SELECT web_adminID, password FROM %s WHERE web_admin_email = %%s'''%(ADMIN_TABLE,),(user,))
+       cursor.execute('''SELECT web_adminID, password, email_activated FROM %s WHERE web_admin_email = %%s'''%(ADMIN_TABLE,),(user,))
        result = cursor.fetchall()
        # If admin account
        if len(result)==1:
@@ -206,7 +206,7 @@ def do_login():
             #if password is correct
             if password == result[0]['password']:
                 #if admin activated, login and render home page
-                if result['email_activated']==1:
+                if result[0]['email_activated']==1:
                     session['admin_id']=result[0]['web_adminID']
                     return index()
                 else:
@@ -336,17 +336,6 @@ def updateClub():
     if website_link == '':
             website_link = None
 
-# commented out for s3
-#     #Get image from form
-#     image = request.files['club_image']
-#     #if image inputted, save and make path
-#     if image.filename != '':
-#         club_image = "club_image_"+str(clubID)+"_"+secure_filename(image.filename)
-#         image.save(os.path.join(IMAGE_PATH,'clubImages',club_image))
-#     #if no image inputted, set image as what was in the database
-#     else:
-#         cursor.execute('''SELECT club_image FROM %s WHERE clubID=%%s'''%(CLUB_TABLE,),(clubID,))
-#         club_image = cursor.fetchall()[0]['club_image']
 
     #update time stamp
     cursor.execute('''SELECT NOW()''')
@@ -354,10 +343,10 @@ def updateClub():
 
     #Put new info in database
     cursor.execute('''UPDATE %s SET club_name=%%s,about_info=%%s,meet_time=%%s,meet_day=%%s,meet_location=%%s,
-                    facebook_link=%%s,instagram_link=%%s,twitter_link=%%s,website_link=%%s,club_image=%%s,
+                    facebook_link=%%s,instagram_link=%%s,twitter_link=%%s,website_link=%%s,
                     club_email_display=%%s,time_last_edited=%%s WHERE
                     clubID = %%s'''%(CLUB_TABLE,),(club_name,about_info,meet_time,meet_day,meet_location,
-                    facebook_link,instagram_link,twitter_link,website_link,club_image,club_email_display,time_last_edited,clubID))
+                    facebook_link,instagram_link,twitter_link,website_link,club_email_display,time_last_edited,clubID))
     mysql.connection.commit()
 
     #Update club name on all of that club's events (in case club name changed)
@@ -447,22 +436,6 @@ def addEvent():
     cursor.execute('''UPDATE %s SET total_events = total_events + 1 WHERE trackingID = 1'''%(TRACKING_TABLE,))
     mysql.connection.commit()
 
-    #Get image from form
-    image = request.files['event_image']
-    #if image inputted, save and store
-    if image.filename != '':
-        #get eventID
-        cursor.execute('''SELECT eventID FROM %s WHERE event_name=%%s AND clubID=%%s AND
-                event_date=%%s'''%(EVENT_TABLE,),(event_name,clubID,event_date))
-        eventID = cursor.fetchall()[0]['eventID']
-        #make image name
-        event_image = "event_image_"+str(eventID)+"_"+secure_filename(image.filename)
-        #save image
-        image.save(os.path.join(IMAGE_PATH,'eventImages',event_image))
-        #save image name in database
-        cursor.execute('''UPDATE %s SET event_image=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_image,
-            eventID))
-        mysql.connection.commit()
 
     #rerender club page
     return redirect(f"/clubPage?q={clubID}")
@@ -495,21 +468,11 @@ def updateEvent():
 
     #instantiate cursor
     cursor = mysql.connection.cursor()
-    #get image from form
-    image = request.files['event_image']
-    #if image inputted, save and make path
-    if image.filename != '':
-        event_image = "event_image_"+str(eventID)+"_"+secure_filename(image.filename)
-        image.save(os.path.join(IMAGE_PATH,'eventImages',event_image))
-    #if no image inputted, set image as what was in the database
-    else:
-        cursor.execute('''SELECT event_image FROM %s WHERE eventID=%%s'''%(EVENT_TABLE,),(eventID,))
-        event_image = cursor.fetchall()[0]['event_image']
 
     #Update event
     cursor.execute('''UPDATE %s SET event_name=%%s,event_date=%%s,start_time=%%s,end_time=%%s,event_location=%%s,
-            event_description=%%s,event_type=%%s,event_image=%%s,facebook_event_link=%%s,event_virtual=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
-            event_date,start_time,end_time,event_location,event_description,event_type,event_image,facebook_event_link,event_virtual,eventID))
+            event_description=%%s,event_type=%%s,facebook_event_link=%%s,event_virtual=%%s WHERE eventID=%%s'''%(EVENT_TABLE,),(event_name,
+            event_date,start_time,end_time,event_location,event_description,event_type,facebook_event_link,event_virtual,eventID))
     mysql.connection.commit()
 
     #update time stamp
@@ -1758,30 +1721,30 @@ def getStats():
 
 ######## s3 functions ##################################################################################################
 
-@app.route('/sign_s3/')
-def sign_s3():
-  S3_BUCKET = os.environ.get('S3_BUCKET')
-
-  file_name = request.args.get('file_name')
-  file_type = request.args.get('file_type')
-
-  s3 = boto3.client('s3')
-
-  presigned_post = s3.generate_presigned_post(
-    Bucket = S3_BUCKET,
-    Key = file_name,
-    Fields = {"acl": "public-read", "Content-Type": file_type},
-    Conditions = [
-      {"acl": "public-read"},
-      {"Content-Type": file_type}
-    ],
-    ExpiresIn = 3600
-  )
-
-  return json.dumps({
-    'data': presigned_post,
-    'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
-  })
+# @app.route('/sign_s3/')
+# def sign_s3():
+#   S3_BUCKET = os.environ.get('S3_BUCKET')
+#
+#   file_name = request.args.get('file_name')
+#   file_type = request.args.get('file_type')
+#
+#   s3 = boto3.client('s3')
+#
+#   presigned_post = s3.generate_presigned_post(
+#     Bucket = S3_BUCKET,
+#     Key = file_name,
+#     Fields = {"acl": "public-read", "Content-Type": file_type},
+#     Conditions = [
+#       {"acl": "public-read"},
+#       {"Content-Type": file_type}
+#     ],
+#     ExpiresIn = 3600
+#   )
+#
+#   return json.dumps({
+#     'data': presigned_post,
+#     'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+#   })
 
 
 
