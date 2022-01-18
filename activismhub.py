@@ -359,6 +359,17 @@ def updateClub():
 
     #if email changed, send verification email
     if club_email != old_club_email:
+        #if email already associated with a club or admin, rerender homepage with error message
+        cursor.execute('''SELECT clubID FROM %s WHERE club_email=%%s'''%(CLUB_TABLE,),(club_email,))
+        emailExists = len(cursor.fetchall())>0
+        if emailExists:
+            message = "There is already an account using "+club_email+"."
+            return index(message)
+        cursor.execute('''SELECT web_adminID FROM %s WHERE web_admin_email=%%s'''%(ADMIN_TABLE,),(club_email,))
+        emailInUseAdmin = len(cursor.fetchall())>0
+        if emailInUseAdmin:
+            return index("The email "+club_email+" is already in use as an admin account.")
+            
         #change activation hash
         activation_hash = secrets.token_urlsafe()
         cursor.execute('''UPDATE %s SET activation_hash=%%s WHERE clubID=%%s'''%(CLUB_TABLE,),(activation_hash,clubID))
