@@ -32,6 +32,25 @@
                 hideStats();
             }
         }
+
+        /* Shows the club dropdown menu, called when clubs heading is clicked in nav bar. */
+        function show_dropdown_menu() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        /* Hides the club dropdown menu when the user clicks elsewhere. */
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
     </script>
     {% block title %} {% endblock %}
 </head>
@@ -45,8 +64,8 @@
         {% endif %}
         <a href="/"> Home </a>
         <div class="dropdown">
-            <a id="clubs"> Clubs </a>
-            <div class="dropdown-content">
+            <a id="clubs" onclick="show_dropdown_menu()" class="dropbtn"> Clubs </a>
+            <div id="myDropdown" class="dropdown-content">
                 {% for club in clubs %}
                 <a href="/clubPage?q={{club['clubID']}}">{{club['club_name']}}</a>
                 {% endfor %}
