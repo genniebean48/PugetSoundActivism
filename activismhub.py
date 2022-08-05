@@ -25,17 +25,21 @@ app.secret_key = b'1234567'
 mysql = MySQL(app)
 
 #Configure MySQL
-app.config['MYSQL_HOST'] = 'us-cdbr-east-04.cleardb.com'
-app.config['MYSQL_USER'] = 'b23619ece5cddb'
-app.config['MYSQL_PASSWORD'] = '5872b43e'
-app.config['MYSQL_DB'] = 'heroku_3a423214d0c6425'
+# app.config['MYSQL_HOST'] = 'us-cdbr-east-04.cleardb.com'
+# app.config['MYSQL_USER'] = 'b23619ece5cddb'
+# app.config['MYSQL_PASSWORD'] = '5872b43e'
+# app.config['MYSQL_DB'] = 'heroku_3a423214d0c6425'
+app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
+app.config['MYSQL_USER'] = os.environ['MYSQL_USER']
+app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD']
+app.config['MYSQL_DB'] = os.environ['MYSQL_DB']
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor' #returns queries as dicts instead of default tuples
 
 #Set start path for images
 IMAGE_PATH=os.path.join(os.path.abspath(os.getcwd()),'static')
 
 #Set tables
-SERVER_NAME="http://pugetsoundactivism.com"
+SERVER_NAME="https://pugetsoundactivism.com"
 CLUB_TABLE='club'
 EVENT_TABLE='club_event'
 ADMIN_TABLE='website_admin'
