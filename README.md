@@ -1,11 +1,12 @@
 # ACTivism Hub
-Web app serving as a central hub for student ACTivism on University of Puget Sound campus. [Linked here](https://pugetsoundactivism.com)
+Web app serving as a central hub for student Activism on University of Puget Sound campus. [Linked here](https://www.pugetsoundactivism.com)
 
 ## Table of Contents
 * [General Info](#general-info)
 * [Technologies](#technologies)
 * [Directory Layout](#directory-layout)
 * [Functionality](#functionality)
+* [Setup](#setup)
 * [Credits](#credits)
 
 ## General Info
@@ -28,9 +29,12 @@ This python web app was created to serve as a central hub for student activism o
 * click==7.1.2
 
 ## Directory Layout
+```
 |-Project folder/
 | |--activismhub.py
 | |--README
+| |--readme_images/
+| |  |--Image files for readme
 | |--templates/
 | |  |--all html files
 | |--static/
@@ -38,12 +42,13 @@ This python web app was created to serve as a central hub for student activism o
 | |  |--all css files
 | |  |--all js files
 | |  |--images/
-| |  |  |--all images
+| |  |  |--all site images
 | |  |--font styling
+```
 
 ## Functionality
 
-## For students:
+### For students:
 * Students can view upcoming events from all clubs on the homepage:
 ![image](/readme_images/homepage.PNG)
 * For in person events, students who are driving can add cars, and students who need rides can sign up for seats or request a spot in a future car:
@@ -60,6 +65,20 @@ This python web app was created to serve as a central hub for student activism o
 ![image](/readme_images/edit_club_profile.PNG)
 ![image](/readme_images/add_event.PNG)
 ![image](/readme_images/edit_event.PNG)
+
+## Setup
+* To run this project locally (development personel), assuming python and pip are installed, in a python venv:
+* Install flask and flask-mysqldb
+```
+$ pip install Flask
+$ pip install flask-mysqldb
+```
+* Add config for database/email access
+* Run with flask
+```
+$ export FLASK_APP=application.py
+$ flask run
+```
 
 ## Credits:
 Created by [Manya Mutschler-Aldine](https://github.com/manyam686), [Emma Kauzmann](https://github.com/EmmaKau), and [Gennie Cheatham](https://github.com/genniebean48) in collaboration with student activists on University of Puget Sound Campus in 2021. 
