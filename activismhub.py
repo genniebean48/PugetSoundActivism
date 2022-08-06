@@ -3,7 +3,7 @@
 # Last edited: 1/16/2022
 # This file handles routing, SQL queries, and data manipulation
 # If running on a local machine, both flask and flask-mysqldb must be installed (on CL: pip install flask,
-# pip install flask--mysqldb) - see instructions.txt for more details on how to run
+# pip install flask--mysqldb) - see README for more details on how to run
 
 
 ########################################################################################################################
@@ -25,10 +25,7 @@ app.secret_key = b'1234567'
 mysql = MySQL(app)
 
 #Configure MySQL
-# app.config['MYSQL_HOST'] = 'us-cdbr-east-04.cleardb.com'
-# app.config['MYSQL_USER'] = 'b23619ece5cddb'
-# app.config['MYSQL_PASSWORD'] = '5872b43e'
-# app.config['MYSQL_DB'] = 'heroku_3a423214d0c6425'
+
 app.config['MYSQL_HOST'] = os.environ['MYSQL_HOST']
 app.config['MYSQL_USER'] = os.environ['MYSQL_USER']
 app.config['MYSQL_PASSWORD'] = os.environ['MYSQL_PASSWORD']
@@ -49,10 +46,10 @@ TRACKING_TABLE = 'tracking'
 CAR_REQUEST_TABLE = 'car_request'
 
 #salt for password hashing
-salt = '1kn0wy0ulov3m3'
+salt = os.environ['SALT']
 
 #Password for email
-EMAIL_PASSWORD='CSCapstone2021'
+EMAIL_PASSWORD=os.environ['EMAIL_PASSWORD']
 
 
 ########################################################################################################################
